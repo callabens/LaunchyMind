@@ -1,0 +1,122 @@
+format: 1
+ignoredPackages:
+  - cupertino_icons
+  - flutter_lints
+  - lints
+  - intl
+  - collection
+  - meta
+  - path
+  - async
+  - http
+  - dio
+  - provider
+  - flutter_riverpod
+  - riverpod
+  - go_router
+  - json_annotation
+  - json_serializable
+  - build_runner
+capabilities:
+  camera:
+    packages: [camera, camerawesome, camera_android]
+    iosUsage: [NSCameraUsageDescription]
+    androidPermissions: [android.permission.CAMERA]
+  photos:
+    packages: [image_picker, photo_manager, image_cropper]
+    iosUsage: [NSPhotoLibraryUsageDescription, NSPhotoLibraryAddUsageDescription]
+    androidPermissions: [android.permission.READ_MEDIA_IMAGES, android.permission.READ_EXTERNAL_STORAGE]
+  location:
+    packages: [geolocator, location, geocoding]
+    iosUsage: [NSLocationWhenInUseUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription]
+    androidPermissions: [android.permission.ACCESS_FINE_LOCATION, android.permission.ACCESS_COARSE_LOCATION]
+  microphone:
+    packages: [record, speech_to_text, flutter_sound]
+    iosUsage: [NSMicrophoneUsageDescription]
+    androidPermissions: [android.permission.RECORD_AUDIO]
+  contacts:
+    packages: [flutter_contacts, contacts_service, fast_contacts]
+    iosUsage: [NSContactsUsageDescription]
+    androidPermissions: [android.permission.READ_CONTACTS]
+  notifications:
+    packages: [firebase_messaging, flutter_local_notifications, onesignal_flutter]
+    iosUsage: []
+    androidPermissions: [android.permission.POST_NOTIFICATIONS]
+  ads:
+    packages: [google_mobile_ads, unity_ads_plugin, applovin_max, ironsource_mediation]
+    iosUsage: []
+    androidPermissions: []
+  tracking:
+    packages: [app_tracking_transparency, facebook_app_events, appsflyer_sdk, adjust_sdk]
+    iosUsage: [NSUserTrackingUsageDescription]
+    androidPermissions: []
+  accounts:
+    packages: [firebase_auth, supabase_flutter, appwrite, auth0_flutter, amplify_auth_cognito]
+    iosUsage: []
+    androidPermissions: []
+  payments:
+    packages: [in_app_purchase, purchases_flutter, flutter_inapp_purchase]
+    iosUsage: []
+    androidPermissions: [com.android.vending.BILLING]
+  analytics:
+    packages: [firebase_analytics, firebase_crashlytics, mixpanel_flutter, amplitude_flutter, sentry_flutter, posthog_flutter]
+    iosUsage: []
+    androidPermissions: []
+# Flutter-relevant names seen on Apple's third-party SDK list on 2026-11-19.
+# The official page also lists many non-Flutter SDKs that are not copied here.
+listedSdks:
+  - { pub: connectivity_plus, appleName: connectivity_plus }
+  - { pub: device_info_plus, appleName: device_info_plus }
+  - { pub: file_picker, appleName: file_picker }
+  - { pub: firebase_auth, appleName: FirebaseAuth }
+  - { pub: firebase_core, appleName: FirebaseCore }
+  - { pub: firebase_crashlytics, appleName: FirebaseCrashlytics }
+  - { pub: firebase_messaging, appleName: FirebaseMessaging }
+  - { pub: cloud_firestore, appleName: FirebaseFirestore }
+  - { pub: flutter_inappwebview, appleName: flutter_inappwebview }
+  - { pub: flutter_local_notifications, appleName: flutter_local_notifications }
+  - { pub: fluttertoast, appleName: fluttertoast }
+  - { pub: geolocator, appleName: geolocator_apple }
+  - { pub: image_picker, appleName: image_picker_ios }
+  - { pub: package_info_plus, appleName: package_info_plus }
+  - { pub: path_provider, appleName: path_provider }
+  - { pub: share_plus, appleName: share_plus }
+  - { pub: shared_preferences, appleName: shared_preferences_ios }
+  - { pub: sqflite, appleName: sqflite }
+  - { pub: url_launcher, appleName: url_launcher }
+  - { pub: video_player, appleName: video_player_avfoundation }
+  - { pub: google_sign_in, appleName: GoogleSignIn }
+thirdPartyLogin:
+  - google_sign_in
+  - flutter_facebook_auth
+  - sign_in_with_apple
+appleSignIn:
+  - sign_in_with_apple
+googleAds:
+  - google_mobile_ads
+deletionNeedles:
+  - deleteaccount
+  - deleteuser
+  - delete_account
+  - accountdeletion
+  - delete account
+  - delete my account
+  - hesabı sil
+  - hesabimi sil
+  - hesabımı sil
+subscriptionNeedles:
+  - auto-renew
+  - autorenew
+  - subscription
+  - renews
+  - per month
+  - per year
+priceNeedles:
+  - price
+  - "$"
+  - "₺"
+  - usd
+urlNeedles:
+  privacy: [privacy, gizlilik, kvkk]
+  support: [support, destek]
+  accountDeletion: ["delete account", "account deletion", "delete-account", "hesab"]

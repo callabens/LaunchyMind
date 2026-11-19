@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/callabens/LaunchyMind/schemas/rule.schema.json",
+  "title": "LaunchyMind rule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "severity", "platforms", "enabled", "origin", "verification", "source", "summary", "appliesWhen", "evaluate", "check"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.][a-z0-9-]+)+$" },
+    "title": { "type": "string", "minLength": 8 },
+    "severity": { "enum": ["blocker", "risk", "info"] },
+    "platforms": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["ios", "android", "any"] }
+    },
+    "enabled": { "type": "boolean" },
+    "origin": { "enum": ["store", "legal", "industry", "product"] },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["verified", "needs-manual-verification"] },
+        "verifiedAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "method": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "section", "publisher"],
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://" },
+        "section": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string", "minLength": 1 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "tr"],
+      "properties": {
+        "en": { "type": "string", "minLength": 20 },
+        "tr": { "type": "string", "minLength": 10 }
+      }
+    },
+    "appliesWhen": { "$ref": "#/definitions/condition" },
+    "evaluate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pass": { "$ref": "#/definitions/condition" },
+        "fail": { "$ref": "#/definitions/condition" }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence", "note"],
+      "properties": {
+        "confidence": { "enum": ["direct", "heuristic", "attestation"] },
+        "note": { "type": "string", "minLength": 10 }
+      }
+    },
+    "fix": { "type": "string" }
+  },
+  "definitions": {
+    "condition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["all"],
+          "properties": {
+            "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/condition" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["any"],
+          "properties": {
+            "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/condition" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fact"],
+          "properties": {
+            "fact": { "type": "string" },
+            "eq": { "type": ["boolean", "number", "string"] },
+            "neq": { "type": ["boolean", "number", "string"] },
+            "gte": { "type": "number" },
+            "lt": { "type": "number" }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+format: 1
+id: launchymind.core
+name: LaunchyMind Core Rules
+version: 2026.11.19
+license: Apache-2.0
+engine: ">=0.1.0-dev.1"
+authors:
+  - callabens
+verifiedAt: 2026-11-19
+description: >
+  Apple, Google Play, IAB Tech Lab, and KVKK checks for the LaunchyMind
+  development preview. Summaries are short restatements. The source URL is
+  the authority. Rules that were not re-checked are withheld and do not
+  affect the verdict.

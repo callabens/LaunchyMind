@@ -1,0 +1,1156 @@
+# Enabled rules. Summaries were checked against the cited pages on 2026-11-19.
+# appliesWhen is what the engine uses. platforms is for readers.
+rules:
+  - id: product.flutter-project
+    title: This preview scans Flutter projects
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: product-rule
+      note: This is a LaunchyMind limit, not a store rule.
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: scanner
+      publisher: LaunchyMind
+    summary:
+      en: "This preview reads Flutter projects. A folder that is not a Flutter app is not given a store verdict for another framework."
+      tr: "Bu önizleme Flutter projelerini okur. Flutter olmayan klasör için başka bir çerçevenin mağaza kararı üretilmez."
+    appliesWhen:
+      all:
+        - { fact: framework.flutter, neq: "unused" }
+    evaluate:
+      pass:
+        all:
+          - { fact: framework.flutter, eq: true }
+      fail:
+        all:
+          - { fact: framework.flutter, eq: false }
+    check:
+      confidence: direct
+      note: "Looks for a Flutter SDK dependency in pubspec.yaml or pubspec.lock. React Native and native apps are not scanned yet."
+
+  - id: product.audience-answers
+    title: Audience questions the code cannot answer
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: product-rule
+      note: Kids, health, and user-generated content are not inferred from code.
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: audience
+      publisher: LaunchyMind
+    summary:
+      en: "Kids, health, and user-generated content cannot be reliably read from code. Until .launchymind/project.yaml answers them, those topics stay unchecked."
+      tr: "Çocuk kitlesi, sağlık ve kullanıcı içeriği koddan güvenilir okunamaz. .launchymind/project.yaml cevap verene kadar kontrol edilemedi kalır."
+    appliesWhen:
+      any:
+        - { fact: platform.ios, eq: true }
+        - { fact: platform.android, eq: true }
+    evaluate:
+      pass:
+        all:
+          - any:
+              - { fact: audience.kids, eq: "yes" }
+              - { fact: audience.kids, eq: "no" }
+          - any:
+              - { fact: audience.health, eq: "yes" }
+              - { fact: audience.health, eq: "no" }
+          - any:
+              - { fact: audience.ugc, eq: "yes" }
+              - { fact: audience.ugc, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A missing answer is unchecked, not a guess. Answering no does not by itself mean the store category is correct."
+
+  - id: apple.kids-third-party
+    title: Kids-directed apps should avoid third-party ads and analytics
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.3 and 5.1.4"
+      publisher: Apple
+    summary:
+      en: "Apple says apps intended primarily for kids should not include third-party analytics or third-party advertising. The audience answer is the developer's statement, not the Kids Category checkbox."
+      tr: "Apple, öncelikle çocuklara yönelik uygulamaların üçüncü taraf analitik veya reklam içermemesini söyler. Kitle cevabı, geliştiricinin beyanıdır."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: audience.kids, eq: "yes" }
+    evaluate:
+      pass:
+        all:
+          - { fact: capability.ads, eq: false }
+          - { fact: capability.analytics, eq: false }
+      fail:
+        any:
+          - { fact: capability.ads, eq: true }
+          - { fact: capability.analytics, eq: true }
+    check:
+      confidence: attestation
+      note: "The guideline text says should, and this check only sees packages plus the audience answer. It is a risk, not a proven Kids Category rejection."
+
+  - id: apple.privacy-policy-in-app
+    title: The app needs an in-app privacy policy link
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(i)"
+      publisher: Apple
+    summary:
+      en: "All apps must include a link to their privacy policy within the app in an easily accessible way. This check only detects a URL in project source, not whether the screen is easy to find."
+      tr: "Tüm uygulamalar gizlilik politikası bağlantısını uygulama içinde kolay erişilir şekilde göstermelidir. Bu kontrol yalnızca kaynakta bir adres arar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: urls.privacy.in_app, eq: true }
+      fail:
+        all:
+          - { fact: urls.privacy.in_app, eq: false }
+    check:
+      confidence: direct
+      note: "A privacy URL in Dart, Info.plist, or Android strings counts as in-app. A URL that exists only in .launchymind/project.yaml does not."
+    fix: privacy-policy
+
+  - id: apple.privacy-policy-metadata
+    title: Privacy policy URL declared for store metadata
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(i)"
+      publisher: Apple
+    summary:
+      en: "Guideline 5.1.1(i) also requires the privacy policy link in App Store Connect metadata. LaunchyMind cannot see App Store Connect, so it looks for a local declaration."
+      tr: "Kılavuz 5.1.1(i) bağlantının App Store Connect bilgisinde de olmasını ister. LaunchyMind Connect'i görmez; yerel beyana bakar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: urls.privacy.declared, eq: true }
+      fail:
+        all:
+          - { fact: urls.privacy.declared, eq: false }
+    check:
+      confidence: attestation
+      note: "Failing this means the URL was not declared in .launchymind/project.yaml. It does not prove the App Store Connect field is empty."
+
+  - id: apple.privacy-link-opens
+    title: The privacy policy link opens
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(i)"
+      publisher: Apple
+    summary:
+      en: "The in-app and metadata privacy link has to be a real policy. This check requests the URL found in the project and flags HTTP errors and placeholder pages."
+      tr: "Gizlilik bağlantısı gerçek bir politika sayfası olmalıdır. Bu kontrol proje adresini ister; HTTP hatasını ve yer tutucu sayfayı işaretler."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: urls.privacy.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+      fail:
+        any:
+          - { fact: live.privacy.status, eq: "placeholder" }
+          - { fact: live.privacy.status, eq: "http-error" }
+          - { fact: live.privacy.status, eq: "missing" }
+    check:
+      confidence: heuristic
+      note: "Offline mode and network failures stay unchecked. A timeout is not treated as a broken policy."
+
+  - id: apple.privacy-policy-content
+    title: Privacy policy text covers collection, deletion, and consent
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(i)"
+      publisher: Apple
+    summary:
+      en: "Guideline 5.1.1(i) says the policy must identify what is collected and how, all uses, third-party protection, retention and deletion, and how a user can revoke consent or request deletion. Keyword hits are a heuristic, not a review of the policy."
+      tr: "Kılavuz 5.1.1(i) politikanın ne toplandığını, kullanımları, saklama ve silmeyi ve rızanın nasıl geri alınacağını anlatmasını ister. Anahtar kelime bir inceleme değildir."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: urls.privacy.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.collection, eq: "yes" }
+          - { fact: live.privacy.deletion, eq: "yes" }
+          - { fact: live.privacy.consent, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.privacy.status, eq: "placeholder" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.collection, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.deletion, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.consent, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "Passes only when the fetched page contains rough signals for collection, deletion, and consent withdrawal. This is not legal advice."
+    fix: privacy-policy
+
+  - id: apple.support-contact
+    title: Support URL or contact path is present
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.5"
+      publisher: Apple
+    summary:
+      en: "Guideline 1.5 says people need a way to reach you, and the app and its Support URL should include an easy way to make contact."
+      tr: "Kılavuz 1.5, insanların size ulaşabilmesi gerektiğini ve Destek adresinde kolay bir iletişim yolu olmasını söyler."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: urls.support.present, eq: true }
+      fail:
+        all:
+          - { fact: urls.support.present, eq: false }
+    check:
+      confidence: direct
+      note: "Looks for a support URL in source or in .launchymind/project.yaml. App Store Connect was not queried."
+
+  - id: apple.support-link-quality
+    title: Support page shows a way to make contact
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.5"
+      publisher: Apple
+    summary:
+      en: "The support page should give people an easy way to make contact. This check looks for an email address or a contact phrase and rejects placeholder pages."
+      tr: "Destek sayfası kolay bir iletişim yolu sunmalıdır. Bu kontrol e-posta veya iletişim ifadesi arar ve yer tutucuyu reddeder."
+    appliesWhen:
+      all:
+        - { fact: urls.support.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.support.status, eq: "ok" }
+          - { fact: live.support.contact, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.support.status, eq: "placeholder" }
+          - { fact: live.support.status, eq: "http-error" }
+          - { fact: live.support.status, eq: "missing" }
+          - all:
+              - { fact: live.support.status, eq: "ok" }
+              - { fact: live.support.contact, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "A page can pass this keyword check and still be a poor support experience."
+
+  - id: apple.account-deletion
+    title: Account creation requires in-app account deletion
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(v)"
+      publisher: Apple
+    summary:
+      en: "If the app supports account creation, it must also offer account deletion within the app. This check looks for deletion symbols or an in-app deletion link. It cannot judge whether the control is easy to find."
+      tr: "Uygulama hesap oluşturmayı destekliyorsa, hesap silmeyi de uygulama içinde sunmalıdır. Bu kontrol silme izi veya uygulama içi bağlantı arar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.accounts, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: account.deletion.in_app, eq: true }
+      fail:
+        all:
+          - { fact: account.deletion.in_app, eq: false }
+    check:
+      confidence: heuristic
+      note: "Account packages are a fixed list. A custom auth stack with no mapped package is not detected, and that limit is reported separately."
+    fix: account-deletion
+
+  - id: apple.tracking-permission
+    title: Tracking requires App Tracking Transparency disclosure
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.2(i)"
+      publisher: Apple
+    summary:
+      en: "You must receive explicit permission via the App Tracking Transparency APIs to track users. When an ads or tracking SDK is present, this check requires NSUserTrackingUsageDescription."
+      tr: "Kullanıcıları takip etmek için App Tracking Transparency ile açık izin gerekir. Reklam veya takip SDK'sı varsa NSUserTrackingUsageDescription aranır."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: tracking.att_required, eq: "yes" }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.tracking, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.tracking, eq: false }
+    check:
+      confidence: direct
+      note: "Ads and known tracking packages make this apply. Set apple.att-not-required in project.yaml only when you have a real reason the SDK does not track. Analytics packages alone do not select this rule."
+    fix: purpose-string
+
+  - id: apple.login-equivalent
+    title: Third-party login needs an equivalent option
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "4.8"
+      publisher: Apple
+    summary:
+      en: "Apps that use a third-party or social login for the primary account must also offer an equivalent login that limits data to name and email, lets the user hide their email, and does not collect app interactions for advertising without consent. Apple lists exceptions this check cannot see."
+      tr: "Birincil hesap için üçüncü taraf giriş kullanan uygulama, veri toplamayı ad ve e-posta ile sınırlayan eşdeğer bir giriş de sunmalıdır. Apple'ın istisnalarını bu kontrol göremez."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.non_apple_third_party_login, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: capability.apple_sign_in, eq: true }
+          - { fact: attestation.apple.login_exception, eq: "yes" }
+      fail:
+        all:
+          - { fact: capability.apple_sign_in, eq: false }
+          - { fact: attestation.apple.login_exception, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Sign in with Apple is treated as the equivalent option. An exception attestation is the developer's statement that a listed 4.8 exception applies. The privacy properties of another login are not verified."
+
+  - id: apple.permission-camera
+    title: Camera use needs an iOS purpose string
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(ii)"
+      publisher: Apple
+    summary:
+      en: "Purpose strings must clearly and completely describe the use of the data. A detected camera capability without NSCameraUsageDescription fails this check."
+      tr: "İzin metni verinin kullanımını açık ve eksiksiz anlatmalıdır. Kamera kullanımı varken NSCameraUsageDescription yoksa bu kontrol kalır."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.camera, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.camera, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.camera, eq: false }
+    check:
+      confidence: direct
+      note: "An empty string counts as missing. The wording is not graded."
+    fix: purpose-string
+
+  - id: apple.permission-photos
+    title: Photo library use needs an iOS purpose string
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(ii)"
+      publisher: Apple
+    summary:
+      en: "Photo library access needs a purpose string that describes the use. NSPhotoLibraryUsageDescription or NSPhotoLibraryAddUsageDescription satisfies the presence check."
+      tr: "Fotoğraf kitaplığı erişimi, kullanımı anlatan bir izin metni ister. NSPhotoLibraryUsageDescription veya NSPhotoLibraryAddUsageDescription varlık kontrolünü geçer."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.photos, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.photos, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.photos, eq: false }
+    check:
+      confidence: direct
+      note: "Presence only. Add-only and full-library access are not distinguished beyond the two keys."
+    fix: purpose-string
+
+  - id: apple.permission-location
+    title: Location use needs an iOS purpose string
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(ii)"
+      publisher: Apple
+    summary:
+      en: "Location access needs a purpose string. When-in-use or always keys satisfy the presence check."
+      tr: "Konum erişimi bir izin metni ister. Kullanırken veya her zaman anahtarları varlık kontrolünü geçer."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.location, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.location, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.location, eq: false }
+    check:
+      confidence: direct
+      note: "Does not decide whether always-on location is justified."
+    fix: purpose-string
+
+  - id: apple.permission-microphone
+    title: Microphone use needs an iOS purpose string
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(ii)"
+      publisher: Apple
+    summary:
+      en: "Microphone access needs NSMicrophoneUsageDescription describing the use."
+      tr: "Mikrofon erişimi, kullanımı anlatan NSMicrophoneUsageDescription ister."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.microphone, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.microphone, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.microphone, eq: false }
+    check:
+      confidence: direct
+      note: "Presence only."
+    fix: purpose-string
+
+  - id: apple.permission-contacts
+    title: Contacts use needs an iOS purpose string
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(ii)"
+      publisher: Apple
+    summary:
+      en: "Contacts access needs NSContactsUsageDescription describing the use."
+      tr: "Kişiler erişimi, kullanımı anlatan NSContactsUsageDescription ister."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.contacts, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.usage.contacts, eq: true }
+      fail:
+        all:
+          - { fact: ios.usage.contacts, eq: false }
+    check:
+      confidence: direct
+      note: "Presence only. Guideline 5.1.2 limits on contact databases are not inferred from source."
+    fix: purpose-string
+
+  - id: apple.privacy-manifest-reasons
+    title: Required-reason APIs in a privacy manifest need reason codes
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api
+      section: "NSPrivacyAccessedAPITypes"
+      publisher: Apple
+    summary:
+      en: "Since 1 May 2024, apps that use a required-reason API and do not describe the reason in a privacy manifest are not accepted by App Store Connect. This check fails only when a project manifest lists an API without a reason code."
+      tr: "1 Mayıs 2024'ten beri, required-reason API kullanıp nedenini privacy manifest'te yazmayan uygulamalar App Store Connect'e kabul edilmez. Bu kontrol yalnızca projede neden kodu eksik bir API görürse kalır."
+    appliesWhen:
+      all:
+        - { fact: ios.privacy_manifest.incomplete_reasons, eq: true }
+    evaluate:
+      fail:
+        all:
+          - { fact: ios.privacy_manifest.incomplete_reasons, eq: true }
+    check:
+      confidence: direct
+      note: "Not finding a manifest is not a pass. API use inside dependencies and Dart is not fully scanned. See the scan limits."
+    fix: privacy-manifest
+
+  - id: apple.listed-sdk-manifest
+    title: Listed third-party SDKs need their privacy manifests
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/support/third-party-SDK-requirements/
+      section: "SDKs that require a privacy manifest and signature"
+      publisher: Apple
+    summary:
+      en: "Apple requires a privacy manifest for listed SDKs included in a submission. The packaged name list is the Flutter-relevant subset read on 2026-11-19, not the whole page. This check cannot open the SDK binary, so it passes only from a developer attestation."
+      tr: "Apple, listelenen SDK'lar için privacy manifest ister. Paketteki adlar 2026-11-19'da okunan Flutter ile ilgili alt kümedir. SDK ikilisi açılmadığı için geçiş yalnızca beyanla olur."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.listed_sdk, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.apple.listed_sdk_manifests, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.apple.listed_sdk_manifests, eq: "no" }
+    check:
+      confidence: attestation
+      note: "Unknown stays unchecked. Do not attest yes unless you have actually checked the SDK manifests that ship in the build."
+
+  - id: apple.minimum-os
+    title: Uploads must target iOS 13 or later
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/news/upcoming-requirements/
+      section: "iOS and iPadOS minimum system requirements"
+      publisher: Apple
+    summary:
+      en: "Since 9 September 2026, iOS and iPadOS apps uploaded to App Store Connect must target iOS 13 or later."
+      tr: "9 Eylül 2026'dan beri App Store Connect'e yüklenen iOS ve iPadOS uygulamaları iOS 13 veya sonrasını hedeflemelidir."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.deployment_target, gte: 13 }
+      fail:
+        all:
+          - { fact: ios.deployment_target, lt: 13 }
+    check:
+      confidence: direct
+      note: "Uses the lowest number found in the Podfile, the Xcode project, or AppFrameworkInfo.plist. If none is found, the result is unchecked."
+
+  - id: apple.xcode-sdk
+    title: Uploads must be built with Xcode 26 and the iOS 26 SDK
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/news/upcoming-requirements/
+      section: "SDK minimum requirements"
+      publisher: Apple
+    summary:
+      en: "Since 28 April 2026, apps uploaded to App Store Connect must be built with Xcode 26 or later using an iOS 26, iPadOS 26, tvOS 26, visionOS 26, or watchOS 26 SDK. The project source does not contain the Xcode version, so this check uses an explicit attestation."
+      tr: "28 Nisan 2026'dan beri yüklemeler Xcode 26 veya sonrası ve iOS 26 SDK ile derlenmelidir. Kaynak Xcode sürümünü taşımaz; bu kontrol açık beyana bakar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.apple.xcode_sdk, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.apple.xcode_sdk, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A yes answer is the developer's statement, not an inspection of Xcode. Leaving it blank stays unchecked and blocks a ready verdict."
+
+  - id: apple.age-rating
+    title: Updated age-rating questions must be answered
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/news/upcoming-requirements/
+      section: "Age Rating Updates"
+      publisher: Apple
+    summary:
+      en: "Apple's age-rating questions had to be answered by 31 January 2026 to avoid an interruption when submitting updates. App Store Connect was not queried, so this check uses an explicit attestation."
+      tr: "Apple'ın yaş derecelendirme soruları, güncelleme gönderiminin kesilmemesi için 31 Ocak 2026'ya kadar cevaplanmalıydı. Connect sorgulanmaz; bu kontrol beyana bakar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.apple.age_rating, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.apple.age_rating, eq: "no" }
+    check:
+      confidence: attestation
+      note: "The new rating values themselves were not copied beyond what the upcoming-requirements page says. A blank answer stays unchecked."
+
+  - id: apple.subscription-terms
+    title: Subscription purchase screen should describe the offer
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "3.1.2(c)"
+      publisher: Apple
+    summary:
+      en: "Before asking a customer to subscribe, the app should clearly describe what the user will get for the price. This check looks for subscription and price words, or an attestation. It does not read Schedule 2 of the developer agreement."
+      tr: "Abonelik istemeden önce kullanıcının fiyata karşılık ne alacağı açıkça anlatılmalıdır. Bu kontrol abonelik ve fiyat kelimelerine veya beyana bakar."
+    appliesWhen:
+      all:
+        - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: payments.subscription_terms_found, eq: true }
+          - { fact: attestation.apple.subscription_terms, eq: "yes" }
+      fail:
+        all:
+          - { fact: payments.subscription_terms_found, eq: false }
+          - { fact: attestation.apple.subscription_terms, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Keyword evidence is weak. A real paywall review still has to be done by a person."
+
+  - id: google.target-api
+    title: New apps and updates must target Android 16 API 36
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/11926878
+      section: "Target API level requirements"
+      publisher: Google Play
+    summary:
+      en: "From 31 August 2026, new apps and updates must target Android 16 (API 36) or higher, with form-factor exceptions this scanner does not detect. The extension date on the help page ran to 1 November 2026."
+      tr: "31 Ağustos 2026'dan beri yeni uygulamalar ve güncellemeler Android 16 (API 36) veya üstünü hedeflemelidir. Yardım sayfasındaki uzatma 1 Kasım 2026'ya kadardı. Bu tarayıcı saat, TV ve benzeri istisnaları ayırt etmez."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: android.target_sdk, gte: 36 }
+      fail:
+        all:
+          - { fact: android.target_sdk, lt: 36 }
+    check:
+      confidence: direct
+      note: "Read from the app module Gradle file. Disagreeing values stay unknown. Wear OS, TV, Automotive, and XR targets are a scan limit, not a silent pass."
+
+  - id: google.privacy-policy
+    title: Play requires a privacy policy link
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Data safety form"
+      publisher: Google Play
+    summary:
+      en: "Google Play says every developer must complete the Data safety form, including apps that collect no user data, and must provide a privacy policy link. Play Console was not queried."
+      tr: "Google Play, veri toplamayan uygulamalar dahil herkesin Data safety formunu doldurmasını ve gizlilik politikası bağlantısı vermesini söyler. Play Console sorgulanmaz."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: urls.privacy.present, eq: true }
+      fail:
+        all:
+          - { fact: urls.privacy.present, eq: false }
+    check:
+      confidence: direct
+      note: "A URL only stored in Play Console and nowhere in the project looks missing. That is why this is a risk, not a blocker."
+
+  - id: google.data-safety-form
+    title: Data safety form must be completed
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Which developers need to complete the Data safety form"
+      publisher: Google Play
+    summary:
+      en: "All developers with an app on Google Play must complete the Data safety form, and SDK data collection counts. Apps only on the internal testing track are exempt. Play Console was not queried, so this uses an attestation."
+      tr: "Google Play'deki uygulamalar için Data safety formu doldurulmalıdır; SDK'ların topladığı veri de dahildir. Yalnızca dahili testteki uygulamalar muaftır. Console sorgulanmaz."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: google.distribution, neq: "internal-only" }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.google.data_safety, eq: "yes" }
+          - { fact: urls.privacy.present, eq: true }
+      fail:
+        any:
+          - { fact: attestation.google.data_safety, eq: "no" }
+          - all:
+              - { fact: attestation.google.data_safety, eq: "yes" }
+              - { fact: urls.privacy.present, eq: false }
+    check:
+      confidence: attestation
+      note: "A blank attestation stays unchecked. Declaring distribution internal-only makes the rule not applicable."
+
+  - id: google.account-deletion
+    title: Account creation needs an in-app path and a web deletion link
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/13327111
+      section: "Account deletion requirement"
+      publisher: Google Play
+    summary:
+      en: "If the app lets users create an account, Google Play requires an in-app path to delete the account and a web link where users can request deletion. A link inside the app to that web resource can be the in-app path."
+      tr: "Uygulama hesap oluşturmaya izin veriyorsa Google Play uygulama içi bir silme yolu ve silme isteği için bir web bağlantısı ister. Uygulama içindeki web bağlantısı, uygulama içi yol olabilir."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: capability.accounts, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: account.deletion.in_app, eq: true }
+          - { fact: urls.account_deletion.present, eq: true }
+      fail:
+        any:
+          - { fact: account.deletion.in_app, eq: false }
+          - { fact: urls.account_deletion.present, eq: false }
+    check:
+      confidence: heuristic
+      note: "Does not judge whether the path is prominent. Permanently private and enterprise exceptions are not detected."
+    fix: account-deletion
+
+  - id: google.account-deletion-link
+    title: The web account-deletion link must open and name the app
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/13327111
+      section: "Requirements for the web link"
+      publisher: Google Play
+    summary:
+      en: "Google says the web link must load, keep the deletion path easy to find, and reference the app or developer name as it appears on the store listing."
+      tr: "Google, web bağlantısının açılmasını, silme yolunun kolay bulunmasını ve uygulama ya da geliştirici adını anmasını söyler."
+    appliesWhen:
+      all:
+        - { fact: capability.accounts, eq: true }
+        - { fact: urls.account_deletion.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.account_deletion.status, eq: "ok" }
+          - { fact: live.account_deletion.mentions_name, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.account_deletion.status, eq: "placeholder" }
+          - { fact: live.account_deletion.status, eq: "http-error" }
+          - { fact: live.account_deletion.status, eq: "missing" }
+          - all:
+              - { fact: live.account_deletion.status, eq: "ok" }
+              - { fact: live.account_deletion.mentions_name, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "Name matching is a case-insensitive substring of the app or developer name. Prominence of the deletion path is not judged."
+
+  - id: google.closed-testing
+    title: New personal Play accounts need a closed test
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/14151465
+      section: "Testing requirements for personal accounts"
+      publisher: Google Play
+    summary:
+      en: "Personal Play Console accounts created after 13 November 2023 must run a closed test with at least 12 testers opted in continuously for 14 days before production access. Organization accounts are outside that requirement. The account type is an attestation."
+      tr: "13 Kasım 2023'ten sonra açılan kişisel Play hesapları, üretime çıkmadan önce en az 12 test kullanıcısıyla kesintisiz 14 gün kapalı test yapmalıdır. Kuruluş hesapları bu şartın dışındadır. Hesap türü bir beyandır."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: google.distribution, neq: "internal-only" }
+    evaluate:
+      pass:
+        any:
+          - { fact: google.account, eq: "organization" }
+          - { fact: google.account, eq: "personal-before-2023-11-13" }
+          - all:
+              - { fact: google.account, eq: "personal-after-2023-11-13" }
+              - { fact: google.closed_test, eq: "yes" }
+      fail:
+        all:
+          - { fact: google.account, eq: "personal-after-2023-11-13" }
+          - { fact: google.closed_test, eq: "no" }
+    check:
+      confidence: attestation
+      note: "If the account type is unknown, the result is unchecked. LaunchyMind does not see Play Console."
+
+  - id: iab.app-ads
+    title: Ad apps publish an app-ads.txt file
+    severity: risk
+    platforms: [android, ios]
+    enabled: true
+    origin: industry
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://iabtechlab.com/ads-txt/
+      section: "app-ads.txt 1.0 and ads.txt 1.1"
+      publisher: IAB Tech Lab
+    summary:
+      en: "IAB Tech Lab's app-ads.txt 1.0 is the ads.txt standard for apps. ads.txt 1.1 adds OWNERDOMAIN and MANAGERDOMAIN. This check requests app-ads.txt at the root of the declared developer website. It does not invent seller IDs."
+      tr: "IAB Tech Lab app-ads.txt 1.0, uygulamalar için ads.txt standardıdır. ads.txt 1.1 OWNERDOMAIN ve MANAGERDOMAIN ekler. Bu kontrol beyan edilen sitenin kökünden app-ads.txt ister. Satıcı kimliği uydurmaz."
+    appliesWhen:
+      all:
+        - { fact: capability.ads, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.app_ads.status, eq: "ok" }
+          - any:
+              - { fact: ads.google, eq: false }
+              - { fact: live.app_ads.google, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.app_ads.status, eq: "missing" }
+          - { fact: live.app_ads.status, eq: "placeholder" }
+          - { fact: live.app_ads.status, eq: "http-error" }
+          - all:
+              - { fact: ads.google, eq: true }
+              - { fact: live.app_ads.status, eq: "ok" }
+              - { fact: live.app_ads.google, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "A google.com line is required only when google_mobile_ads is present. Other sellers are not validated. This is an industry standard check, not a copied store-rejection quote."
+    fix: app-ads
+
+  - id: policy.ads-disclosure
+    title: A privacy page for an ad app should mention advertising
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "5.1.1(i)"
+      publisher: Apple
+    summary:
+      en: "The privacy policy has to describe the uses of collected data, including sharing with advertising networks when that happens. If an ads SDK is present and the fetched policy never mentions advertising, that is a risk, not a blocker."
+      tr: "Gizlilik politikası toplanan verinin kullanımlarını anlatmalıdır. Reklam SDK'sı varken sayfa reklamdan hiç söz etmiyorsa bu bir risktir, engel değildir."
+    appliesWhen:
+      all:
+        - { fact: capability.ads, eq: true }
+        - { fact: live.privacy.status, eq: "ok" }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.ads, eq: "yes" }
+      fail:
+        all:
+          - { fact: live.privacy.ads, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "Keyword only. A policy can mention ads and still be incomplete."
+
+  - id: kvkk.disclosure
+    title: KVKK article 10 disclosure themes on the privacy page
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+      note: Read from the official KVKK disclosure guide PDF on 2026-11-19. The guide quotes article 10 and the communiqué.
+    source:
+      url: https://www.kvkk.gov.tr/SharedFolderServer/CMSFiles/a569a068-c079-4189-b134-f57bc727af7d.pdf
+      section: "3.1 and Kanun m.10"
+      publisher: Kişisel Verileri Koruma Kurumu
+    summary:
+      en: "When personal data is obtained, the controller must tell the person, at minimum, the controller's identity, the purpose, who receives the data and why, the collection method and legal ground, and the rights in article 11. The guide lists mobile apps as one electronic way to do that. Keyword hits are not a legal opinion."
+      tr: "Kişisel veri elde edilirken en azından veri sorumlusunun kimliği, amaç, aktarım, yöntem ve hukuki sebep ile madde 11 hakları bildirilmelidir. Rehber mobil uygulamayı elektronik yollardan biri olarak sayar. Anahtar kelime hukuki görüş değildir."
+    appliesWhen:
+      any:
+        - { fact: capability.camera, eq: true }
+        - { fact: capability.photos, eq: true }
+        - { fact: capability.location, eq: true }
+        - { fact: capability.microphone, eq: true }
+        - { fact: capability.contacts, eq: true }
+        - { fact: capability.accounts, eq: true }
+        - { fact: capability.ads, eq: true }
+        - { fact: capability.analytics, eq: true }
+        - { fact: capability.tracking, eq: true }
+        - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.controller, eq: "yes" }
+          - { fact: live.privacy.purpose, eq: "yes" }
+          - { fact: live.privacy.transfer, eq: "yes" }
+          - { fact: live.privacy.legal_basis, eq: "yes" }
+          - { fact: live.privacy.rights, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.privacy.status, eq: "placeholder" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.controller, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.purpose, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.transfer, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.legal_basis, eq: "no" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.rights, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "This does not decide that KVKK applies to every app. It is a risk check when the project can collect data. Ask a lawyer. It is not a statement that the app is legally compliant."
+    fix: privacy-policy
+
+  - id: kvkk.consent-separate
+    title: Explicit consent and the disclosure text are separate steps
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+      note: The official disclosure guide quotes communiqué article 5(1)(f). Principle decision 2026/347 is withheld separately.
+    source:
+      url: https://www.kvkk.gov.tr/Icerik/4132/aydinlatma-yukumlulugunun-yerine-getirilmesinde-uyulacak-usul-ve-esaslar-hakkinda-teblig
+      section: "Madde 5(1)(f)"
+      publisher: Kişisel Verileri Koruma Kurumu
+    summary:
+      en: "Where processing is based on explicit consent, the disclosure duty and the collection of explicit consent are carried out separately. This check does not decide whether the app needs explicit consent. It uses the project's answer."
+      tr: "İşleme açık rızaya dayanıyorsa aydınlatma yükümlülüğü ve açık rızanın alınması ayrı ayrı yerine getirilir. Bu kontrol uygulamanın açık rıza gerektirip gerektirmediğine karar vermez; projedeki cevabı kullanır."
+    appliesWhen:
+      any:
+        - { fact: capability.camera, eq: true }
+        - { fact: capability.photos, eq: true }
+        - { fact: capability.location, eq: true }
+        - { fact: capability.microphone, eq: true }
+        - { fact: capability.contacts, eq: true }
+        - { fact: capability.accounts, eq: true }
+        - { fact: capability.ads, eq: true }
+        - { fact: capability.analytics, eq: true }
+        - { fact: capability.tracking, eq: true }
+        - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: kvkk.explicit_consent, eq: "no" }
+          - all:
+              - { fact: kvkk.explicit_consent, eq: "yes" }
+              - { fact: kvkk.consent_separate, eq: "yes" }
+      fail:
+        all:
+          - { fact: kvkk.explicit_consent, eq: "yes" }
+          - { fact: kvkk.consent_separate, eq: "no" }
+    check:
+      confidence: attestation
+      note: "Answering no means the developer says processing is not based on explicit consent. That answer is not verified. This is not legal advice."

@@ -1,0 +1,19 @@
+appName: Harbor Notes
+developerName: Callabens
+audience:
+  kids: false
+  health: false
+  userGeneratedContent: false
+kvkk:
+  explicitConsent: false
+urls:
+  privacy: http://127.0.0.1:8765/privacy
+  support: http://127.0.0.1:8765/support
+  developerWebsite: http://127.0.0.1:8765
+attestations:
+  apple.xcode-sdk: true
+  apple.age-rating: true
+  google.data-safety-form: true
+google:
+  account: organization
+  distribution: production

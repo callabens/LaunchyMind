@@ -1,0 +1,9 @@
+name: harbor_notes
+description: Fixture that should be ready when its local pages are served.
+version: 1.0.0+1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.0

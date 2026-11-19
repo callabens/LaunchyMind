@@ -1,0 +1,58 @@
+{
+  "name": "@callabens/launchymind",
+  "version": "0.1.0-dev.1",
+  "description": "Local-first pre-release readiness checker for mobile apps. LaunchyMind by callabens.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "bin": {
+    "launchymind": "dist/apps/cli/src/index.js"
+  },
+  "scripts": {
+    "launchymind": "node --experimental-strip-types apps/cli/src/index.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "node --experimental-strip-types scripts/lint.ts",
+    "validate": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "fast-xml-parser": "5.11.2",
+    "yaml": "2.7.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "ajv": "8.17.1",
+    "typescript": "5.9.3"
+  },
+  "files": [
+    "dist/apps",
+    "dist/packages",
+    "packages/packs",
+    "schemas",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "flutter",
+    "app-store",
+    "google-play",
+    "privacy",
+    "mcp"
+  ],
+  "homepage": "https://github.com/callabens/LaunchyMind#readme",
+  "bugs": {
+    "url": "https://github.com/callabens/LaunchyMind/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callabens/LaunchyMind.git"
+  }
+}

@@ -1,0 +1,400 @@
+cases:
+  - id: flutter-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: true }
+  - id: not-flutter
+    rule: product.flutter-project
+    expect: fail
+    facts: { framework.flutter: false }
+
+  - id: audience-answered
+    rule: product.audience-answers
+    expect: pass
+    facts:
+      platform.ios: true
+      audience.kids: "no"
+      audience.health: "no"
+      audience.ugc: "no"
+  - id: audience-missing
+    rule: product.audience-answers
+    expect: unchecked
+    facts:
+      platform.android: true
+      audience.kids: "unknown"
+      audience.health: "no"
+      audience.ugc: "no"
+
+  - id: kids-without-ads
+    rule: apple.kids-third-party
+    expect: pass
+    facts:
+      platform.ios: true
+      audience.kids: "yes"
+      capability.ads: false
+      capability.analytics: false
+  - id: kids-with-ads
+    rule: apple.kids-third-party
+    expect: fail
+    facts:
+      platform.ios: true
+      audience.kids: "yes"
+      capability.ads: true
+      capability.analytics: false
+
+  - id: privacy-link-in-app
+    rule: apple.privacy-policy-in-app
+    expect: pass
+    facts: { platform.ios: true, urls.privacy.in_app: true }
+  - id: privacy-link-missing
+    rule: apple.privacy-policy-in-app
+    expect: fail
+    facts: { platform.ios: true, urls.privacy.in_app: false }
+
+  - id: privacy-metadata-declared
+    rule: apple.privacy-policy-metadata
+    expect: pass
+    facts: { platform.ios: true, urls.privacy.declared: true }
+  - id: privacy-metadata-missing
+    rule: apple.privacy-policy-metadata
+    expect: fail
+    facts: { platform.ios: true, urls.privacy.declared: false }
+
+  - id: privacy-link-ok
+    rule: apple.privacy-link-opens
+    expect: pass
+    facts: { platform.ios: true, urls.privacy.present: true, live.privacy.status: "ok" }
+  - id: privacy-link-placeholder
+    rule: apple.privacy-link-opens
+    expect: fail
+    facts: { platform.ios: true, urls.privacy.present: true, live.privacy.status: "placeholder" }
+  - id: privacy-link-offline
+    rule: apple.privacy-link-opens
+    expect: unchecked
+    facts: { platform.ios: true, urls.privacy.present: true, live.privacy.status: "skipped" }
+
+  - id: privacy-content-signals
+    rule: apple.privacy-policy-content
+    expect: pass
+    facts:
+      platform.ios: true
+      urls.privacy.present: true
+      live.privacy.status: "ok"
+      live.privacy.collection: "yes"
+      live.privacy.deletion: "yes"
+      live.privacy.consent: "yes"
+  - id: privacy-content-missing-deletion
+    rule: apple.privacy-policy-content
+    expect: fail
+    facts:
+      platform.ios: true
+      urls.privacy.present: true
+      live.privacy.status: "ok"
+      live.privacy.collection: "yes"
+      live.privacy.deletion: "no"
+      live.privacy.consent: "yes"
+
+  - id: support-url-present
+    rule: apple.support-contact
+    expect: pass
+    facts: { platform.ios: true, urls.support.present: true }
+  - id: support-url-missing
+    rule: apple.support-contact
+    expect: fail
+    facts: { platform.ios: true, urls.support.present: false }
+
+  - id: support-page-contact
+    rule: apple.support-link-quality
+    expect: pass
+    facts: { urls.support.present: true, live.support.status: "ok", live.support.contact: "yes" }
+  - id: support-page-no-contact
+    rule: apple.support-link-quality
+    expect: fail
+    facts: { urls.support.present: true, live.support.status: "ok", live.support.contact: "no" }
+
+  - id: apple-deletion-found
+    rule: apple.account-deletion
+    expect: pass
+    facts: { platform.ios: true, capability.accounts: true, account.deletion.in_app: true }
+  - id: apple-deletion-missing
+    rule: apple.account-deletion
+    expect: fail
+    facts: { platform.ios: true, capability.accounts: true, account.deletion.in_app: false }
+
+  - id: att-string-present
+    rule: apple.tracking-permission
+    expect: pass
+    facts: { platform.ios: true, tracking.att_required: "yes", ios.usage.tracking: true }
+  - id: att-string-missing
+    rule: apple.tracking-permission
+    expect: fail
+    facts: { platform.ios: true, tracking.att_required: "yes", ios.usage.tracking: false }
+
+  - id: login-with-apple
+    rule: apple.login-equivalent
+    expect: pass
+    facts:
+      platform.ios: true
+      capability.non_apple_third_party_login: true
+      capability.apple_sign_in: true
+  - id: login-without-equivalent
+    rule: apple.login-equivalent
+    expect: fail
+    facts:
+      platform.ios: true
+      capability.non_apple_third_party_login: true
+      capability.apple_sign_in: false
+      attestation.apple.login_exception: "no"
+
+  - id: camera-purpose-present
+    rule: apple.permission-camera
+    expect: pass
+    facts: { platform.ios: true, capability.camera: true, ios.usage.camera: true }
+  - id: camera-purpose-missing
+    rule: apple.permission-camera
+    expect: fail
+    facts: { platform.ios: true, capability.camera: true, ios.usage.camera: false }
+
+  - id: photos-purpose-present
+    rule: apple.permission-photos
+    expect: pass
+    facts: { platform.ios: true, capability.photos: true, ios.usage.photos: true }
+  - id: photos-purpose-missing
+    rule: apple.permission-photos
+    expect: fail
+    facts: { platform.ios: true, capability.photos: true, ios.usage.photos: false }
+
+  - id: location-purpose-present
+    rule: apple.permission-location
+    expect: pass
+    facts: { platform.ios: true, capability.location: true, ios.usage.location: true }
+  - id: location-purpose-missing
+    rule: apple.permission-location
+    expect: fail
+    facts: { platform.ios: true, capability.location: true, ios.usage.location: false }
+
+  - id: microphone-purpose-present
+    rule: apple.permission-microphone
+    expect: pass
+    facts: { platform.ios: true, capability.microphone: true, ios.usage.microphone: true }
+  - id: microphone-purpose-missing
+    rule: apple.permission-microphone
+    expect: fail
+    facts: { platform.ios: true, capability.microphone: true, ios.usage.microphone: false }
+
+  - id: contacts-purpose-present
+    rule: apple.permission-contacts
+    expect: pass
+    facts: { platform.ios: true, capability.contacts: true, ios.usage.contacts: true }
+  - id: contacts-purpose-missing
+    rule: apple.permission-contacts
+    expect: fail
+    facts: { platform.ios: true, capability.contacts: true, ios.usage.contacts: false }
+
+  - id: manifest-reason-missing
+    rule: apple.privacy-manifest-reasons
+    expect: fail
+    facts: { ios.privacy_manifest.incomplete_reasons: true }
+
+  - id: listed-sdk-attested
+    rule: apple.listed-sdk-manifest
+    expect: pass
+    facts: { platform.ios: true, capability.listed_sdk: true, attestation.apple.listed_sdk_manifests: "yes" }
+  - id: listed-sdk-unknown
+    rule: apple.listed-sdk-manifest
+    expect: unchecked
+    facts: { platform.ios: true, capability.listed_sdk: true, attestation.apple.listed_sdk_manifests: "unknown" }
+
+  - id: ios-13
+    rule: apple.minimum-os
+    expect: pass
+    facts: { platform.ios: true, ios.deployment_target: 13 }
+  - id: ios-12
+    rule: apple.minimum-os
+    expect: fail
+    facts: { platform.ios: true, ios.deployment_target: 12 }
+
+  - id: xcode-attested
+    rule: apple.xcode-sdk
+    expect: pass
+    facts: { platform.ios: true, attestation.apple.xcode_sdk: "yes" }
+  - id: xcode-denied
+    rule: apple.xcode-sdk
+    expect: fail
+    facts: { platform.ios: true, attestation.apple.xcode_sdk: "no" }
+  - id: xcode-blank
+    rule: apple.xcode-sdk
+    expect: unchecked
+    facts: { platform.ios: true, attestation.apple.xcode_sdk: "unknown" }
+
+  - id: age-rating-attested
+    rule: apple.age-rating
+    expect: pass
+    facts: { platform.ios: true, attestation.apple.age_rating: "yes" }
+  - id: age-rating-blank
+    rule: apple.age-rating
+    expect: unchecked
+    facts: { platform.ios: true, attestation.apple.age_rating: "unknown" }
+
+  - id: subscription-words
+    rule: apple.subscription-terms
+    expect: pass
+    facts: { capability.payments: true, payments.subscription_terms_found: true }
+  - id: subscription-missing
+    rule: apple.subscription-terms
+    expect: fail
+    facts:
+      capability.payments: true
+      payments.subscription_terms_found: false
+      attestation.apple.subscription_terms: "no"
+
+  - id: target-api-36
+    rule: google.target-api
+    expect: pass
+    facts: { platform.android: true, android.target_sdk: 36 }
+  - id: target-api-35
+    rule: google.target-api
+    expect: fail
+    facts: { platform.android: true, android.target_sdk: 35 }
+  - id: target-api-unknown
+    rule: google.target-api
+    expect: unchecked
+    facts: { platform.android: true, android.target_sdk: "unknown" }
+
+  - id: play-privacy-present
+    rule: google.privacy-policy
+    expect: pass
+    facts: { platform.android: true, urls.privacy.present: true }
+  - id: play-privacy-missing
+    rule: google.privacy-policy
+    expect: fail
+    facts: { platform.android: true, urls.privacy.present: false }
+
+  - id: data-safety-attested
+    rule: google.data-safety-form
+    expect: pass
+    facts:
+      platform.android: true
+      google.distribution: "production"
+      attestation.google.data_safety: "yes"
+      urls.privacy.present: true
+  - id: data-safety-blank
+    rule: google.data-safety-form
+    expect: unchecked
+    facts:
+      platform.android: true
+      google.distribution: "production"
+      attestation.google.data_safety: "unknown"
+      urls.privacy.present: true
+
+  - id: play-deletion-present
+    rule: google.account-deletion
+    expect: pass
+    facts:
+      platform.android: true
+      capability.accounts: true
+      account.deletion.in_app: true
+      urls.account_deletion.present: true
+  - id: play-deletion-no-web
+    rule: google.account-deletion
+    expect: fail
+    facts:
+      platform.android: true
+      capability.accounts: true
+      account.deletion.in_app: true
+      urls.account_deletion.present: false
+
+  - id: play-deletion-page-names-app
+    rule: google.account-deletion-link
+    expect: pass
+    facts:
+      capability.accounts: true
+      urls.account_deletion.present: true
+      live.account_deletion.status: "ok"
+      live.account_deletion.mentions_name: "yes"
+  - id: play-deletion-page-unnamed
+    rule: google.account-deletion-link
+    expect: fail
+    facts:
+      capability.accounts: true
+      urls.account_deletion.present: true
+      live.account_deletion.status: "ok"
+      live.account_deletion.mentions_name: "no"
+
+  - id: closed-test-organization
+    rule: google.closed-testing
+    expect: pass
+    facts: { platform.android: true, google.distribution: "production", google.account: "organization" }
+  - id: closed-test-not-done
+    rule: google.closed-testing
+    expect: fail
+    facts:
+      platform.android: true
+      google.distribution: "production"
+      google.account: "personal-after-2023-11-13"
+      google.closed_test: "no"
+  - id: closed-test-unknown-account
+    rule: google.closed-testing
+    expect: unchecked
+    facts: { platform.android: true, google.distribution: "unknown", google.account: "unknown" }
+
+  - id: app-ads-ok
+    rule: iab.app-ads
+    expect: pass
+    facts: { capability.ads: true, live.app_ads.status: "ok", ads.google: false }
+  - id: app-ads-missing
+    rule: iab.app-ads
+    expect: fail
+    facts: { capability.ads: true, live.app_ads.status: "missing", ads.google: false }
+
+  - id: ads-mentioned
+    rule: policy.ads-disclosure
+    expect: pass
+    facts: { capability.ads: true, live.privacy.status: "ok", live.privacy.ads: "yes" }
+  - id: ads-not-mentioned
+    rule: policy.ads-disclosure
+    expect: fail
+    facts: { capability.ads: true, live.privacy.status: "ok", live.privacy.ads: "no" }
+
+  - id: kvkk-themes-present
+    rule: kvkk.disclosure
+    expect: pass
+    facts:
+      capability.camera: true
+      live.privacy.status: "ok"
+      live.privacy.controller: "yes"
+      live.privacy.purpose: "yes"
+      live.privacy.transfer: "yes"
+      live.privacy.legal_basis: "yes"
+      live.privacy.rights: "yes"
+  - id: kvkk-themes-missing
+    rule: kvkk.disclosure
+    expect: fail
+    facts:
+      capability.accounts: true
+      live.privacy.status: "ok"
+      live.privacy.controller: "no"
+      live.privacy.purpose: "yes"
+      live.privacy.transfer: "yes"
+      live.privacy.legal_basis: "yes"
+      live.privacy.rights: "yes"
+  - id: kvkk-offline
+    rule: kvkk.disclosure
+    expect: unchecked
+    facts: { capability.camera: true, live.privacy.status: "skipped" }
+
+  - id: kvkk-consent-not-used
+    rule: kvkk.consent-separate
+    expect: pass
+    facts: { capability.camera: true, kvkk.explicit_consent: "no" }
+  - id: kvkk-consent-combined
+    rule: kvkk.consent-separate
+    expect: fail
+    facts:
+      capability.accounts: true
+      kvkk.explicit_consent: "yes"
+      kvkk.consent_separate: "no"
+  - id: kvkk-consent-unanswered
+    rule: kvkk.consent-separate
+    expect: unchecked
+    facts: { capability.camera: true, kvkk.explicit_consent: "unknown" }

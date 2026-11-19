@@ -1,0 +1,59 @@
+rules:
+  - id: kvkk.principle-2026-347
+    title: KVKK principle decision 2026/347 is not applied yet
+    severity: risk
+    platforms: [any]
+    enabled: false
+    origin: legal
+    verification:
+      status: needs-manual-verification
+      note: >
+        The product plan named KVKK principle decision 2026/347 and said the
+        kvkk.gov.tr page was not opened in that research. This pack does not
+        restate that decision and does not let it affect a verdict.
+    source:
+      url: https://www.kvkk.gov.tr/Icerik/8710/veri-sorumlulari-tarafindan-acik-riza-ve-aydinlatma-metinlerinin-ayri-ayri-duzenlenmesi-gerektigi-hakkinda-kisisel-verileri-koruma-kurulunun-18-02-2026-tarihli-ve-2026-347-sayili-ilke-kararina-iliskin-kamuoyu-duyurusu
+      section: "2026/347"
+      publisher: Kişisel Verileri Koruma Kurumu
+    summary:
+      en: "Withheld. A possible 2026 principle decision was not re-fetched, so LaunchyMind does not assert what it says."
+      tr: "Uygulanmıyor. 2026 ilke kararı bu pakette yeniden okunmadı; ne dediği iddia edilmez."
+    appliesWhen:
+      all:
+        - { fact: framework.flutter, eq: true }
+    evaluate:
+      fail:
+        all:
+          - { fact: framework.flutter, eq: true }
+    check:
+      confidence: heuristic
+      note: "Disabled on purpose. Do not enable it until the official page is read and a test project is added."
+
+  - id: gdpr.baseline
+    title: GDPR baseline checks are not enabled yet
+    severity: risk
+    platforms: [any]
+    enabled: false
+    origin: legal
+    verification:
+      status: needs-manual-verification
+      note: >
+        Phase 5 is the planned home for GDPR checks. Article text was not
+        copied into this pack, and no GDPR duty is asserted here.
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679
+      section: not-specified
+      publisher: European Union
+    summary:
+      en: "Withheld. The GDPR regulation URL is recorded, but no article was re-read into an enabled rule."
+      tr: "Uygulanmıyor. GDPR adresi duruyor; hiçbir madde etkin kurala yazılmadı."
+    appliesWhen:
+      all:
+        - { fact: framework.flutter, eq: true }
+    evaluate:
+      fail:
+        all:
+          - { fact: framework.flutter, eq: true }
+    check:
+      confidence: heuristic
+      note: "Disabled until a person reads the cited regulation and adds cases. This is not a GDPR opinion."

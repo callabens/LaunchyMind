@@ -64,6 +64,15 @@
         "note": { "type": "string", "minLength": 10 }
       }
     },
+    "next": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "tr"],
+      "properties": {
+        "en": { "type": "string", "minLength": 10 },
+        "tr": { "type": "string", "minLength": 5 }
+      }
+    },
     "fix": { "type": "string" }
   },
   "definitions": {

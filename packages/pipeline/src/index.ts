@@ -2,6 +2,7 @@ import {
   DISCLAIMERS,
   findCorePackDir,
   LAUNCHYMIND_VERSION,
+  NotFlutterProjectError,
   PRODUCT_NAME,
   STALE_DAYS_DEFAULT,
   VENDOR,
@@ -10,7 +11,17 @@ import {
   type LaunchReport,
   type LiveCheckRecord,
 } from "../../core/src/index.ts";
-import { appAdsUrl, createNetworkChecker, pageSignals, type LiveChecker, type LivePage } from "../../live/src/index.ts";
+import {
+  appAdsUrl,
+  createNetworkChecker,
+  inferredDeveloperWebsite,
+  inferredSupportUrls,
+  inspectPage,
+  pageSignals,
+  type LiveChecker,
+  type LivePage,
+  type PageInspection,
+} from "../../live/src/index.ts";
 import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
 import { decideVerdict } from "../../verdict/src/index.ts";
@@ -27,6 +38,7 @@ export interface RunOptions {
 export async function runScan(projectPath: string, options: RunOptions = {}): Promise<LaunchReport> {
   const pack = options.pack ?? await loadPack(options.packDir ?? findCorePackDir());
   const scanned = await scanProject(projectPath, pack.directory);
+  if (scanned.profile.framework !== "flutter") throw new NotFlutterProjectError(projectPath);
   const offline = options.offline === true;
   const checker = offline ? null : options.liveChecker ?? createNetworkChecker();
   const live = await applyLive(scanned, checker, offline);
@@ -49,6 +61,7 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
       verifiedAt: pack.meta.verifiedAt,
     },
     verdict: decision.verdict,
+    verdictHeadline: decision.headline,
     verdictBecause: decision.because,
     disclaimers: [...DISCLAIMERS],
     findings: evaluation.findings,
@@ -69,7 +82,8 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
 
   const privacy = await checkOne(checker, offline, scanned.liveTargets.privacy);
   records.push(record("privacy", scanned.liveTargets.privacy, privacy));
-  assignPage(facts, evidence, privacy, "live.privacy.status", {
+  const privacyInspection = privacy.page ? inspectPage(privacy.page.text, names) : null;
+  assignPage(facts, evidence, privacy, privacyInspection, "live.privacy.status", {
     collection: "live.privacy.collection",
     deletion: "live.privacy.deletion",
     consent: "live.privacy.consent",
@@ -79,16 +93,48 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
     transfer: "live.privacy.transfer",
     legalBasis: "live.privacy.legal_basis",
     rights: "live.privacy.rights",
+    notForChildren: "live.privacy.not_for_children",
   }, names, () => {
     next += 1;
     return `ev_live_${next}`;
   });
 
-  const support = await checkOne(checker, offline, scanned.liveTargets.support);
-  records.push(record("support", scanned.liveTargets.support, support));
+  let supportTarget = scanned.liveTargets.support;
+  let support = await checkOne(checker, offline, supportTarget);
+  if (!supportTarget && scanned.liveTargets.privacy && checker && !offline) {
+    for (const candidate of inferredSupportUrls(scanned.liveTargets.privacy)) {
+      const probed = await checker.check(candidate);
+      records.push({
+        url: candidate,
+        status: probed.status,
+        httpStatus: probed.httpStatus,
+        detail: `support probe inferred from the privacy URL: ${probed.error ?? `HTTP ${probed.httpStatus ?? "n/a"}`}`,
+      });
+      const contact = pageSignals(probed.text, names).contact;
+      if (probed.status === "ok" && contact === "yes") {
+        supportTarget = candidate;
+        support = { factStatus: probed.status, page: probed, detail: "Support page inferred from the privacy URL host and it includes a contact path." };
+        facts["urls.support.present"] = true;
+        evidence.push({
+          id: `ev_live_support_inferred_${next}`,
+          facts: ["urls.support.present", "live.support.status"],
+          kind: "live",
+          detail: "No support URL was declared. The privacy URL host was probed and this support page opened.",
+          path: candidate,
+          snippet: inspectPage(probed.text, names).snippet,
+        });
+        break;
+      }
+    }
+  }
+  if (supportTarget) records.push(record("support", supportTarget, support));
   facts["live.support.status"] = support.factStatus;
   facts["live.support.contact"] = support.page ? pageSignals(support.page.text, names).contact : support.factStatus === "not-applicable" ? "not-applicable" : "unknown";
-  pushLiveEvidence(evidence, ["live.support.status"], support, () => `ev_live_support_${next}`);
+  if (support.page) {
+    pushLiveEvidence(evidence, ["live.support.status", "live.support.contact"], support, () => `ev_live_support_${next}`, inspectPage(support.page?.text ?? "", names).snippet);
+  } else {
+    pushLiveEvidence(evidence, ["live.support.status"], support, () => `ev_live_support_${next}`);
+  }
 
   const deletion = await checkOne(checker, offline, scanned.liveTargets.accountDeletion);
   records.push(record("account-deletion", scanned.liveTargets.accountDeletion, deletion));
@@ -96,7 +142,9 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
   facts["live.account_deletion.mentions_name"] = deletion.page ? pageSignals(deletion.page.text, names).mentionsName : deletion.factStatus === "not-applicable" ? "not-applicable" : "unknown";
   pushLiveEvidence(evidence, ["live.account_deletion.status", "live.account_deletion.mentions_name"], deletion, () => `ev_live_deletion_${next}`);
 
-  const adsTarget = facts["capability.ads"] === true ? appAdsUrl(scanned.liveTargets.developerWebsite ?? "") : null;
+  const declaredSite = scanned.liveTargets.developerWebsite;
+  const website = declaredSite ?? (scanned.liveTargets.privacy ? inferredDeveloperWebsite(scanned.liveTargets.privacy) : null);
+  const adsTarget = facts["capability.ads"] === true && website ? appAdsUrl(website) : null;
   const ads = await checkOne(checker, offline, facts["capability.ads"] === true ? adsTarget : null);
   if (facts["capability.ads"] !== true) {
     facts["live.app_ads.status"] = "not-applicable";
@@ -104,13 +152,22 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
   } else if (!adsTarget) {
     facts["live.app_ads.status"] = "unknown";
     facts["live.app_ads.google"] = "unknown";
-    records.push({ url: "", status: "unknown", httpStatus: null, detail: "No developer website was declared, so app-ads.txt was not requested." });
+    records.push({ url: "", status: "unknown", httpStatus: null, detail: "No developer website was declared and no privacy URL was available to infer one, so app-ads.txt was not requested." });
   } else {
     records.push(record("app-ads", adsTarget, ads));
     facts["live.app_ads.status"] = ads.factStatus === "ok" && ads.page && ads.page.text.trim().length === 0 ? "missing" : ads.factStatus;
     const text = ads.page?.text ?? "";
     facts["live.app_ads.google"] = facts["live.app_ads.status"] === "ok" ? (/google\.com/i.test(text) ? "yes" : "no") : "unknown";
-    pushLiveEvidence(evidence, ["live.app_ads.status"], ads, () => `ev_live_ads_${next}`);
+    if (!declaredSite && website) {
+      evidence.push({
+        id: `ev_live_site_${next}`,
+        facts: ["live.app_ads.status"],
+        kind: "live",
+        detail: "Developer website was not declared. app-ads.txt was requested at the privacy URL's host.",
+        path: website,
+      });
+    }
+    pushLiveEvidence(evidence, ["live.app_ads.status"], ads, () => `ev_live_ads_${next}`, text.slice(0, 180));
   }
 
   return { facts, evidence, records };
@@ -133,24 +190,28 @@ function assignPage(
   facts: Record<string, FactValue>,
   evidence: Evidence[],
   checked: Checked,
+  inspection: PageInspection | null,
   statusFact: string,
   signalFacts: Record<string, string>,
   names: string[],
   id: () => string,
 ): void {
   facts[statusFact] = checked.factStatus;
-  const signals = checked.page && (checked.page.status === "ok" || checked.page.status === "placeholder") ? pageSignals(checked.page.text, names) : null;
+  const signals = inspection?.signals ?? (checked.page && (checked.page.status === "ok" || checked.page.status === "placeholder") ? pageSignals(checked.page.text, names) : null);
   for (const [signal, fact] of Object.entries(signalFacts)) {
     if (checked.factStatus === "not-applicable") facts[fact] = "not-applicable";
     else if (!signals) facts[fact] = "unknown";
     else facts[fact] = signals[signal as keyof typeof signals] ?? "unknown";
   }
-  pushLiveEvidence(evidence, [statusFact, ...Object.values(signalFacts)], checked, id);
+  const noted = inspection
+    ? { ...checked, detail: `${checked.detail}. ${inspection.summary}` }
+    : checked;
+  pushLiveEvidence(evidence, [statusFact, ...Object.values(signalFacts)], noted, id, inspection?.snippet);
 }
 
-function pushLiveEvidence(evidence: Evidence[], facts: string[], checked: Checked, id: () => string): void {
+function pushLiveEvidence(evidence: Evidence[], facts: string[], checked: Checked, id: () => string, snippetOverride?: string): void {
   if (!checked.page && checked.factStatus === "not-applicable") return;
-  const snippet = checked.page?.text.slice(0, 180);
+  const snippet = (snippetOverride ?? checked.page?.text.slice(0, 180) ?? "").slice(0, 280);
   evidence.push({
     id: id(),
     facts,

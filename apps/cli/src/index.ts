@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { exitCodeForVerdict, LAUNCHYMIND_VERSION } from "../../../packages/core/src/index.ts";
+import { exitCodeForVerdict, LAUNCHYMIND_VERSION, NotFlutterProjectError, parseFailOn } from "../../../packages/core/src/index.ts";
 import { applyFix, proposeFix } from "../../../packages/fixes/src/index.ts";
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runScan } from "../../../packages/pipeline/src/index.ts";
@@ -39,14 +39,15 @@ function help(): string {
     `LaunchyMind by callabens  ${LAUNCHYMIND_VERSION}`,
     "",
     "Commands:",
-    "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>]",
+    "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
     "  rules",
     "  pack validate [directory]",
     "  fix propose <rule-id> [--project <path>] [--offline]",
     "  fix apply <rule-id> [--approved]",
     "  mcp",
     "",
-    "Exit codes for scan: 0 ready, 2 risky, 3 likely to be rejected, 1 usage or runtime error.",
+    "Exit codes: 0 scan finished and is under the --fail-on line (default reject, so risky is 0),",
+    "  2 risky when --fail-on risky, 3 reject, 4 not a Flutter project, 1 other usage or runtime error.",
     "The verdict comes from the rule engine. This tool does not claim store approval or legal compliance.",
   ].join("\n");
 }
@@ -124,12 +125,14 @@ async function main(): Promise<void> {
       await mkdir(dirname(resolve(html)), { recursive: true });
       await writeFile(resolve(html), renderHtml(report), "utf8");
     }
-    if (output && output !== "true") {
+    const wroteJson = Boolean(output && output !== "true");
+    if (wroteJson && output) {
       await mkdir(dirname(resolve(output)), { recursive: true });
       await writeFile(resolve(output), `${renderJson(report)}\n`, "utf8");
     }
-    console.log(args.options.has("json") ? renderJson(report) : renderTerminal(report, lang));
-    process.exitCode = exitCodeForVerdict(report.verdict);
+    if (args.options.has("json") && !wroteJson) console.log(renderJson(report));
+    else console.log(renderTerminal(report, lang));
+    process.exitCode = exitCodeForVerdict(report.verdict, parseFailOn(args.options.get("fail-on")));
     return;
   }
 
@@ -137,6 +140,11 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
+  if (error instanceof NotFlutterProjectError) {
+    console.error(error.message);
+    process.exitCode = error.exitCode;
+    return;
+  }
   console.error(`LaunchyMind error: ${error instanceof Error ? error.message : String(error)}`);
   process.exitCode = 1;
 });

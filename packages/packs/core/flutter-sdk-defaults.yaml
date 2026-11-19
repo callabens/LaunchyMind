@@ -1,0 +1,30 @@
+# Flutter's own default minSdk / targetSdk / compileSdk.
+# Each row is a tag whose gradle defaults were opened on 2026-11-19.
+# A project that only says "Flutter >= X" uses the newest row at or below X.
+# That is a minimum, not the SDK that will build the app.
+rows:
+  - flutter: "3.16.0"
+    minSdk: 19
+    targetSdk: 33
+    compileSdk: 33
+    source: "https://github.com/flutter/flutter/blob/3.16.0/packages/flutter_tools/lib/src/android/gradle_utils.dart"
+  - flutter: "3.22.0"
+    minSdk: 21
+    targetSdk: 34
+    compileSdk: 34
+    source: "https://github.com/flutter/flutter/blob/3.22.0/packages/flutter_tools/lib/src/android/gradle_utils.dart"
+  - flutter: "3.27.4"
+    minSdk: 21
+    targetSdk: 35
+    compileSdk: 35
+    source: "https://github.com/flutter/flutter/blob/3.27.4/packages/flutter_tools/lib/src/android/gradle_utils.dart"
+  - flutter: "3.32.0"
+    minSdk: 21
+    targetSdk: 35
+    compileSdk: 35
+    source: "https://github.com/flutter/flutter/blob/3.32.0/packages/flutter_tools/gradle/src/main/kotlin/FlutterExtension.kt"
+  - flutter: "3.35.0"
+    minSdk: 24
+    targetSdk: 36
+    compileSdk: 36
+    source: "https://github.com/flutter/flutter/blob/3.35.0/packages/flutter_tools/gradle/src/main/kotlin/FlutterExtension.kt"

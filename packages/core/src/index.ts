@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.1.0-dev.1";
+export const LAUNCHYMIND_VERSION = "0.1.0-dev.2";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -124,6 +124,7 @@ export interface Rule {
     confidence: Confidence;
     note: string;
   };
+  next?: { en: string; tr: string } | undefined;
   fix?: string | undefined;
 }
 
@@ -161,6 +162,8 @@ export interface Finding {
   verifiedAt: string | null;
   stale: boolean;
   checkNote: string;
+  nextEn: string | null;
+  nextTr: string | null;
   evidence: Evidence[];
   fix: string | null;
 }
@@ -191,6 +194,7 @@ export interface LaunchReport {
   profile: AppProfile;
   pack: { id: string; name: string; version: string; verifiedAt: string };
   verdict: Verdict;
+  verdictHeadline: string;
   verdictBecause: string[];
   disclaimers: string[];
   findings: Finding[];
@@ -259,6 +263,13 @@ export const KNOWN_FACTS = [
   "payments.subscription_terms_found",
   "tracking.att_required",
   "ads.google",
+  "ads.sample_unit_in_shipped_config",
+  "ads.ump_requested",
+  "payments.stub_ui",
+  "android.target_sdk_basis",
+  "ios.privacy_manifest.tracking",
+  "ios.privacy_manifest.tracking_consistent",
+  "live.privacy.not_for_children",
   "live.privacy.status",
   "live.privacy.collection",
   "live.privacy.deletion",
@@ -332,6 +343,10 @@ export const ruleSchema = z.object({
     confidence: z.enum(["direct", "heuristic", "attestation"]),
     note: z.string().min(10),
   }).strict(),
+  next: z.object({
+    en: z.string().min(10),
+    tr: z.string().min(5),
+  }).strict().optional(),
   fix: z.string().regex(/^[a-z0-9-]+$/).optional(),
 }).strict().superRefine((rule, ctx) => {
   if (!rule.evaluate.pass && !rule.evaluate.fail) {
@@ -404,10 +419,27 @@ export function isStale(verifiedAt: string, now: Date, staleDays: number): boole
   return now.getTime() - verified.getTime() > staleDays * 24 * 60 * 60 * 1000;
 }
 
-export function exitCodeForVerdict(verdict: Verdict): number {
-  if (verdict === "ready") return 0;
-  if (verdict === "risky") return 2;
+export type FailOn = "reject" | "risky" | "none";
+
+export function parseFailOn(value: string | undefined): FailOn {
+  if (value === undefined || value === "reject") return "reject";
+  if (value === "risky" || value === "none") return value;
+  throw new Error("`--fail-on` must be reject, risky, or none.");
+}
+
+/** Exit code for a finished scan. Usage problems use other codes and never call this. */
+export function exitCodeForVerdict(verdict: Verdict, failOn: FailOn = "reject"): number {
+  if (failOn === "none" || verdict === "ready") return 0;
+  if (verdict === "risky") return failOn === "risky" ? 2 : 0;
   return 3;
+}
+
+export class NotFlutterProjectError extends Error {
+  readonly exitCode = 4;
+  constructor(projectPath: string) {
+    super(`Not a Flutter project: ${projectPath}. This version only scans a directory whose pubspec.yaml depends on the Flutter SDK.`);
+    this.name = "NotFlutterProjectError";
+  }
 }
 
 export function findCorePackDir(start = dirname(fileURLToPath(import.meta.url))): string {

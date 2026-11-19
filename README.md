@@ -35,7 +35,9 @@ npm install
 npm run launchymind -- scan path/to/flutter-app
 ```
 
-Exit codes: `0` ready, `2` risky, `3` likely to be rejected, `1` usage or runtime error.
+Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the verdict is reject, `4` when the folder is not a Flutter project, `1` for other usage errors. `--fail-on` defaults to `reject`, so a risky report does not fail CI unless you pass `--fail-on risky` (exit `2`) or `--fail-on none` (always `0` after a successful scan).
+
+`--output report.json` writes the LaunchPack file and prints the terminal report. It does not also dump the JSON to the terminal. `--json` without `--output` still prints JSON only.
 
 ```bash
 npm run launchymind -- scan path/to/flutter-app --json
@@ -58,6 +60,7 @@ audience:
   userGeneratedContent: false
 kvkk:
   explicitConsent: false
+  consentSeparate: true
 urls:
   privacy: https://example.com/privacy
   support: https://example.com/support
@@ -73,6 +76,8 @@ google:
 ```
 
 Attestations are labeled as your statements. They are not treated as proof from Apple or Google.
+
+`kvkk.explicitConsent: false` means you say processing is not based on explicit consent. When it is `true`, set `kvkk.consentSeparate: true` only if the disclosure text and the consent text are separate documents. Leaving either key out keeps that KVKK rule unchecked, which blocks a ready verdict.
 
 ## How a verdict is chosen
 

@@ -57,7 +57,7 @@ cases:
     facts: { platform.ios: true, urls.privacy.declared: true }
   - id: privacy-metadata-missing
     rule: apple.privacy-policy-metadata
-    expect: fail
+    expect: unchecked
     facts: { platform.ios: true, urls.privacy.declared: false }
 
   - id: privacy-link-ok
@@ -100,7 +100,7 @@ cases:
     facts: { platform.ios: true, urls.support.present: true }
   - id: support-url-missing
     rule: apple.support-contact
-    expect: fail
+    expect: unchecked
     facts: { platform.ios: true, urls.support.present: false }
 
   - id: support-page-contact
@@ -251,11 +251,23 @@ cases:
   - id: target-api-36
     rule: google.target-api
     expect: pass
-    facts: { platform.android: true, android.target_sdk: 36 }
+    facts: { platform.android: true, android.target_sdk: 36, android.target_sdk_basis: "gradle" }
   - id: target-api-35
     rule: google.target-api
     expect: fail
-    facts: { platform.android: true, android.target_sdk: 35 }
+    facts: { platform.android: true, android.target_sdk: 35, android.target_sdk_basis: "gradle" }
+  - id: target-api-flutter-exact-low
+    rule: google.target-api
+    expect: fail
+    facts: { platform.android: true, android.target_sdk: 34, android.target_sdk_basis: "flutter-sdk-exact" }
+  - id: target-api-flutter-minimum-low
+    rule: google.target-api
+    expect: unchecked
+    facts: { platform.android: true, android.target_sdk: 34, android.target_sdk_basis: "flutter-sdk-minimum" }
+  - id: target-api-flutter-minimum-36
+    rule: google.target-api
+    expect: pass
+    facts: { platform.android: true, android.target_sdk: 36, android.target_sdk_basis: "flutter-sdk-minimum" }
   - id: target-api-unknown
     rule: google.target-api
     expect: unchecked
@@ -398,3 +410,69 @@ cases:
     rule: kvkk.consent-separate
     expect: unchecked
     facts: { capability.camera: true, kvkk.explicit_consent: "unknown" }
+
+  - id: manifest-tracking-agrees
+    rule: apple.privacy-manifest-tracking
+    expect: pass
+    facts:
+      platform.ios: true
+      capability.ads: true
+      ios.privacy_manifest.present: true
+      ios.privacy_manifest.tracking: "true"
+      ios.privacy_manifest.tracking_consistent: "yes"
+  - id: manifest-tracking-false
+    rule: apple.privacy-manifest-tracking
+    expect: fail
+    facts:
+      platform.ios: true
+      capability.ads: true
+      ios.privacy_manifest.present: true
+      ios.privacy_manifest.tracking: "false"
+      ios.privacy_manifest.tracking_consistent: "no"
+  - id: manifest-missing-for-ads
+    rule: apple.privacy-manifest-tracking
+    expect: fail
+    facts:
+      platform.ios: true
+      capability.ads: true
+      ios.privacy_manifest.present: false
+
+  - id: stub-purchase-absent
+    rule: apple.stub-purchase-ui
+    expect: pass
+    facts: { framework.flutter: true, payments.stub_ui: false }
+  - id: stub-purchase-present
+    rule: apple.stub-purchase-ui
+    expect: fail
+    facts: { framework.flutter: true, payments.stub_ui: true }
+
+  - id: sample-ad-absent
+    rule: google.sample-ad-id
+    expect: pass
+    facts: { capability.ads: true, ads.sample_unit_in_shipped_config: false }
+  - id: sample-ad-shipped
+    rule: google.sample-ad-id
+    expect: fail
+    facts: { capability.ads: true, ads.sample_unit_in_shipped_config: true }
+
+  - id: ump-called
+    rule: google.ump-consent-call
+    expect: pass
+    facts: { capability.ads: true, ads.ump_requested: true }
+  - id: ump-missing
+    rule: google.ump-consent-call
+    expect: fail
+    facts: { capability.ads: true, ads.ump_requested: false }
+
+  - id: kids-page-matches-no
+    rule: product.kids-policy-consistency
+    expect: pass
+    facts: { live.privacy.not_for_children: "yes", audience.kids: "no" }
+  - id: kids-page-contradicts-yes
+    rule: product.kids-policy-consistency
+    expect: fail
+    facts: { live.privacy.not_for_children: "yes", audience.kids: "yes" }
+  - id: kids-page-answer-missing
+    rule: product.kids-policy-consistency
+    expect: unchecked
+    facts: { live.privacy.not_for_children: "yes", audience.kids: "unknown" }

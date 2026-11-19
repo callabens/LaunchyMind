@@ -40,7 +40,9 @@ test("cli scans the reject and risky fixtures", async () => {
   assert.match(rejected.stdout, /apple\.permission-camera/);
 
   const risky = await run(["scan", fixture("risky-accounts"), "--offline", "--json"]);
-  assert.equal(risky.code, 2, risky.stderr);
+  assert.equal(risky.code, 0, risky.stderr);
+  const strict = await run(["scan", fixture("risky-accounts"), "--offline", "--fail-on", "risky"]);
+  assert.equal(strict.code, 2, strict.stderr);
   const report = JSON.parse(risky.stdout) as { verdict: string; disclaimers: string[] };
   assert.equal(report.verdict, "risky");
   const Ajv = AjvImport as unknown as new (options?: { strict?: boolean }) => {

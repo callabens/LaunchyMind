@@ -8,11 +8,11 @@ export function renderTerminal(report: LaunchReport, lang: "en" | "tr" = "en"): 
     `Pack: ${report.pack.id} ${report.pack.version}`,
     `Mode: ${report.offline ? "offline" : "live checks enabled"}`,
     "",
-    `Verdict: ${label(report.verdict)}`,
+    `Verdict: ${report.verdictHeadline}`,
     ...report.disclaimers.map((item) => `  ${item}`),
     "",
   ];
-  const open = report.findings.filter((finding) => finding.status === "fail" || finding.status === "unchecked");
+  const open = report.findings.filter((finding) => finding.status === "fail" || finding.status === "unchecked").sort(byImportance);
   if (open.length === 0) lines.push("No failed or unchecked rules.");
   for (const finding of open) lines.push(...formatFinding(finding, lang), "");
   const passed = report.findings.filter((finding) => finding.status === "pass").length;
@@ -37,6 +37,7 @@ export function renderHtml(report: LaunchReport): string {
   const verdictClass = report.verdict === "ready" ? "ready" : report.verdict === "risky" ? "risky" : "reject";
   const findings = report.findings
     .filter((finding) => finding.status !== "not_applicable")
+    .sort(byImportance)
     .map((finding) => findingHtml(finding))
     .join("\n");
   const caps = report.profile.capabilities
@@ -51,7 +52,7 @@ export function renderHtml(report: LaunchReport): string {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(report.product)} report — ${esc(label(report.verdict))}</title>
+<title>${esc(report.product)} report — ${esc(report.verdictHeadline)}</title>
 <style>
   :root { color-scheme: light; --ink: #1c1915; --paper: #f7f4ee; --line: #d9d2c5; --ready: #1f6b45; --risky: #8a5a12; --reject: #8d2b2b; }
   * { box-sizing: border-box; }
@@ -75,7 +76,7 @@ export function renderHtml(report: LaunchReport): string {
   <p class="meta">${esc(report.product)} by ${esc(report.vendor)} · ${esc(report.toolVersion)} · pack ${esc(report.pack.version)}</p>
   <h1>${esc(report.profile.displayName ?? report.profile.name ?? "Untitled app")}</h1>
   <p class="meta">${esc(report.profile.framework)} · iOS ${esc(yes(report.profile.platforms.ios))} · Android ${esc(yes(report.profile.platforms.android))} · ${report.offline ? "offline" : "live checks on"}</p>
-  <p class="verdict ${verdictClass}">${esc(label(report.verdict))}</p>
+  <p class="verdict ${verdictClass}">${esc(report.verdictHeadline)}</p>
   ${report.disclaimers.map((item) => `<p class="disclaimer">${esc(item)}</p>`).join("\n  ")}
   <h2>Why</h2>
   <ul>${report.verdictBecause.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
@@ -103,6 +104,7 @@ function findingHtml(finding: Finding): string {
   <p class="tag ${esc(finding.status)}">${esc(finding.status)} · ${esc(finding.severity)} · ${esc(finding.confidence)}${finding.stale ? " · stale" : ""}</p>
   <h3>${esc(finding.ruleId)}</h3>
   <p>${esc(finding.summaryEn)}</p>
+  ${finding.nextEn ? `<p>Next: ${esc(finding.nextEn)}</p>` : ""}
   <p>${esc(finding.summaryTr)}</p>
   <p>Source: <a href="${esc(finding.sourceUrl)}">${esc(finding.sourcePublisher)} ${esc(finding.sourceSection)}</a>${finding.verifiedAt ? ` · verified ${esc(finding.verifiedAt)}` : ""}</p>
   <p>${esc(finding.checkNote)}</p>
@@ -112,10 +114,12 @@ function findingHtml(finding: Finding): string {
 
 function formatFinding(finding: Finding, lang: "en" | "tr"): string[] {
   const summary = lang === "tr" ? finding.summaryTr : finding.summaryEn;
+  const next = lang === "tr" ? finding.nextTr : finding.nextEn;
   const lines = [
-    `${finding.status.toUpperCase()}  ${finding.severity.toUpperCase()}  ${finding.ruleId}`,
-    `  ${finding.title}`,
+    `${finding.status.toUpperCase()}  ${finding.severity.toUpperCase()}  ${finding.title}`,
     `  ${summary}`,
+    ...(next ? [`  Next: ${next}`] : []),
+    `  Rule: ${finding.ruleId}`,
     `  Source: ${finding.sourcePublisher} ${finding.sourceSection}`,
     `  ${finding.sourceUrl}`,
     `  Verified: ${finding.verifiedAt ?? "not verified"}${finding.stale ? " (stale)" : ""}`,
@@ -129,10 +133,10 @@ function formatFinding(finding: Finding, lang: "en" | "tr"): string[] {
   return lines;
 }
 
-function label(verdict: LaunchReport["verdict"]): string {
-  if (verdict === "ready") return "READY";
-  if (verdict === "risky") return "RISKY";
-  return "LIKELY TO BE REJECTED";
+function byImportance(left: Finding, right: Finding): number {
+  const statusRank = { fail: 0, unchecked: 1, pass: 2, not_applicable: 3 };
+  const severityRank = { blocker: 0, risk: 1, info: 2 };
+  return statusRank[left.status] - statusRank[right.status] || severityRank[left.severity] - severityRank[right.severity];
 }
 
 function yes(value: boolean): string {

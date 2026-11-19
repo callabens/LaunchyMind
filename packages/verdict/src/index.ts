@@ -2,6 +2,7 @@ import type { Finding, Limitation, Verdict } from "../../core/src/index.ts";
 
 export interface VerdictDecision {
   verdict: Verdict;
+  headline: string;
   because: string[];
 }
 
@@ -19,25 +20,41 @@ export function decideVerdict(findings: readonly Finding[], limitations: readonl
   if (blockerFails.length > 0) {
     return {
       verdict: "reject",
-      because: blockerFails.map((finding) => `${finding.ruleId} failed and is a blocker.`),
+      headline: headlineFor("reject", blockerFails),
+      because: blockerFails.map((finding) => sentence(finding, "fail")),
     };
   }
 
   const because = [
-    ...riskFails.map((finding) => `${finding.ruleId} failed and needs a human look.`),
-    ...unchecked.map((finding) => `${finding.ruleId} could not be checked.`),
-    ...blockingLimits.map((item) => `${item.id} blocks a ready verdict.`),
+    ...riskFails.map((finding) => sentence(finding, "fail")),
+    ...unchecked.map((finding) => sentence(finding, "unchecked")),
+    ...blockingLimits.map((item) => item.detail),
   ];
 
   if (because.length > 0 || applicable.length === 0) {
     if (applicable.length === 0 && because.length === 0) {
       because.push("No applicable rule was checked, so this cannot be called ready.");
     }
-    return { verdict: "risky", because };
+    return { verdict: "risky", headline: "RISKY", because };
   }
 
   return {
     verdict: "ready",
+    headline: "READY",
     because: ["Every applicable rule passed. This is still not store approval."],
   };
+}
+
+function sentence(finding: Finding, kind: "fail" | "unchecked"): string {
+  const body = kind === "fail"
+    ? finding.summaryEn
+    : `Could not check this from the project. ${finding.summaryEn}`;
+  const next = finding.nextEn ? ` Next: ${finding.nextEn}` : "";
+  return `${body}${next}`;
+}
+
+function headlineFor(verdict: Verdict, blockers: readonly Finding[]): string {
+  if (verdict !== "reject") return verdict === "ready" ? "READY" : "RISKY";
+  if (blockers.length === 1 && blockers[0]?.ruleId === "apple.privacy-policy-in-app") return "NOT READY";
+  return "LIKELY TO BE REJECTED";
 }

@@ -25,21 +25,50 @@ export interface PageSignals {
   rights: "yes" | "no" | "unknown";
   contact: "yes" | "no" | "unknown";
   mentionsName: "yes" | "no" | "unknown";
+  notForChildren: "yes" | "no" | "unknown";
 }
 
 const PLACEHOLDER = [/lorem ipsum/i, /coming soon/i, /\btodo\b/i, /placeholder/i, /under construction/i, /this is a sample/i];
 
 const SIGNALS: Record<Exclude<keyof PageSignals, "mentionsName">, RegExp[]> = {
-  collection: [/we collect/i, /data we collect/i, /information we collect/i, /personal data/i, /kişisel veriler/i],
-  deletion: [/delet/i, /retention/i, /silme/i, /silin/i],
-  consent: [/withdraw consent/i, /revoke consent/i, /opt-out/i, /opt out/i, /r[ıi]zay[ıi] geri/i, /geri çek/i],
+  collection: [/we collect/i, /data we collect/i, /information we collect/i, /personal data/i, /kişisel veriler/i, /hangi verileri/i],
+  deletion: [/delet/i, /retention/i, /silme/i, /silin/i, /saklama/i],
+  consent: [
+    /withdraw(?:ing)?\s+(?:your\s+)?consent/i,
+    /consent.{0,48}(?:change|withdraw|revoke)/i,
+    /opt-out/i,
+    /opt out/i,
+    /r[ıi]za\w*\s+geri/i,
+    /geri çek/i,
+  ],
   ads: [/advertis/i, /admob/i, /reklam/i],
   controller: [/data controller/i, /veri sorumlusu/i],
-  purpose: [/purpose/i, /\bamaç\b/i],
-  transfer: [/recipient/i, /third part/i, /aktar/i, /\bshare\b/i],
+  purpose: [/purpose/i, /\bamaç/i, /amaçlar/i],
+  transfer: [/recipient/i, /third part/i, /aktar/i, /\bshare\b/i, /paylaş/i],
   legalBasis: [/legal basis/i, /hukuki sebep/i],
-  rights: [/your rights/i, /haklar/i, /article 11/i, /madde 11/i],
+  rights: [/your rights/i, /haklar/i, /article 11/i, /madde 11/i, /md\.?\s*11/i],
   contact: [/@/, /mailto:/i, /\bcontact\b/i, /destek/i, /iletişim/i],
+  notForChildren: [
+    /not directed to children/i,
+    /not for children/i,
+    /children under 13/i,
+    /çocuklara yönelik değildir/i,
+    /13 yaş altı/i,
+  ],
+};
+
+const SIGNAL_LABELS: Record<Exclude<keyof PageSignals, "mentionsName">, string> = {
+  collection: "what is collected",
+  deletion: "deletion or retention",
+  consent: "withdrawing consent (for example “Withdrawing Consent” or “Rızanızı Geri Alma”)",
+  ads: "advertising",
+  controller: "who the controller is",
+  purpose: "why data is used",
+  transfer: "who data is shared with",
+  legalBasis: "the legal basis",
+  rights: "the person's rights",
+  contact: "a way to make contact",
+  notForChildren: "a statement that the app is not directed to children",
 };
 
 export function htmlToText(html: string): string {
@@ -65,23 +94,43 @@ function yesNo(text: string, patterns: RegExp[]): "yes" | "no" {
   return patterns.some((pattern) => pattern.test(text)) ? "yes" : "no";
 }
 
+function excerptFor(text: string, patterns: RegExp[]): string | null {
+  for (const pattern of patterns) {
+    const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`;
+    const global = new RegExp(pattern.source, flags);
+    const match = global.exec(text);
+    if (!match || match.index === undefined) continue;
+    const start = Math.max(0, match.index - 30);
+    const end = Math.min(text.length, match.index + match[0].length + 90);
+    return text.slice(start, end).replace(/\s+/g, " ").trim();
+  }
+  return null;
+}
+
+export interface PageInspection {
+  signals: PageSignals;
+  summary: string;
+  snippet: string;
+}
+
+const emptySignals = (): PageSignals => ({
+  collection: "unknown",
+  deletion: "unknown",
+  consent: "unknown",
+  ads: "unknown",
+  controller: "unknown",
+  purpose: "unknown",
+  transfer: "unknown",
+  legalBasis: "unknown",
+  rights: "unknown",
+  contact: "unknown",
+  mentionsName: "unknown",
+  notForChildren: "unknown",
+});
+
 export function pageSignals(text: string, names: string[]): PageSignals {
   const cleaned = text.trim();
-  if (!cleaned) {
-    return {
-      collection: "unknown",
-      deletion: "unknown",
-      consent: "unknown",
-      ads: "unknown",
-      controller: "unknown",
-      purpose: "unknown",
-      transfer: "unknown",
-      legalBasis: "unknown",
-      rights: "unknown",
-      contact: "unknown",
-      mentionsName: "unknown",
-    };
-  }
+  if (!cleaned) return emptySignals();
   const lower = cleaned.toLowerCase();
   const usefulNames = names.map((name) => name.trim().toLowerCase()).filter((name) => name.length >= 3);
   return {
@@ -96,7 +145,28 @@ export function pageSignals(text: string, names: string[]): PageSignals {
     rights: yesNo(cleaned, SIGNALS.rights),
     contact: yesNo(cleaned, SIGNALS.contact),
     mentionsName: usefulNames.length === 0 ? "unknown" : usefulNames.some((name) => lower.includes(name)) ? "yes" : "no",
+    notForChildren: yesNo(cleaned, SIGNALS.notForChildren),
   };
+}
+
+export function inspectPage(text: string, names: string[]): PageInspection {
+  const signals = pageSignals(text, names);
+  if (!text.trim()) {
+    return { signals, summary: "The page had no readable text.", snippet: "No readable text." };
+  }
+  const notes: string[] = [];
+  const snippets: string[] = [];
+  const order: Array<keyof typeof SIGNAL_LABELS> = ["consent", "notForChildren", "collection", "deletion", "controller", "purpose", "transfer", "legalBasis", "rights", "ads", "contact"];
+  for (const key of order) {
+    const value = signals[key];
+    if (value === "unknown") continue;
+    const excerpt = value === "yes" ? excerptFor(text, SIGNALS[key]) : null;
+    notes.push(value === "yes" ? `Found ${SIGNAL_LABELS[key]}` : `Missing ${SIGNAL_LABELS[key]}`);
+    if (excerpt) snippets.push(excerpt);
+  }
+  const summary = notes.join(". ");
+  const snippet = (snippets.slice(0, 2).join(" · ") || summary).slice(0, 280);
+  return { signals, summary: summary || "No section signals were recorded.", snippet };
 }
 
 export function sanitizeHttpUrl(raw: string): string | null {
@@ -109,6 +179,39 @@ export function sanitizeHttpUrl(raw: string): string | null {
   if (url.protocol !== "http:" && url.protocol !== "https:") return null;
   if (url.username || url.password) return null;
   return url.toString();
+}
+
+export function inferredDeveloperWebsite(privacyUrl: string): string | null {
+  const clean = sanitizeHttpUrl(privacyUrl);
+  if (!clean) return null;
+  const url = new URL(clean);
+  url.pathname = "/";
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
+
+export function inferredSupportUrls(privacyUrl: string): string[] {
+  const clean = sanitizeHttpUrl(privacyUrl);
+  if (!clean) return [];
+  const url = new URL(clean);
+  const found: string[] = [];
+  const parts = url.pathname.split("/").filter(Boolean);
+  const last = parts[parts.length - 1]?.toLowerCase() ?? "";
+  if (last.includes("privacy") || last.includes("gizlilik")) {
+    const sibling = new URL(clean);
+    parts[parts.length - 1] = "support";
+    sibling.pathname = `/${parts.join("/")}`;
+    sibling.search = "";
+    sibling.hash = "";
+    found.push(sibling.toString());
+  }
+  const root = new URL(clean);
+  root.pathname = "/support";
+  root.search = "";
+  root.hash = "";
+  if (!found.includes(root.toString())) found.push(root.toString());
+  return found;
 }
 
 export function appAdsUrl(website: string): string | null {

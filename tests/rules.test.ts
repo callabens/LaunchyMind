@@ -83,6 +83,8 @@ test("verdict comes only from findings", () => {
     verifiedAt: "2020-01-01",
     stale: true,
     checkNote: "note",
+    nextEn: null,
+    nextTr: null,
     evidence: [],
     fix: null,
   });

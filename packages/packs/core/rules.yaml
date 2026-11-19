@@ -120,8 +120,11 @@ rules:
       section: "5.1.1(i)"
       publisher: Apple
     summary:
-      en: "All apps must include a link to their privacy policy within the app in an easily accessible way. This check only detects a URL in project source, not whether the screen is easy to find."
-      tr: "Tüm uygulamalar gizlilik politikası bağlantısını uygulama içinde kolay erişilir şekilde göstermelidir. Bu kontrol yalnızca kaynakta bir adres arar."
+      en: "The app source has no privacy policy link yet. Guideline 5.1.1(i) asks for one inside the app. This is one missing link, not a judgement that the rest of the app should be thrown out."
+      tr: "Uygulama kaynağında henüz gizlilik politikası bağlantısı yok. Kılavuz 5.1.1(i) bağlantının uygulama içinde olmasını ister. Bu tek eksik bağlantıdır; uygulamanın geri kalanının çöpe atılması değildir."
+    next:
+      en: "Add the privacy URL on a screen people can open, such as settings, then scan again."
+      tr: "Gizlilik adresini ayarlar gibi açılan bir ekrana koyun ve yeniden tarayın."
     appliesWhen:
       all:
         - { fact: platform.ios, eq: true }
@@ -152,8 +155,11 @@ rules:
       section: "5.1.1(i)"
       publisher: Apple
     summary:
-      en: "Guideline 5.1.1(i) also requires the privacy policy link in App Store Connect metadata. LaunchyMind cannot see App Store Connect, so it looks for a local declaration."
-      tr: "Kılavuz 5.1.1(i) bağlantının App Store Connect bilgisinde de olmasını ister. LaunchyMind Connect'i görmez; yerel beyana bakar."
+      en: "Guideline 5.1.1(i) also asks for the privacy policy link in App Store Connect. LaunchyMind cannot see App Store Connect. A missing local declaration is unchecked, not a failure."
+      tr: "Kılavuz 5.1.1(i) bağlantının App Store Connect bilgisinde de olmasını ister. LaunchyMind Connect'i görmez. Yerel beyan yoksa bu başarısızlık değil, kontrol edilemedi demektir."
+    next:
+      en: "If you want this recorded in the project, set urls.privacy in .launchymind/project.yaml. Leave it blank if the link exists only in App Store Connect."
+      tr: "Projede kayıt olsun istiyorsanız .launchymind/project.yaml içine urls.privacy yazın. Bağlantı yalnızca App Store Connect'teyse boş bırakın."
     appliesWhen:
       all:
         - { fact: platform.ios, eq: true }
@@ -161,12 +167,9 @@ rules:
       pass:
         all:
           - { fact: urls.privacy.declared, eq: true }
-      fail:
-        all:
-          - { fact: urls.privacy.declared, eq: false }
     check:
       confidence: attestation
-      note: "Failing this means the URL was not declared in .launchymind/project.yaml. It does not prove the App Store Connect field is empty."
+      note: "No local declaration stays unchecked. A broken declared URL is handled by the live link check, not by calling this a failure."
 
   - id: apple.privacy-link-opens
     title: The privacy policy link opens
@@ -262,8 +265,11 @@ rules:
       section: "1.5"
       publisher: Apple
     summary:
-      en: "Guideline 1.5 says people need a way to reach you, and the app and its Support URL should include an easy way to make contact."
-      tr: "Kılavuz 1.5, insanların size ulaşabilmesi gerektiğini ve Destek adresinde kolay bir iletişim yolu olmasını söyler."
+      en: "Guideline 1.5 says people need a way to reach you. If the project has no support URL, LaunchyMind cannot see the App Store Connect field, so the result stays unchecked. A declared page that does not open is a separate check."
+      tr: "Kılavuz 1.5 insanların size ulaşabilmesini söyler. Projede destek adresi yoksa App Store Connect alanı görünmez; sonuç kontrol edilemedi kalır. Beyan edilen sayfa açılmazsa bunu ayrı kontrol ele alır."
+    next:
+      en: "Add a support URL in the app or in project.yaml, or confirm the Support URL field in App Store Connect yourself."
+      tr: "Uygulamaya veya project.yaml dosyasına destek adresi ekleyin, ya da App Store Connect alanını kendiniz doğrulayın."
     appliesWhen:
       all:
         - { fact: platform.ios, eq: true }
@@ -271,12 +277,9 @@ rules:
       pass:
         all:
           - { fact: urls.support.present, eq: true }
-      fail:
-        all:
-          - { fact: urls.support.present, eq: false }
     check:
       confidence: direct
-      note: "Looks for a support URL in source or in .launchymind/project.yaml. App Store Connect was not queried."
+      note: "Absence is unchecked. The live support-page check fails only when a URL was found and the page is broken or has no contact path."
 
   - id: apple.support-link-quality
     title: Support page shows a way to make contact
@@ -794,9 +797,12 @@ rules:
       fail:
         all:
           - { fact: android.target_sdk, lt: 36 }
+          - any:
+              - { fact: android.target_sdk_basis, eq: "gradle" }
+              - { fact: android.target_sdk_basis, eq: "flutter-sdk-exact" }
     check:
       confidence: direct
-      note: "Read from the app module Gradle file. Disagreeing values stay unknown. Wear OS, TV, Automotive, and XR targets are a scan limit, not a silent pass."
+      note: "A number written in Gradle is used as-is. flutter.targetSdkVersion with no number is filled from LaunchyMind's Flutter SDK default table, and that evidence says so. A low number that comes only from a pubspec.lock minimum stays unchecked, because a newer SDK's default may be higher. Wear OS, TV, Automotive, and XR targets are not detected."
 
   - id: google.privacy-policy
     title: Play requires a privacy policy link
@@ -1154,3 +1160,186 @@ rules:
     check:
       confidence: attestation
       note: "Answering no means the developer says processing is not based on explicit consent. That answer is not verified. This is not legal advice."
+    next:
+      en: "In .launchymind/project.yaml set kvkk.explicitConsent and, when that is true, kvkk.consentSeparate. See the README example."
+      tr: ".launchymind/project.yaml içinde kvkk.explicitConsent ve gerekirse kvkk.consentSeparate yazın. README örneğine bakın."
+
+  - id: apple.privacy-manifest-tracking
+    title: Ads or tracking should match the privacy manifest tracking fields
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+      note: "The privacy manifest is Apple's file for describing tracking. This check only compares the project's own NSPrivacyTracking flag, tracking domains, and collected-data tracking flags. It is a risk when they disagree, or when an ads or ATT app has no app-level manifest."
+    source:
+      url: https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
+      section: "NSPrivacyTracking"
+      publisher: Apple
+    summary:
+      en: "An app that shows ads or asks to track should have an app-level privacy manifest whose NSPrivacyTracking flag agrees with collected data types marked as used for tracking, and with tracking domains when tracking is on. A mismatch is a risk, not a proven rejection."
+      tr: "Reklam gösteren veya izleme izni isteyen uygulamanın privacy manifest'inde NSPrivacyTracking işareti, izleme için işaretlenmiş veri türleri ve izleme alan adlarıyla uyumlu olmalıdır. Uyuşmazlık bir risktir, kanıtlanmış ret değildir."
+    next:
+      en: "Open the app's PrivacyInfo.xcprivacy. If you track, set NSPrivacyTracking to true and list the tracking domains. If a collected data type is marked tracking, the tracking flag should not be false."
+      tr: "Uygulamanın PrivacyInfo.xcprivacy dosyasını açın. İzliyorsanız NSPrivacyTracking true olsun ve izleme alan adlarını yazın. Bir veri türü izleme diye işaretliyse izleme bayrağı false olmamalı."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - any:
+            - { fact: capability.ads, eq: true }
+            - { fact: capability.tracking, eq: true }
+            - { fact: tracking.att_required, eq: "yes" }
+    evaluate:
+      pass:
+        all:
+          - { fact: ios.privacy_manifest.present, eq: true }
+          - { fact: ios.privacy_manifest.tracking, eq: "true" }
+          - { fact: ios.privacy_manifest.tracking_consistent, eq: "yes" }
+      fail:
+        any:
+          - { fact: ios.privacy_manifest.present, eq: false }
+          - { fact: ios.privacy_manifest.tracking, eq: "false" }
+          - { fact: ios.privacy_manifest.tracking_consistent, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "Pods are not scanned, so an SDK's own manifest is not treated as the app's. Missing NSPrivacyTracking stays unchecked rather than a pass."
+
+  - id: apple.stub-purchase-ui
+    title: Stub or restore-purchase text without a purchase SDK
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.1(a)"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.1(a) says submissions should be final and placeholder text should be scrubbed. Restore-purchase or stub purchase copy with no purchase SDK from the capability map is a risk, including when a flag currently hides the row."
+      tr: "Kılavuz 2.1(a) gönderimin son sürüm olmasını ve yer tutucu metnin temizlenmesini söyler. Satın alma SDK'sı yokken geri yükleme veya taslak satın alma metni bir risktir; satır bir bayrakla gizlenmiş olsa bile."
+    next:
+      en: "Remove the stub copy before release, or add the real purchase SDK and keep the row out of release builds."
+      tr: "Yayından önce taslak metni kaldırın ya da gerçek satın alma SDK'sını ekleyin ve satırı yayın derlemesinin dışında tutun."
+    appliesWhen:
+      all:
+        - { fact: framework.flutter, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: payments.stub_ui, eq: false }
+      fail:
+        all:
+          - { fact: payments.stub_ui, eq: true }
+    check:
+      confidence: heuristic
+      note: "Looks for phrases such as 'stubbed in this build', 'purchase is stubbed', and 'restore purchases' in lib/. A compile-time flag is not executed."
+
+  - id: google.sample-ad-id
+    title: Google sample ad unit ids should not ship
+    severity: risk
+    platforms: [android, ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developers.google.com/admob/android/test-ads
+      section: "Sample ad units"
+      publisher: Google
+    summary:
+      en: "Google publishes sample ad units under the publisher id ca-app-pub-3940256099942544 for testing. That id in Info.plist, the Android manifest, or Dart that is not clearly limited to a debug branch is a risk."
+      tr: "Google, deneme için ca-app-pub-3940256099942544 yayıncı kimliği altında örnek reklam birimleri yayınlar. Bu kimlik Info.plist, Android manifest veya hata ayıklama dalıyla sınırlı olmayan Dart kodundaysa bu bir risktir."
+    next:
+      en: "Keep the sample id behind kDebugMode or kReleaseMode and ship your own ad unit ids in the plist and manifest."
+      tr: "Örnek kimliği kDebugMode veya kReleaseMode arkasında tutun; plist ve manifestte kendi reklam birimi kimliklerinizi kullanın."
+    appliesWhen:
+      all:
+        - { fact: capability.ads, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ads.sample_unit_in_shipped_config, eq: false }
+      fail:
+        all:
+          - { fact: ads.sample_unit_in_shipped_config, eq: true }
+    check:
+      confidence: heuristic
+      note: "The publisher id was read from Google's test-ads page on 2026-11-19. A sample id next to kDebugMode plus a different ca-app-pub id in the same Dart file is not treated as shipped."
+
+  - id: google.ump-consent-call
+    title: Ad apps should request a UMP consent update
+    severity: risk
+    platforms: [android, ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developers.google.com/admob/flutter/eu-consent
+      section: "requestConsentInfoUpdate"
+      publisher: Google
+    summary:
+      en: "Google's AdMob EU-consent guide says to request a user-messaging consent update on launch, because consent is required in some regions. An ads SDK with no requestConsentInfoUpdate, ConsentInformation, or UserMessagingPlatform call in lib/ is a risk."
+      tr: "Google'ın AdMob AB rıza rehberi, bazı bölgelerde rıza gerektiği için açılışta kullanıcı mesajlaşma rızasının güncellenmesini söyler. lib/ içinde requestConsentInfoUpdate, ConsentInformation veya UserMessagingPlatform çağrısı olmayan reklam SDK'sı bir risktir."
+    next:
+      en: "Call ConsentInformation.instance.requestConsentInfoUpdate before loading ads, and keep a privacy-options entry point where Google says one is required."
+      tr: "Reklam yüklemeden önce ConsentInformation.instance.requestConsentInfoUpdate çağırın ve Google'ın istediği yerde gizlilik seçenekleri girişini tutun."
+    appliesWhen:
+      all:
+        - { fact: capability.ads, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: ads.ump_requested, eq: true }
+      fail:
+        all:
+          - { fact: ads.ump_requested, eq: false }
+    check:
+      confidence: heuristic
+      note: "This is a source search, not proof the form is shown in the EEA. The ATT purpose string is a different check."
+
+  - id: product.kids-policy-consistency
+    title: A not-for-children policy should match the kids answer
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: product-rule
+      note: "Compares the project's own privacy-page words with audience.kids. It does not decide the App Store age rating."
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: audience
+      publisher: LaunchyMind
+    summary:
+      en: "When the fetched privacy page says the app is not directed to children, audience.kids should not be yes. A missing answer stays unchecked so the page and the project file can be lined up."
+      tr: "Gizlilik sayfası uygulamanın çocuklara yönelik olmadığını söylüyorsa audience.kids yes olmamalı. Cevap yoksa, sayfa ile proje dosyası örtüşsün diye sonuç kontrol edilemedi kalır."
+    next:
+      en: "If the page is right, set audience.kids: false in .launchymind/project.yaml. If the app is for children, change the page and answer the store age-rating questions."
+      tr: "Sayfa doğruysa .launchymind/project.yaml içinde audience.kids: false yazın. Uygulama çocuklar içinse sayfayı değiştirin ve mağaza yaş sorularını cevaplayın."
+    appliesWhen:
+      all:
+        - { fact: live.privacy.not_for_children, eq: "yes" }
+    evaluate:
+      pass:
+        all:
+          - { fact: audience.kids, eq: "no" }
+      fail:
+        all:
+          - { fact: audience.kids, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Looks for phrases such as 'not directed to children', 'children under 13', and '13 yaş altı'. It does not read the age-rating form in App Store Connect."

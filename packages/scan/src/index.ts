@@ -142,6 +142,11 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   let deletion = false;
   let subscription = false;
   let price = false;
+  let umpRequested = false;
+  let purchaseStub = false;
+  let sampleAdInDart = false;
+  let realAdInDart = false;
+  let sampleAdDebugOnly = true;
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
   for (const file of dartFiles) {
@@ -164,6 +169,16 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     }
     if (signatures.subscriptionNeedles.some((needle) => lower.includes(needle.toLowerCase()))) subscription = true;
     if (signatures.priceNeedles.some((needle) => lower.includes(needle.toLowerCase()))) price = true;
+    if (/requestconsentinfoupdate|consentinformation|usermessagingplatform/i.test(text)) umpRequested = true;
+    if (lower.includes("purchase is stubbed") || lower.includes("stubbed in this build") || lower.includes("restorepurchases") || lower.includes("restore purchases")) {
+      purchaseStub = true;
+    }
+    if (text.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) {
+      sampleAdInDart = true;
+      if (!sampleAdIsDebugOnly(text)) sampleAdDebugOnly = false;
+      bag.add(fileEv(["ads.sample_unit_in_shipped_config"], "Google's published sample AdMob publisher id appears in Dart.", display, lineOfNeedle(text, GOOGLE_SAMPLE_AD_PUBLISHER), GOOGLE_SAMPLE_AD_PUBLISHER));
+    }
+    if (/ca-app-pub-(?!3940256099942544)\d/.test(text)) realAdInDart = true;
     collectUrls(text, signatures, display, inAppUrls, bag);
   }
 
@@ -239,6 +254,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     ...signatures.googleAds,
   ]);
   for (const item of packages) {
+    if (item.path !== "pubspec.yaml") continue;
     if (ignored.has(item.name) || recognized.has(item.name) || item.name === "flutter") continue;
     observations.push({
       id: `package.unrecognized.${item.name}`,
@@ -282,13 +298,56 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const gradle = await readGradle(projectPath);
   if (android && !gradle.found) unknowns.push("android/app/build.gradle was missing or could not be read.");
-  facts["android.target_sdk"] = gradle.targetSdk ?? "unknown";
-  facts["android.min_sdk"] = gradle.minSdk ?? "unknown";
+  const flutterSdk = readFlutterSdkPin(lockText, await readText(join(projectPath, ".fvmrc"), 20_000), await readText(join(projectPath, ".fvm/fvm_config.json"), 20_000));
+  const sdkDefaults = await flutterSdkDefaults(packDir, flutterSdk);
+  const useFlutterTarget = gradle.targetSdk === null && gradle.usesFlutterTarget && sdkDefaults !== null;
+  const useFlutterMin = gradle.minSdk === null && gradle.usesFlutterMin && sdkDefaults !== null;
+  facts["android.target_sdk"] = gradle.targetSdk ?? (useFlutterTarget ? sdkDefaults.targetSdk : "unknown");
+  facts["android.min_sdk"] = gradle.minSdk ?? (useFlutterMin ? sdkDefaults.minSdk : "unknown");
   facts["android.compile_sdk"] = gradle.compileSdk ?? "unknown";
+  facts["android.target_sdk_basis"] = gradle.targetSdk !== null
+    ? "gradle"
+    : useFlutterTarget ? sdkDefaults.basis : "unknown";
   if (gradle.targetSdk !== null) {
-    bag.add(fileEv(["android.target_sdk"], `targetSdk is ${gradle.targetSdk}.`, gradle.path ?? "android/app/build.gradle", gradle.targetLine, String(gradle.targetSdk)));
+    bag.add(fileEv(["android.target_sdk", "android.target_sdk_basis"], `targetSdk ${gradle.targetSdk} is written in Gradle.`, gradle.path ?? "android/app/build.gradle", gradle.targetLine, String(gradle.targetSdk)));
+  } else if (useFlutterTarget) {
+    bag.add(fileEv(
+      ["android.target_sdk", "android.target_sdk_basis"],
+      `No numeric targetSdk in Gradle. flutter.targetSdkVersion is filled from LaunchyMind's Flutter SDK default table: Flutter ${sdkDefaults.version} defaults to targetSdk ${sdkDefaults.targetSdk} (${sdkDefaults.basis === "flutter-sdk-exact" ? "exact pin" : "minimum constraint in pubspec.lock, so a newer SDK may be higher"}). Source: ${sdkDefaults.source}`,
+      sdkDefaults.basis === "flutter-sdk-exact" ? ".fvmrc" : "pubspec.lock",
+      null,
+      `flutter ${sdkDefaults.version} → targetSdk ${sdkDefaults.targetSdk}`,
+    ));
   }
   if (gradle.conflict) unknowns.push("Gradle targetSdk values disagree. The target API was left unknown instead of picking one.");
+
+  const sampleInPlist = plist ? [...plist.entries.values()].some((entry) => entry.value.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) : false;
+  const sampleInManifest = manifestText?.includes(GOOGLE_SAMPLE_AD_PUBLISHER) ?? false;
+  const sampleShipped = sampleInPlist || sampleInManifest || (sampleAdInDart && !(sampleAdDebugOnly && realAdInDart));
+  if (facts["capability.ads"] === true) {
+    facts["ads.sample_unit_in_shipped_config"] = sampleShipped;
+    facts["ads.ump_requested"] = dartScanned ? umpRequested : "unknown";
+    if (sampleShipped) {
+      bag.add({
+        facts: ["ads.sample_unit_in_shipped_config"],
+        kind: sampleInPlist || sampleInManifest ? "file" : "scan",
+        detail: "Google's sample AdMob publisher id ca-app-pub-3940256099942544 is in a file that ships, or in Dart without a clear debug-only guard and a separate real id.",
+        ...(sampleInPlist ? { path: "ios/Runner/Info.plist" } : sampleInManifest ? { path: "android/app/src/main/AndroidManifest.xml" } : { path: "lib" }),
+      });
+    }
+  } else if (facts["capability.ads"] === false) {
+    facts["ads.sample_unit_in_shipped_config"] = "not-applicable";
+    facts["ads.ump_requested"] = "not-applicable";
+  }
+  facts["payments.stub_ui"] = !dartScanned ? "unknown" : purchaseStub && facts["capability.payments"] !== true;
+  if (facts["payments.stub_ui"] === true) {
+    bag.add({
+      facts: ["payments.stub_ui"],
+      kind: "scan",
+      detail: "Dart contains stub purchase or restore-purchase text, and no purchase SDK from the capability map is present.",
+      path: "lib",
+    });
+  }
 
   const stringsText = android ? await readText(join(projectPath, "android", "app", "src", "main", "res", "values", "strings.xml"), 500_000) : null;
   if (stringsText) collectAndroidStrings(stringsText, signatures, inAppUrls, bag);
@@ -581,12 +640,16 @@ async function assignPrivacyManifests(facts: Record<string, FactValue>, bag: Evi
   if (!ios) {
     facts["ios.privacy_manifest.present"] = "not-applicable";
     facts["ios.privacy_manifest.incomplete_reasons"] = "not-applicable";
+    facts["ios.privacy_manifest.tracking"] = "not-applicable";
+    facts["ios.privacy_manifest.tracking_consistent"] = "not-applicable";
     return;
   }
   const files = await collectFiles(join(root, "ios"), 30, (name) => name === "PrivacyInfo.xcprivacy", new Set(["Pods", ".symlinks", "build"]));
   if (files.length === 0) {
     facts["ios.privacy_manifest.present"] = false;
     facts["ios.privacy_manifest.incomplete_reasons"] = "unknown";
+    facts["ios.privacy_manifest.tracking"] = "unknown";
+    facts["ios.privacy_manifest.tracking_consistent"] = "unknown";
     bag.add({
       facts: ["ios.privacy_manifest.present"],
       kind: "absence",
@@ -597,13 +660,26 @@ async function assignPrivacyManifests(facts: Record<string, FactValue>, bag: Evi
   }
   facts["ios.privacy_manifest.present"] = true;
   let incomplete = false;
+  let tracking: FactValue = "unknown";
+  let consistent: FactValue = "yes";
   for (const file of files) {
     const text = await readText(file, 500_000);
     if (text === null) continue;
     if (manifestReasonsIncomplete(text)) incomplete = true;
-    bag.add(fileEv(["ios.privacy_manifest.present"], "Privacy manifest found.", rel(root, file), null, "PrivacyInfo.xcprivacy"));
+    const read = readTrackingManifest(text);
+    tracking = read.tracking;
+    if (read.consistent === "no") consistent = "no";
+    bag.add(fileEv(
+      ["ios.privacy_manifest.present", "ios.privacy_manifest.tracking", "ios.privacy_manifest.tracking_consistent"],
+      `Privacy manifest tracking flag is ${read.tracking}. Collected-data tracking and tracking domains ${read.consistent === "yes" ? "agree with that flag" : "disagree with that flag"}.`,
+      rel(root, file),
+      null,
+      read.snippet,
+    ));
   }
   facts["ios.privacy_manifest.incomplete_reasons"] = incomplete;
+  facts["ios.privacy_manifest.tracking"] = tracking;
+  facts["ios.privacy_manifest.tracking_consistent"] = consistent;
   if (incomplete) {
     bag.add({
       facts: ["ios.privacy_manifest.incomplete_reasons"],
@@ -612,6 +688,21 @@ async function assignPrivacyManifests(facts: Record<string, FactValue>, bag: Evi
       path: rel(root, files[0] ?? "ios"),
     });
   }
+}
+
+function readTrackingManifest(text: string): { tracking: "true" | "false" | "unknown"; consistent: "yes" | "no"; snippet: string } {
+  const trackingMatch = text.match(/<key>NSPrivacyTracking<\/key>\s*<(true|false)\s*\/?>/i);
+  const tracking = trackingMatch?.[1] === "true" ? "true" : trackingMatch?.[1] === "false" ? "false" : "unknown";
+  const domainsBlock = text.match(/<key>NSPrivacyTrackingDomains<\/key>\s*<array>([\s\S]*?)<\/array>/i)?.[1] ?? "";
+  const domainsEmpty = domainsBlock.length === 0 ? "unknown" : !/<string>/.test(domainsBlock);
+  const collectedTracking = /<key>NSPrivacyCollectedDataTypeTracking<\/key>\s*<true\s*\/?>/i.test(text);
+  let consistent: "yes" | "no" = "yes";
+  if (tracking === "false" && collectedTracking) consistent = "no";
+  if (tracking === "true" && domainsEmpty === true) consistent = "no";
+  const snippet = tracking === "unknown"
+    ? "NSPrivacyTracking was not read"
+    : `NSPrivacyTracking=${tracking}; collected tracking=${collectedTracking ? "yes" : "no"}; tracking domains ${domainsEmpty === true ? "empty" : domainsEmpty === false ? "present" : "not read"}`;
+  return { tracking, consistent, snippet };
 }
 
 function manifestReasonsIncomplete(text: string): boolean {
@@ -635,6 +726,8 @@ interface GradleRead {
   applicationId: string | null;
   targetLine: number | null;
   conflict: boolean;
+  usesFlutterTarget: boolean;
+  usesFlutterMin: boolean;
 }
 
 async function readGradle(root: string): Promise<GradleRead> {
@@ -643,6 +736,8 @@ async function readGradle(root: string): Promise<GradleRead> {
     const text = await readText(join(root, relativePath), 1_000_000);
     if (text === null) continue;
     const stripped = text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    const usesFlutterTarget = /flutter\.targetSdkVersion\b/.test(stripped) || /flutter\.targetSdk\b/.test(stripped);
+    const usesFlutterMin = /flutter\.minSdkVersion\b/.test(stripped);
     const targets = numbers(stripped, [/targetSdk(?:Version)?\s*=\s*(\d+)/g, /targetSdkVersion\s+(\d+)/g]);
     const uniqueTargets = [...new Set(targets)];
     const targetLine = (() => {
@@ -658,9 +753,11 @@ async function readGradle(root: string): Promise<GradleRead> {
       applicationId: stripped.match(/applicationId\s*(?:=)?\s*["']([^"']+)["']/)?.[1] ?? null,
       targetLine,
       conflict: uniqueTargets.length > 1,
+      usesFlutterTarget,
+      usesFlutterMin,
     };
   }
-  return { found: false, path: null, targetSdk: null, minSdk: null, compileSdk: null, applicationId: null, targetLine: null, conflict: false };
+  return { found: false, path: null, targetSdk: null, minSdk: null, compileSdk: null, applicationId: null, targetLine: null, conflict: false, usesFlutterTarget: false, usesFlutterMin: false };
 }
 
 function numbers(text: string, patterns: RegExp[]): number[] {
@@ -892,4 +989,91 @@ function stringField(value: unknown, key: string): string | null {
   if (!value || typeof value !== "object" || !(key in value)) return null;
   const field = (value as Record<string, unknown>)[key];
   return typeof field === "string" ? field : null;
+}
+
+const GOOGLE_SAMPLE_AD_PUBLISHER = "ca-app-pub-3940256099942544";
+
+function lineOfNeedle(text: string, needle: string): number | null {
+  const index = text.indexOf(needle);
+  return index < 0 ? null : lineAt(text, index);
+}
+
+function sampleAdIsDebugOnly(text: string): boolean {
+  const lines = text.split(/\r?\n/);
+  let guarded = true;
+  for (let index = 0; index < lines.length; index += 1) {
+    if (!lines[index]?.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) continue;
+    const window = lines.slice(Math.max(0, index - 12), index + 1).join("\n");
+    if (!/kDebugMode|!kReleaseMode|kProfileMode/.test(window)) guarded = false;
+  }
+  return guarded;
+}
+
+interface FlutterPin {
+  version: string;
+  exact: boolean;
+}
+
+function readFlutterSdkPin(lockText: string | null, fvmrc: string | null, fvmConfig: string | null): FlutterPin | null {
+  const exact = semver(fvmrc?.trim() ?? "") ?? semver(jsonFlutter(fvmConfig));
+  if (exact) return { version: exact, exact: true };
+  if (!lockText) return null;
+  const sdkBlock = lockText.match(/(?:^|\n)sdks:\n([\s\S]*)$/)?.[1] ?? "";
+  const flutterLine = sdkBlock.match(/^\s*flutter:\s*"([^"]+)"/m)?.[1] ?? "";
+  const minimum = flutterLine.match(/(\d+\.\d+\.\d+)/)?.[1];
+  return minimum ? { version: minimum, exact: false } : null;
+}
+
+function jsonFlutter(text: string | null): string {
+  if (!text) return "";
+  try {
+    const parsed = JSON.parse(text) as { flutter?: unknown };
+    return typeof parsed.flutter === "string" ? parsed.flutter : "";
+  } catch {
+    return "";
+  }
+}
+
+function semver(value: string): string | null {
+  return value.match(/\d+\.\d+\.\d+/)?.[0] ?? null;
+}
+
+interface SdkDefault {
+  version: string;
+  targetSdk: number;
+  minSdk: number;
+  compileSdk: number;
+  basis: "flutter-sdk-exact" | "flutter-sdk-minimum";
+  source: string;
+}
+
+async function flutterSdkDefaults(packDir: string, pin: FlutterPin | null): Promise<SdkDefault | null> {
+  if (!pin) return null;
+  const text = await readText(join(packDir, "flutter-sdk-defaults.yaml"), 200_000);
+  const parsed = text ? parseYaml(text) : null;
+  if (!parsed || typeof parsed !== "object" || !("rows" in parsed) || !Array.isArray(parsed.rows)) return null;
+  const rows = parsed.rows.flatMap((row) => {
+    if (!row || typeof row !== "object") return [];
+    const version = "flutter" in row && typeof row.flutter === "string" ? row.flutter : null;
+    const targetSdk = "targetSdk" in row && typeof row.targetSdk === "number" ? row.targetSdk : null;
+    const minSdk = "minSdk" in row && typeof row.minSdk === "number" ? row.minSdk : null;
+    const compileSdk = "compileSdk" in row && typeof row.compileSdk === "number" ? row.compileSdk : null;
+    const source = "source" in row && typeof row.source === "string" ? row.source : "";
+    if (!version || targetSdk === null || minSdk === null || compileSdk === null) return [];
+    return [{ version, targetSdk, minSdk, compileSdk, source }];
+  }).sort((a, b) => compareSemver(a.version, b.version));
+  const eligible = rows.filter((row) => compareSemver(row.version, pin.version) <= 0);
+  const chosen = eligible[eligible.length - 1];
+  if (!chosen) return null;
+  return { ...chosen, basis: pin.exact ? "flutter-sdk-exact" : "flutter-sdk-minimum" };
+}
+
+function compareSemver(left: string, right: string): number {
+  const a = left.split(".").map(Number);
+  const b = right.split(".").map(Number);
+  for (let index = 0; index < 3; index += 1) {
+    const difference = (a[index] ?? 0) - (b[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return 0;
 }

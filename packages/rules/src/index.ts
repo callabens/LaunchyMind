@@ -161,6 +161,8 @@ export function evaluateRule(
     verifiedAt,
     stale: verifiedAt ? isStale(verifiedAt, now, staleDays) : false,
     checkNote: rule.check.note,
+    nextEn: rule.next?.en ?? null,
+    nextTr: rule.next?.tr ?? null,
     evidence: attached,
     fix: rule.fix ?? null,
   };

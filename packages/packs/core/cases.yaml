@@ -203,7 +203,11 @@ cases:
   - id: listed-sdk-unknown
     rule: apple.listed-sdk-manifest
     expect: unchecked
-    facts: { platform.ios: true, capability.listed_sdk: true, attestation.apple.listed_sdk_manifests: "unknown" }
+    facts: { platform.ios: true, capability.listed_sdk: true, attestation.apple.listed_sdk_manifests: "unknown", listed_sdk.bundled_manifests: "partial" }
+  - id: listed-sdk-bundled
+    rule: apple.listed-sdk-manifest
+    expect: pass
+    facts: { platform.ios: true, capability.listed_sdk: true, attestation.apple.listed_sdk_manifests: "unknown", listed_sdk.bundled_manifests: "covered" }
 
   - id: ios-13
     rule: apple.minimum-os
@@ -440,11 +444,15 @@ cases:
   - id: stub-purchase-absent
     rule: apple.stub-purchase-ui
     expect: pass
-    facts: { framework.flutter: true, payments.stub_ui: false }
+    facts: { framework.flutter: true, payments.stub_ui: "absent" }
   - id: stub-purchase-present
     rule: apple.stub-purchase-ui
     expect: fail
-    facts: { framework.flutter: true, payments.stub_ui: true }
+    facts: { framework.flutter: true, payments.stub_ui: "reachable" }
+  - id: stub-purchase-gated
+    rule: apple.stub-purchase-ui
+    expect: pass
+    facts: { framework.flutter: true, payments.stub_ui: "gated" }
 
   - id: sample-ad-absent
     rule: google.sample-ad-id
@@ -476,3 +484,29 @@ cases:
     rule: product.kids-policy-consistency
     expect: unchecked
     facts: { live.privacy.not_for_children: "yes", audience.kids: "unknown" }
+
+  - id: ad-id-merged
+    rule: google.ad-id-permission
+    expect: pass
+    facts: { platform.android: true, capability.ads: true, android.ad_id: "merged-by-sdk" }
+  - id: ad-id-missing
+    rule: google.ad-id-permission
+    expect: fail
+    facts: { platform.android: true, capability.ads: true, android.ad_id: "missing" }
+
+  - id: data-safety-ad-id-yes
+    rule: google.data-safety-ad-id
+    expect: pass
+    facts:
+      platform.android: true
+      capability.ads: true
+      google.distribution: "production"
+      attestation.google.data_safety_ad_id: "yes"
+  - id: data-safety-ad-id-blank
+    rule: google.data-safety-ad-id
+    expect: unchecked
+    facts:
+      platform.android: true
+      capability.ads: true
+      google.distribution: "production"
+      attestation.google.data_safety_ad_id: "unknown"

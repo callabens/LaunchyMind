@@ -627,22 +627,26 @@ rules:
       section: "SDKs that require a privacy manifest and signature"
       publisher: Apple
     summary:
-      en: "Apple requires a privacy manifest for listed SDKs included in a submission. The packaged name list is the Flutter-relevant subset read on 2026-11-19, not the whole page. This check cannot open the SDK binary, so it passes only from a developer attestation."
-      tr: "Apple, listelenen SDK'lar için privacy manifest ister. Paketteki adlar 2026-11-19'da okunan Flutter ile ilgili alt kümedir. SDK ikilisi açılmadığı için geçiş yalnızca beyanla olur."
+      en: "Apple requires a privacy manifest for listed SDKs included in a submission. Plugins in LaunchyMind's versioned table ship their own PrivacyInfo.xcprivacy, so those do not stay unchecked. A listed SDK that is not in that table still needs an attestation."
+      tr: "Apple, gönderime giren listeli SDK'lar için privacy manifest ister. LaunchyMind tablosundaki eklentiler kendi PrivacyInfo.xcprivacy dosyasını taşır; onlar kontrol edilemedi kalmaz. Tabloda olmayan listeli SDK için beyan gerekir."
+    next:
+      en: "For a listed SDK that is not in the bundled-manifest table, check the pod or package and set apple.listed-sdk-manifests only after you have seen the file."
+      tr: "Tabloda olmayan listeli bir SDK için pod veya pakete bakın ve dosyayı gördükten sonra apple.listed-sdk-manifests yazın."
     appliesWhen:
       all:
         - { fact: platform.ios, eq: true }
         - { fact: capability.listed_sdk, eq: true }
     evaluate:
       pass:
-        all:
+        any:
           - { fact: attestation.apple.listed_sdk_manifests, eq: "yes" }
+          - { fact: listed_sdk.bundled_manifests, eq: "covered" }
       fail:
         all:
           - { fact: attestation.apple.listed_sdk_manifests, eq: "no" }
     check:
-      confidence: attestation
-      note: "Unknown stays unchecked. Do not attest yes unless you have actually checked the SDK manifests that ship in the build."
+      confidence: direct
+      note: "The table records changelog versions and GitHub paths checked on 2026-11-19. path_provider had no PrivacyInfo.xcprivacy in flutter/packages on that date, so it is not treated as covered. A lockfile version below the recorded version stays uncovered."
 
   - id: apple.minimum-os
     title: Uploads must target iOS 13 or later
@@ -1222,24 +1226,25 @@ rules:
       section: "2.1(a)"
       publisher: Apple
     summary:
-      en: "Guideline 2.1(a) says submissions should be final and placeholder text should be scrubbed. Restore-purchase or stub purchase copy with no purchase SDK from the capability map is a risk, including when a flag currently hides the row."
-      tr: "Kılavuz 2.1(a) gönderimin son sürüm olmasını ve yer tutucu metnin temizlenmesini söyler. Satın alma SDK'sı yokken geri yükleme veya taslak satın alma metni bir risktir; satır bir bayrakla gizlenmiş olsa bile."
+      en: "Guideline 2.1(a) says submissions should be final and placeholder text should be scrubbed. Restore-purchase or stub purchase copy with no purchase SDK is a risk when that copy is reachable. A const false flag that guards it is only an observation."
+      tr: "Kılavuz 2.1(a) gönderimin son sürüm olmasını ve yer tutucu metnin temizlenmesini söyler. Satın alma SDK'sı yokken erişilebilir taslak satın alma metni bir risktir. const false bir bayrağın gizlediği metin yalnızca bir nottur."
     next:
-      en: "Remove the stub copy before release, or add the real purchase SDK and keep the row out of release builds."
-      tr: "Yayından önce taslak metni kaldırın ya da gerçek satın alma SDK'sını ekleyin ve satırı yayın derlemesinin dışında tutun."
+      en: "Remove the stub copy, or keep it behind a const false flag until a real purchase SDK is wired."
+      tr: "Taslak metni kaldırın ya da gerçek satın alma SDK'sı bağlanana kadar const false bir bayrağın arkasında tutun."
     appliesWhen:
       all:
         - { fact: framework.flutter, eq: true }
     evaluate:
       pass:
-        all:
-          - { fact: payments.stub_ui, eq: false }
+        any:
+          - { fact: payments.stub_ui, eq: "absent" }
+          - { fact: payments.stub_ui, eq: "gated" }
       fail:
         all:
-          - { fact: payments.stub_ui, eq: true }
+          - { fact: payments.stub_ui, eq: "reachable" }
     check:
       confidence: heuristic
-      note: "Looks for phrases such as 'stubbed in this build', 'purchase is stubbed', and 'restore purchases' in lib/. A compile-time flag is not executed."
+      note: "Looks for 'stubbed in this build', 'purchase is stubbed', and 'restore purchases' in lib/. const name = false, then if (name) or name ? stub, is treated as not reachable."
 
   - id: google.sample-ad-id
     title: Google sample ad unit ids should not ship
@@ -1343,3 +1348,76 @@ rules:
     check:
       confidence: heuristic
       note: "Looks for phrases such as 'not directed to children', 'children under 13', and '13 yaş altı'. It does not read the age-rating form in App Store Connect."
+
+  - id: google.ad-id-permission
+    title: Ads on Android need the advertising ID permission
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://developer.android.com/about/versions/13/behavior-changes-13
+      section: "Permission required for advertising ID"
+      publisher: Android
+    summary:
+      en: "Android 13 requires the AD_ID permission for apps that use an advertising ID. A permission declared by an SDK library manifest is merged in. google_mobile_ads depends on play-services-ads, so that dependency counts unless the app manifest removes the permission."
+      tr: "Android 13, reklam kimliği kullanan uygulamalar için AD_ID iznini şart koşar. SDK manifestindeki izin birleşir. google_mobile_ads play-services-ads'e bağlıdır; uygulama manifesti izni kaldırmazsa bu bağımlılık sayılır."
+    next:
+      en: "Declare com.google.android.gms.permission.AD_ID, or keep google_mobile_ads and do not remove the permission. A merged manifest under android/app/build is also read when it exists."
+      tr: "com.google.android.gms.permission.AD_ID bildirin ya da google_mobile_ads kalsın ve izni kaldırmayın. Varsa android/app/build altındaki birleşmiş manifest de okunur."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: capability.ads, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: android.ad_id, eq: "declared" }
+          - { fact: android.ad_id, eq: "merged-by-sdk" }
+      fail:
+        any:
+          - { fact: android.ad_id, eq: "missing" }
+          - { fact: android.ad_id, eq: "removed" }
+    check:
+      confidence: heuristic
+      note: "The google_mobile_ads AndroidManifest.xml read on 2026-11-19 does not itself contain AD_ID. Its build.gradle depends on com.google.android.gms:play-services-ads:25.5.0. The AAR was not opened. tools:node=\"remove\" on the permission is a failure."
+
+  - id: google.data-safety-ad-id
+    title: Data safety should include the advertising ID when ads are used
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-19
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Device or other identifiers"
+      publisher: Google Play
+    summary:
+      en: "Play's Data safety form says an Android advertising ID should be declared as Device or other identifiers. Play Console was not queried, so this uses the project answer google.data-safety-ad-id."
+      tr: "Play Data safety formu, Android reklam kimliğinin Cihaz veya diğer tanımlayıcılar olarak beyan edilmesini söyler. Play Console sorgulanmaz; bu kontrol google.data-safety-ad-id cevabını kullanır."
+    next:
+      en: "Set attestations.google.data-safety-ad-id: true in .launchymind/project.yaml after the Data safety form includes the advertising ID."
+      tr: "Data safety formuna reklam kimliğini ekledikten sonra .launchymind/project.yaml içinde attestations.google.data-safety-ad-id: true yazın."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: capability.ads, eq: true }
+        - { fact: google.distribution, neq: "internal-only" }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.google.data_safety_ad_id, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.google.data_safety_ad_id, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked. This does not read the Play Console form."

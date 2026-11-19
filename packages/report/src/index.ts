@@ -101,8 +101,8 @@ function findingHtml(finding: Finding): string {
     ? `<ul>${finding.evidence.map((item) => `<li>${esc(item.path ?? item.kind)}${item.line ? `:${item.line}` : ""} — ${esc(item.detail)}</li>`).join("")}</ul>`
     : "<p>No file or link evidence was attached.</p>";
   return `<article>
-  <p class="tag ${esc(finding.status)}">${esc(finding.status)} · ${esc(finding.severity)} · ${esc(finding.confidence)}${finding.stale ? " · stale" : ""}</p>
-  <h3>${esc(finding.ruleId)}</h3>
+  <p class="tag ${esc(finding.status)}">${esc(finding.status)} · ${esc(finding.severity)} · ${esc(finding.ruleId)}${finding.stale ? " · stale" : ""}</p>
+  <h3>${esc(finding.title)}</h3>
   <p>${esc(finding.summaryEn)}</p>
   ${finding.nextEn ? `<p>Next: ${esc(finding.nextEn)}</p>` : ""}
   <p>${esc(finding.summaryTr)}</p>

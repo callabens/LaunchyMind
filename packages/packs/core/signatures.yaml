@@ -62,6 +62,14 @@ capabilities:
     packages: [firebase_analytics, firebase_crashlytics, mixpanel_flutter, amplitude_flutter, sentry_flutter, posthog_flutter]
     iosUsage: []
     androidPermissions: []
+  game_center:
+    packages: [games_services]
+    iosUsage: []
+    androidPermissions: []
+  play_games:
+    packages: [games_services, play_games]
+    iosUsage: []
+    androidPermissions: []
 # Flutter-relevant names seen on Apple's third-party SDK list on 2026-11-19.
 # The official page also lists many non-Flutter SDKs that are not copied here.
 listedSdks:

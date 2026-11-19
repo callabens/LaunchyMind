@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-dev.3
+
+- A Google sample ad id behind `kReleaseMode ? real : sample`, `!kReleaseMode`, or `kDebugMode` (ternary or if/else) is not a failure.
+- Stub purchase copy guarded by a const false flag is an observation. Reachable stub copy still fails.
+- HTML findings use plain titles. An inferred support URL is listed once.
+- Listed SDK manifests: a versioned table of plugins that ship PrivacyInfo.xcprivacy. path_provider is not in it.
+- Android ads check the AD_ID permission, including a google_mobile_ads merge, and a Data safety advertising-ID answer.
+- Game Center and Play Games (`games_services`) are capabilities.
+
 ## 0.1.0-dev.2
 
 - Consent-withdrawal text matches "Withdrawing Consent" and "Rızanızı Geri Alma", and live evidence shows the matched or missing section.

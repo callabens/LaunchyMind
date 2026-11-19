@@ -69,6 +69,7 @@ attestations:
   apple.xcode-sdk: true
   apple.age-rating: true
   google.data-safety-form: true
+  google.data-safety-ad-id: true
 google:
   account: organization # or personal-before-2023-11-13 or personal-after-2023-11-13
   distribution: production # internal-only skips the Data safety and closed-test rules
@@ -78,6 +79,8 @@ google:
 Attestations are labeled as your statements. They are not treated as proof from Apple or Google.
 
 `kvkk.explicitConsent: false` means you say processing is not based on explicit consent. When it is `true`, set `kvkk.consentSeparate: true` only if the disclosure text and the consent text are separate documents. Leaving either key out keeps that KVKK rule unchecked, which blocks a ready verdict.
+
+`attestations.google.data-safety-ad-id: true` means the Play Data safety form declares the Android advertising ID. Leave it out and an ads app stays unchecked on that rule. `games_services` is reported as Game Center and Play Games capabilities; it is not a failure by itself.
 
 ## How a verdict is chosen
 

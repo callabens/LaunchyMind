@@ -1,0 +1,30 @@
+# Plugins whose iOS implementation ships PrivacyInfo.xcprivacy.
+# "since" is the app-facing package version whose changelog says the manifest
+# was added, or the version that fixed a missing iOS manifest.
+# Checked on 2026-11-19. path_provider was checked in flutter/packages main and
+# had no PrivacyInfo.xcprivacy, so it is not listed.
+plugins:
+  - pub: shared_preferences
+    since: "2.2.3"
+    source: "https://github.com/flutter/packages/blob/main/packages/shared_preferences/shared_preferences/CHANGELOG.md"
+  - pub: url_launcher
+    since: "6.2.6"
+    source: "https://github.com/flutter/packages/blob/main/packages/url_launcher/url_launcher/CHANGELOG.md"
+  - pub: image_picker
+    since: "1.0.8"
+    source: "https://github.com/flutter/packages/blob/main/packages/image_picker/image_picker/CHANGELOG.md"
+  - pub: video_player
+    since: "2.8.6"
+    source: "https://github.com/flutter/packages/blob/main/packages/video_player/video_player/CHANGELOG.md"
+  - pub: connectivity_plus
+    since: "6.1.3"
+    source: "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/connectivity_plus/CHANGELOG.md"
+  - pub: device_info_plus
+    since: "11.1.1"
+    source: "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/device_info_plus/device_info_plus/CHANGELOG.md"
+  - pub: package_info_plus
+    since: "8.1.1"
+    source: "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/package_info_plus/package_info_plus/CHANGELOG.md"
+  - pub: share_plus
+    since: "10.1.2"
+    source: "https://github.com/fluttercommunity/plus_plugins/blob/main/packages/share_plus/share_plus/CHANGELOG.md"

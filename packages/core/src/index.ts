@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.1.0-dev.2";
+export const LAUNCHYMIND_VERSION = "0.1.0-dev.3";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -264,6 +264,11 @@ export const KNOWN_FACTS = [
   "tracking.att_required",
   "ads.google",
   "ads.sample_unit_in_shipped_config",
+  "android.ad_id",
+  "attestation.google.data_safety_ad_id",
+  "listed_sdk.bundled_manifests",
+  "capability.game_center",
+  "capability.play_games",
   "ads.ump_requested",
   "payments.stub_ui",
   "android.target_sdk_basis",

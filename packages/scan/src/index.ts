@@ -61,6 +61,7 @@ const projectSchema = z.object({
     "apple.subscription-terms": z.boolean().optional(),
     "apple.listed-sdk-manifests": z.boolean().optional(),
     "google.data-safety-form": z.boolean().optional(),
+    "google.data-safety-ad-id": z.boolean().optional(),
   }).strict().optional(),
   google: z.object({
     account: z.enum(["organization", "personal-before-2023-11-13", "personal-after-2023-11-13"]).optional(),
@@ -143,10 +144,8 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   let subscription = false;
   let price = false;
   let umpRequested = false;
-  let purchaseStub = false;
-  let sampleAdInDart = false;
-  let realAdInDart = false;
-  let sampleAdDebugOnly = true;
+  let sampleUnguarded = false;
+  const dartTexts: string[] = [];
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
   for (const file of dartFiles) {
@@ -170,15 +169,11 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     if (signatures.subscriptionNeedles.some((needle) => lower.includes(needle.toLowerCase()))) subscription = true;
     if (signatures.priceNeedles.some((needle) => lower.includes(needle.toLowerCase()))) price = true;
     if (/requestconsentinfoupdate|consentinformation|usermessagingplatform/i.test(text)) umpRequested = true;
-    if (lower.includes("purchase is stubbed") || lower.includes("stubbed in this build") || lower.includes("restorepurchases") || lower.includes("restore purchases")) {
-      purchaseStub = true;
+    dartTexts.push(text);
+    if (unguardedSampleIds(text).length > 0) {
+      sampleUnguarded = true;
+      bag.add(fileEv(["ads.sample_unit_in_shipped_config"], "Google's sample AdMob publisher id is reachable in a release build.", display, lineOfNeedle(text, GOOGLE_SAMPLE_AD_PUBLISHER), GOOGLE_SAMPLE_AD_PUBLISHER));
     }
-    if (text.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) {
-      sampleAdInDart = true;
-      if (!sampleAdIsDebugOnly(text)) sampleAdDebugOnly = false;
-      bag.add(fileEv(["ads.sample_unit_in_shipped_config"], "Google's published sample AdMob publisher id appears in Dart.", display, lineOfNeedle(text, GOOGLE_SAMPLE_AD_PUBLISHER), GOOGLE_SAMPLE_AD_PUBLISHER));
-    }
-    if (/ca-app-pub-(?!3940256099942544)\d/.test(text)) realAdInDart = true;
     collectUrls(text, signatures, display, inAppUrls, bag);
   }
 
@@ -219,6 +214,8 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   }
 
   const listed = signatures.listedSdks.filter((item) => knownPackages.has(item.pub));
+  const bundled = await loadBundledManifests(packDir);
+  facts["listed_sdk.bundled_manifests"] = listed.length === 0 ? "not-applicable" : bundledManifestCoverage(listed, packages, bundled);
   facts["capability.listed_sdk"] = listed.length > 0;
   for (const item of listed) {
     bag.add({
@@ -274,6 +271,10 @@ export async function scanProject(projectPath: string, packDir: string): Promise
       facts["capability.apple_sign_in"] = true;
       bag.add(fileEv(["capability.apple_sign_in"], "Entitlements include Sign in with Apple.", rel(projectPath, file), null, "com.apple.developer.applesignin"));
     }
+    if (text?.includes("com.apple.developer.game-center")) {
+      facts["capability.game_center"] = true;
+      bag.add(fileEv(["capability.game_center"], "Entitlements include Game Center.", rel(projectPath, file), null, "com.apple.developer.game-center"));
+    }
   }
 
   const manifestText = android ? await readText(join(projectPath, "android", "app", "src", "main", "AndroidManifest.xml"), 1_000_000) : null;
@@ -323,7 +324,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const sampleInPlist = plist ? [...plist.entries.values()].some((entry) => entry.value.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) : false;
   const sampleInManifest = manifestText?.includes(GOOGLE_SAMPLE_AD_PUBLISHER) ?? false;
-  const sampleShipped = sampleInPlist || sampleInManifest || (sampleAdInDart && !(sampleAdDebugOnly && realAdInDart));
+  const sampleShipped = sampleInPlist || sampleInManifest || sampleUnguarded;
   if (facts["capability.ads"] === true) {
     facts["ads.sample_unit_in_shipped_config"] = sampleShipped;
     facts["ads.ump_requested"] = dartScanned ? umpRequested : "unknown";
@@ -339,13 +340,30 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     facts["ads.sample_unit_in_shipped_config"] = "not-applicable";
     facts["ads.ump_requested"] = "not-applicable";
   }
-  facts["payments.stub_ui"] = !dartScanned ? "unknown" : purchaseStub && facts["capability.payments"] !== true;
-  if (facts["payments.stub_ui"] === true) {
+  const stubState = !dartScanned ? "unknown" : stubPurchaseState(dartTexts, facts["capability.payments"] === true);
+  facts["payments.stub_ui"] = stubState;
+  if (stubState === "reachable") {
     bag.add({
       facts: ["payments.stub_ui"],
       kind: "scan",
-      detail: "Dart contains stub purchase or restore-purchase text, and no purchase SDK from the capability map is present.",
+      detail: "Stub purchase or restore-purchase text is reachable and no purchase SDK from the capability map is present.",
       path: "lib",
+    });
+  } else if (stubState === "gated") {
+    observations.push({
+      id: "payments.stub-gated",
+      detail: "Stub purchase text is present, but only inside a branch of a const false flag, so it is not reachable in this build.",
+      path: "lib",
+    });
+  }
+
+  facts["android.ad_id"] = await androidAdIdFact(projectPath, manifestText, knownPackages, facts["capability.ads"] === true, facts["platform.android"] === true);
+  if (facts["android.ad_id"] === "merged-by-sdk") {
+    bag.add({
+      facts: ["android.ad_id"],
+      kind: "dependency",
+      detail: "google_mobile_ads depends on com.google.android.gms:play-services-ads. Android merges an AD_ID permission declared by that SDK unless the app manifest removes it. The AAR was not opened.",
+      path: "pubspec.yaml",
     });
   }
 
@@ -853,6 +871,7 @@ function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config:
   facts["attestation.apple.subscription_terms"] = yesNo(config?.attestations?.["apple.subscription-terms"]);
   facts["attestation.apple.listed_sdk_manifests"] = yesNo(config?.attestations?.["apple.listed-sdk-manifests"]);
   facts["attestation.google.data_safety"] = yesNo(config?.attestations?.["google.data-safety-form"]);
+  facts["attestation.google.data_safety_ad_id"] = yesNo(config?.attestations?.["google.data-safety-ad-id"]);
   facts["google.account"] = config?.google?.account ?? "unknown";
   facts["google.distribution"] = config?.google?.distribution ?? "unknown";
   facts["google.closed_test"] = yesNo(config?.google?.closedTest);
@@ -998,15 +1017,233 @@ function lineOfNeedle(text: string, needle: string): number | null {
   return index < 0 ? null : lineAt(text, index);
 }
 
-function sampleAdIsDebugOnly(text: string): boolean {
-  const lines = text.split(/\r?\n/);
-  let guarded = true;
-  for (let index = 0; index < lines.length; index += 1) {
-    if (!lines[index]?.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) continue;
-    const window = lines.slice(Math.max(0, index - 12), index + 1).join("\n");
-    if (!/kDebugMode|!kReleaseMode|kProfileMode/.test(window)) guarded = false;
+export function unguardedSampleIds(source: string): number[] {
+  const masked = maskDart(source);
+  const hits: number[] = [];
+  let from = 0;
+  while (from < source.length) {
+    const at = source.indexOf(GOOGLE_SAMPLE_AD_PUBLISHER, from);
+    if (at < 0) break;
+    if (!sampleUseIsNonRelease(masked, at)) hits.push(at);
+    from = at + GOOGLE_SAMPLE_AD_PUBLISHER.length;
   }
-  return guarded;
+  return hits;
+}
+
+export function stubPurchaseState(files: readonly string[], hasPurchaseSdk: boolean): "absent" | "gated" | "reachable" | "unknown" {
+  if (hasPurchaseSdk) return "absent";
+  const flags = new Set<string>();
+  const hits: Array<{ masked: string; at: number }> = [];
+  for (const file of files) {
+    for (const match of file.matchAll(/(?:static\s+)?const\s+([A-Za-z_]\w*)\s*=\s*false\b/g)) {
+      if (match[1]) flags.add(match[1]);
+    }
+    const masked = maskDart(file);
+    const lower = file.toLowerCase();
+    const needles = ["purchase is stubbed", "stubbed in this build", "restorepurchases", "restore purchases"];
+    for (const needle of needles) {
+      let from = 0;
+      while (from < lower.length) {
+        const at = lower.indexOf(needle, from);
+        if (at < 0) break;
+        hits.push({ masked, at });
+        from = at + needle.length;
+      }
+    }
+  }
+  if (hits.length === 0) return "absent";
+  return hits.every((hit) => guardedByConstFalse(hit.masked, hit.at, flags)) ? "gated" : "reachable";
+}
+
+function maskDart(source: string): string {
+  let out = "";
+  let i = 0;
+  while (i < source.length) {
+    const c = source[i] ?? "";
+    const next = source[i + 1] ?? "";
+    if (c === "/" && next === "/") {
+      const end = source.indexOf("\n", i);
+      const stop = end < 0 ? source.length : end;
+      out += " ".repeat(stop - i);
+      i = stop;
+      continue;
+    }
+    if (c === "/" && next === "*") {
+      const end = source.indexOf("*/", i + 2);
+      const stop = end < 0 ? source.length : end + 2;
+      out += source.slice(i, stop).replace(/[^\n]/g, " ");
+      i = stop;
+      continue;
+    }
+    if (c === "'" || c === "\"") {
+      out += c;
+      i += 1;
+      while (i < source.length) {
+        const ch = source[i] ?? "";
+        if (ch === "\\") {
+          out += "  ";
+          i += 2;
+          continue;
+        }
+        out += ch === "\n" ? "\n" : ch === c ? c : " ";
+        i += 1;
+        if (ch === c) break;
+      }
+      continue;
+    }
+    out += c;
+    i += 1;
+  }
+  return out;
+}
+
+function sampleUseIsNonRelease(masked: string, index: number): boolean {
+  const ternary = enclosingTernary(masked, index);
+  if (ternary) return armIsNonRelease(ternary.cond, ternary.arm);
+  const branch = enclosingIf(masked, index);
+  if (!branch) return false;
+  return armIsNonRelease(branch.cond, branch.inElse ? "false" : "true");
+}
+
+function guardedByConstFalse(masked: string, index: number, flags: ReadonlySet<string>): boolean {
+  const ternary = enclosingTernary(masked, index);
+  if (ternary && deadArm(ternary.cond, ternary.arm, flags)) return true;
+  const branch = enclosingIf(masked, index);
+  if (branch && deadArm(branch.cond, branch.inElse ? "false" : "true", flags)) return true;
+  return false;
+}
+
+function deadArm(cond: string, arm: "true" | "false", flags: ReadonlySet<string>): boolean {
+  const polarity = flagPolarity(cond, flags);
+  if (!polarity) return false;
+  if (!polarity.negated) return arm === "true";
+  return arm === "false";
+}
+
+function armIsNonRelease(cond: string, arm: "true" | "false"): boolean {
+  const compact = cond.replace(/\s+/g, "");
+  const negatedRelease = /!kReleaseMode$/.test(compact);
+  const release = !negatedRelease && /(?:^|[^!\w])kReleaseMode$/.test(compact);
+  const negatedDebug = /!kDebugMode$/.test(compact);
+  const debug = !negatedDebug && /(?:^|[^!\w])kDebugMode$/.test(compact);
+  const negatedProfile = /!kProfileMode$/.test(compact);
+  const profile = !negatedProfile && /(?:^|[^!\w])kProfileMode$/.test(compact);
+  if (release) return arm === "false";
+  if (negatedRelease || debug || profile) return arm === "true";
+  if (negatedDebug || negatedProfile) return arm === "false";
+  return false;
+}
+
+function flagPolarity(cond: string, flags: ReadonlySet<string>): { negated: boolean } | null {
+  const compact = cond.replace(/\s+/g, "");
+  for (const name of flags) {
+    if (new RegExp(`!${name}$`).test(compact)) return { negated: true };
+    if (compact === name || new RegExp(`[^\\w!]${name}$`).test(compact)) return { negated: false };
+  }
+  return null;
+}
+
+function enclosingTernary(masked: string, index: number): { cond: string; arm: "true" | "false" } | null {
+  let paren = 0;
+  for (let i = index - 1; i >= 0; i -= 1) {
+    const c = masked[i];
+    if (c === ")") paren += 1;
+    else if (c === "(") paren = Math.max(0, paren - 1);
+    else if (paren === 0 && (c === ";" || c === "{" || c === "}")) break;
+    else if (paren === 0 && c === "?") {
+      const colon = matchTernaryColon(masked, i);
+      if (colon < 0) continue;
+      const cond = masked.slice(Math.max(0, i - 120), i);
+      return { cond, arm: index > colon ? "false" : "true" };
+    }
+  }
+  return null;
+}
+
+function matchTernaryColon(masked: string, question: number): number {
+  let nested = 0;
+  let paren = 0;
+  for (let i = question + 1; i < masked.length; i += 1) {
+    const c = masked[i];
+    if (c === "(") paren += 1;
+    else if (c === ")") paren = Math.max(0, paren - 1);
+    else if (paren === 0 && c === "?") nested += 1;
+    else if (paren === 0 && c === ":") {
+      if (nested === 0) return i;
+      nested -= 1;
+    } else if (paren === 0 && (c === ";" || c === "}")) return -1;
+  }
+  return -1;
+}
+
+function enclosingIf(masked: string, index: number): { cond: string; inElse: boolean } | null {
+  const frames: Array<{ depth: number; cond: string; inElse: boolean }> = [];
+  let depth = 0;
+  let i = 0;
+  while (i < index) {
+    const c = masked[i] ?? "";
+    if (c === "{") {
+      depth += 1;
+      i += 1;
+      continue;
+    }
+    if (c === "}") {
+      depth -= 1;
+      let cursor = i + 1;
+      while (masked[cursor] === " " || masked[cursor] === "\n") cursor += 1;
+      const followedByElse = masked.startsWith("else", cursor) && !/\w/.test(masked[cursor + 4] ?? "");
+      const keepDepth = followedByElse ? depth + 1 : depth;
+      while (frames.length > 0 && (frames[frames.length - 1]?.depth ?? 0) > keepDepth) frames.pop();
+      i += 1;
+      continue;
+    }
+    if (masked.startsWith("if", i) && !/\w/.test(masked[i + 2] ?? "")) {
+      const open = masked.indexOf("(", i);
+      if (open < 0 || open > i + 6) {
+        i += 1;
+        continue;
+      }
+      const close = matchParen(masked, open);
+      if (close < 0) break;
+      const cond = masked.slice(open + 1, close);
+      let cursor = close + 1;
+      while (masked[cursor] === " " || masked[cursor] === "\n") cursor += 1;
+      if (masked[cursor] === "{") {
+        frames.push({ depth: depth + 1, cond, inElse: false });
+      }
+      i = cursor;
+      continue;
+    }
+    if (masked.startsWith("else", i) && !/\w/.test(masked[i + 4] ?? "")) {
+      let cursor = i + 4;
+      while (masked[cursor] === " " || masked[cursor] === "\n") cursor += 1;
+      if (masked.startsWith("if", cursor)) {
+        i = cursor;
+        continue;
+      }
+      const previous = frames.pop();
+      if (previous && masked[cursor] === "{") {
+        frames.push({ depth: depth + 1, cond: previous.cond, inElse: true });
+      }
+      i = cursor;
+      continue;
+    }
+    i += 1;
+  }
+  const top = frames[frames.length - 1];
+  return top ? { cond: top.cond, inElse: top.inElse } : null;
+}
+
+function matchParen(masked: string, open: number): number {
+  let depth = 0;
+  for (let i = open; i < masked.length; i += 1) {
+    if (masked[i] === "(") depth += 1;
+    else if (masked[i] === ")") {
+      depth -= 1;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
 }
 
 interface FlutterPin {
@@ -1066,6 +1303,70 @@ async function flutterSdkDefaults(packDir: string, pin: FlutterPin | null): Prom
   const chosen = eligible[eligible.length - 1];
   if (!chosen) return null;
   return { ...chosen, basis: pin.exact ? "flutter-sdk-exact" : "flutter-sdk-minimum" };
+}
+
+interface BundledManifest {
+  pub: string;
+  since: string;
+  source: string;
+}
+
+async function loadBundledManifests(packDir: string): Promise<BundledManifest[]> {
+  const text = await readText(join(packDir, "bundled-privacy-manifests.yaml"), 200_000);
+  const parsed = text ? parseYaml(text) : null;
+  if (!parsed || typeof parsed !== "object" || !("plugins" in parsed) || !Array.isArray(parsed.plugins)) return [];
+  return parsed.plugins.flatMap((row) => {
+    if (!row || typeof row !== "object") return [];
+    const pub = "pub" in row && typeof row.pub === "string" ? row.pub : null;
+    const since = "since" in row && typeof row.since === "string" ? row.since : null;
+    const source = "source" in row && typeof row.source === "string" ? row.source : "";
+    return pub && since ? [{ pub, since, source }] : [];
+  });
+}
+
+function bundledManifestCoverage(listed: Array<{ pub: string }>, packages: PackageHit[], table: BundledManifest[]): "covered" | "partial" {
+  const uncovered = listed.filter((item) => {
+    const row = table.find((entry) => entry.pub === item.pub);
+    if (!row) return true;
+    const version = packages.find((pkg) => pkg.name === item.pub)?.spec ?? "";
+    const clean = version.match(/\d+\.\d+\.\d+/)?.[0];
+    return !clean || !versionAtLeast(clean, row.since);
+  });
+  return uncovered.length === 0 ? "covered" : "partial";
+}
+
+function versionAtLeast(actual: string, minimum: string): boolean {
+  const parse = (value: string) => value.split(/[.+]/).map((part) => {
+    const number = Number.parseInt(part, 10);
+    return Number.isFinite(number) ? number : 0;
+  });
+  const left = parse(actual);
+  const right = parse(minimum);
+  const length = Math.max(left.length, right.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = (left[index] ?? 0) - (right[index] ?? 0);
+    if (difference !== 0) return difference > 0;
+  }
+  return true;
+}
+
+async function androidAdIdFact(root: string, manifest: string | null, packages: Set<string>, ads: boolean, android: boolean): Promise<FactValue> {
+  if (!android || !ads) return "not-applicable";
+  if (manifest && adIdRemoved(manifest)) return "removed";
+  if (manifest?.includes("com.google.android.gms.permission.AD_ID")) return "declared";
+  const merged = await collectFiles(join(root, "android"), 30, (name) => name === "AndroidManifest.xml");
+  for (const file of merged) {
+    const text = await readText(file, 1_000_000);
+    if (text?.includes("com.google.android.gms.permission.AD_ID") && !adIdRemoved(text)) return "declared";
+  }
+  const gradle = await readText(join(root, "android", "app", "build.gradle"), 1_000_000)
+    ?? await readText(join(root, "android", "app", "build.gradle.kts"), 1_000_000);
+  if (packages.has("google_mobile_ads") || gradle?.includes("play-services-ads")) return "merged-by-sdk";
+  return "missing";
+}
+
+function adIdRemoved(text: string): boolean {
+  return /<uses-permission\b[^>]*com\.google\.android\.gms\.permission\.AD_ID[^>]*tools:node\s*=\s*"remove"|tools:node\s*=\s*"remove"[^>]*com\.google\.android\.gms\.permission\.AD_ID/.test(text);
 }
 
 function compareSemver(left: string, right: string): number {

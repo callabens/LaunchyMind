@@ -104,13 +104,15 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
   if (!supportTarget && scanned.liveTargets.privacy && checker && !offline) {
     for (const candidate of inferredSupportUrls(scanned.liveTargets.privacy)) {
       const probed = await checker.check(candidate);
-      records.push({
-        url: candidate,
-        status: probed.status,
-        httpStatus: probed.httpStatus,
-        detail: `support probe inferred from the privacy URL: ${probed.error ?? `HTTP ${probed.httpStatus ?? "n/a"}`}`,
-      });
       const contact = pageSignals(probed.text, names).contact;
+      if (!(probed.status === "ok" && contact === "yes")) {
+        records.push({
+          url: candidate,
+          status: probed.status,
+          httpStatus: probed.httpStatus,
+          detail: `support probe inferred from the privacy URL: ${probed.error ?? `HTTP ${probed.httpStatus ?? "n/a"}`}`,
+        });
+      }
       if (probed.status === "ok" && contact === "yes") {
         supportTarget = candidate;
         support = { factStatus: probed.status, page: probed, detail: "Support page inferred from the privacy URL host and it includes a contact path." };

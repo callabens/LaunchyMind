@@ -1,6 +1,6 @@
 # Public API and schema
 
-LaunchyMind 1.0.0 is the first stable version of the CLI, the LaunchPack schema (version 1), and the data-pack format. The owner publishes it to npm. Until then npm has 1.0.0-rc.1.
+LaunchyMind 1.0.0 is the first stable version of the CLI, the LaunchPack schema (version 1), and the data-pack format. It is on npm. 1.0.1 adds translated rule explanations and keeps the same CLI, schema, and pack format.
 
 The package entry point is `@callabens/launchymind`. It exports the types and helpers in `packages/core`: the LaunchPack report shape, fact names, the rule schema, and `decideVerdict` is not in core. The verdict function stays in `packages/verdict` and is the only place a verdict string is chosen.
 

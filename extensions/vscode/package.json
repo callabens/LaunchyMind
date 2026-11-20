@@ -2,7 +2,7 @@
   "name": "launchymind",
   "displayName": "LaunchyMind",
   "publisher": "callabens",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Run LaunchyMind and show findings in the Problems panel. Fixes still need an explicit yes.",
   "license": "Apache-2.0",

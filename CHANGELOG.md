@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 (unreleased): live device check
+
+- `launchymind run <apk|ipa>` and `scan --live` install the artifact on the first adb device or a booted iOS simulator, launch it once, and record a screenshot embedded in the HTML report.
+- New blocker rules `apple.launch-crash` (Guideline 2.1) and `google.launch-crash` (Play Minimum Functionality). Without adb, Xcode, or a device they stay unchecked.
+- Android also reads the first screen's UI tree for privacy, support, and account-deletion text and for a launch-time permission dialog. These are evidence, not verdict inputs; "not found on the first screen" is never a failure. iOS screen text and the ATT prompt are not checked.
+- Artifacts now expose the bundle id or package name and the permission or purpose-string keys.
+
 ## Unreleased: languages
 
 - Interface strings come from `packages/packs/i18n/ui/<locale>.json` for en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar, and ru. A test fails when a locale misses a key or a placeholder.

@@ -7,6 +7,7 @@ launchymind init <path> [--set key=value]
 launchymind init <path> --datasafety
 launchymind labels <path> [--json] [--lang en|tr] [--play-csv file]
 launchymind connect revenuecat [--project path] [--json] [--offline]
+launchymind run <apk|ipa> [--project path] [--screenshots dir] [--settle-ms n] [--html file] [--json]
 launchymind fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]
 launchymind fix <path> --all [--yes] [--dry-run] [--allow-dirty] [--offline]
 launchymind pack validate [directory]

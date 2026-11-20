@@ -69,5 +69,21 @@
   "history.header": "Saved scans, oldest first.",
   "history.blockers": "blockers",
   "history.trend": "Trend",
-  "cli.unsupported_lang": "Unsupported language {lang}. Supported: {list}."
+  "cli.unsupported_lang": "Unsupported language {lang}. Supported: {list}.",
+  "device.title": "Live device checks",
+  "device.no_device": "no device",
+  "device.screenshot": "Screenshot",
+  "check.launch.crash": "Crash on launch",
+  "check.ui.privacy-link": "Privacy link on the first screen",
+  "check.ui.support-link": "Support link on the first screen",
+  "check.ui.account-deletion": "Account deletion on the first screen",
+  "check.permission.prompts": "Permission prompt at launch",
+  "check.permission.purpose-strings": "Permission purpose strings",
+  "check.att.prompt": "App Tracking Transparency prompt",
+  "cstatus.pass": "passed",
+  "cstatus.fail": "failed",
+  "cstatus.found": "found",
+  "cstatus.not-found": "not found",
+  "cstatus.not-checked": "not checked",
+  "cstatus.not-applicable": "not applicable"
 }

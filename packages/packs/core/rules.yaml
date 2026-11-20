@@ -2500,3 +2500,73 @@ rules:
     next:
       en: "Read the build log lines in the report, fix the build, and run scan --build again. Install Flutter, a JDK, or Xcode where a build did not run."
       tr: "Rapordaki derleme günlüğü satırlarını okuyun, derlemeyi düzeltin ve scan --build komutunu yeniden çalıştırın. Çalışmayan derleme için Flutter, JDK veya Xcode kurun."
+
+  - id: apple.launch-crash
+    title: The iOS build starts on a simulator without crashing
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.1 App Completeness"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.1 says Apple will reject binaries that crash or show obvious technical problems. With launchymind run or scan --live, the IPA is installed on a booted simulator and launched; the app must still be running a few seconds later. Without Xcode or a booted simulator this stays unchecked."
+      tr: "Kılavuz 2.1, Apple'ın çöken veya bariz teknik sorun gösteren ikilileri reddedeceğini söyler. launchymind run veya scan --live ile IPA açık bir simülatöre kurulup başlatılır; uygulama birkaç saniye sonra hâlâ çalışıyor olmalıdır. Xcode veya açık simülatör yoksa kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: live.device.requested, eq: true }
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.device.ios_launch, eq: "ok" }
+      fail:
+        all:
+          - { fact: live.device.ios_launch, eq: "crashed" }
+    check:
+      confidence: direct
+      note: "Only the first seconds after launch on a simulator are observed. A device-only IPA cannot run on the simulator and stays unchecked. Crashes later in a session are not seen."
+    next:
+      en: "Open the simulator crash report or the Xcode console, fix the crash, and run the check again."
+      tr: "Simülatör çökme raporunu veya Xcode konsolunu açın, çökmeyi düzeltin ve kontrolü yeniden çalıştırın."
+
+  - id: google.launch-crash
+    title: The Android build starts on a device without crashing
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9898783
+      section: "Minimum Functionality: Broken Functionality"
+      publisher: Google Play
+    summary:
+      en: "Google Play's Minimum Functionality policy says it does not allow apps that crash, force close, freeze, or otherwise function abnormally. With launchymind run or scan --live, the APK is installed with adb and launched; the process must still be running a few seconds later and the crash log must not name the app. Without adb or a connected device this stays unchecked."
+      tr: "Google Play'in Minimum Functionality politikası çöken, zorla kapanan, donan veya başka şekilde anormal çalışan uygulamalara izin vermediğini söyler. launchymind run veya scan --live ile APK adb ile kurulup başlatılır; süreç birkaç saniye sonra hâlâ çalışıyor olmalı ve çökme günlüğü uygulamayı anmamalıdır. adb veya bağlı cihaz yoksa kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: live.device.requested, eq: true }
+        - { fact: platform.android, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.device.android_launch, eq: "ok" }
+      fail:
+        all:
+          - { fact: live.device.android_launch, eq: "crashed" }
+    check:
+      confidence: direct
+      note: "Only the first seconds after launch are observed. An AAB is not installed; build an APK. Freezes and later crashes are not seen."
+    next:
+      en: "Read the crash line in the evidence or run adb logcat -b crash, fix the crash, and run the check again."
+      tr: "Kanıttaki çökme satırını okuyun veya adb logcat -b crash çalıştırın, çökmeyi düzeltin ve kontrolü yeniden çalıştırın."

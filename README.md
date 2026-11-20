@@ -27,6 +27,7 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 | History and local dashboard | Supported when `history: true`. |
 | Editor extension | Partial. Packed in CI. Not published to a marketplace. |
 | Community packs | Supported as data only, from a path, a git URL, or the registry index. |
+| Live device check (`run`, `scan --live`) | Partial. Crash on launch is a rule. First-screen links and permission dialogs are read on Android; on the iOS simulator only launch, purpose strings, and a screenshot. Without a device every check is not checked. |
 | Languages | Interface in en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar (RTL), ru with `--lang` or LANG / VS Code detection. Rule explanations are English and Turkish; other locales fall back to English with a note. |
 
 ## What works in this preview

@@ -29,6 +29,7 @@ import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.t
 import { join } from "node:path";
 import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
 import { buildProject, buildStatus, type BuildRunner } from "../../build/src/index.ts";
+import { launchFacts, runLive, type DeviceSession, type LiveOptions } from "../../device/src/index.ts";
 import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
 import { readRevenueCat, readRevenueCatConfig } from "../../connect/src/revenuecat.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
@@ -46,6 +47,9 @@ export interface RunOptions {
   artifactPath?: string;
   build?: boolean;
   buildRunner?: BuildRunner;
+  /** Install and launch the artifact on a connected device or booted simulator. */
+  live?: boolean;
+  liveOptions?: LiveOptions;
   fetchImpl?: typeof fetch;
   env?: Record<string, string | undefined>;
 }
@@ -57,7 +61,13 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   if (options.artifactPath) applyArtifact(scanned, await readArtifact(options.artifactPath));
   scanned.facts["build.requested"] = options.build === true;
   scanned.facts["build.status"] = options.build === true ? "unknown" : "not-applicable";
-  if (options.build === true) await applyBuild(scanned, projectPath, options.buildRunner);
+  const sessions: DeviceSession[] = [];
+  const liveOptions: LiveOptions = { ...options.liveOptions, accounts: scanned.facts["capability.accounts"] === true };
+  if (options.live === true && options.artifactPath) sessions.push(await runLive(options.artifactPath, liveOptions));
+  if (options.build === true) {
+    await applyBuild(scanned, projectPath, options.buildRunner, options.live === true ? async (path) => { sessions.push(await runLive(path, liveOptions)); } : undefined);
+  }
+  applyDeviceSessions(scanned.facts, scanned.evidence, scanned.observations, sessions, options.live === true);
   const legalPacks = [];
   for (const id of scanned.legalPackIds) {
     try {
@@ -120,6 +130,7 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
     facts: live.facts,
     live: live.records,
     sourceWatch,
+    ...(options.live === true ? { device: sessions } : {}),
   };
   await saveHistoryIfEnabled(projectPath, report);
   return report;
@@ -136,7 +147,11 @@ export async function runArtifactOnly(artifactPath: string, options: RunOptions 
   facts["connect.google"] = "off";
   facts["ios.device_family"] = facts["platform.ios"] === true ? "unknown" : "not-applicable";
   const now = options.now ?? new Date();
-  const evaluation = evaluatePack(pack, facts, artifact.evidence.map((item, index) => ({ ...item, id: `ev_artifact_${index}` })), now, options.staleDays ?? STALE_DAYS_DEFAULT);
+  const sessions: DeviceSession[] = options.live === true ? [await runLive(artifactPath, { ...options.liveOptions })] : [];
+  const artifactEvidence: Evidence[] = artifact.evidence.map((item, index) => ({ ...item, id: `ev_artifact_${index}` }));
+  const deviceObservations: LaunchReport["observations"] = [];
+  applyDeviceSessions(facts, artifactEvidence, deviceObservations, sessions, options.live === true);
+  const evaluation = evaluatePack(pack, facts, artifactEvidence, now, options.staleDays ?? STALE_DAYS_DEFAULT);
   const decision = decideVerdict(evaluation.findings, []);
   const sourceWatch = { needsReverify: [] as LaunchReport["sourceWatch"]["needsReverify"] };
   const flutter = facts["framework.flutter"] === true;
@@ -176,10 +191,11 @@ export async function runArtifactOnly(artifactPath: string, options: RunOptions 
     findings: evaluation.findings,
     withheld: evaluation.withheld,
     limitations: [],
-    observations: [{ id: "artifact-only", detail: "No project directory was scanned with this artifact, so drift was not compared." }],
+    observations: [{ id: "artifact-only", detail: "No project directory was scanned with this artifact, so drift was not compared." }, ...deviceObservations],
     facts,
     live: [],
     sourceWatch,
+    ...(options.live === true ? { device: sessions } : {}),
   };
 }
 
@@ -380,7 +396,26 @@ async function assignStoreUrls(
   });
 }
 
-async function applyBuild(scanned: ScanResult, projectPath: string, runner: BuildRunner | undefined): Promise<void> {
+function applyDeviceSessions(facts: Record<string, FactValue>, evidence: Evidence[], observations: LaunchReport["observations"], sessions: readonly DeviceSession[], requested: boolean): void {
+  facts["live.device.requested"] = requested;
+  facts["live.device.android_launch"] = requested ? "unknown" : "not-applicable";
+  facts["live.device.ios_launch"] = requested ? "unknown" : "not-applicable";
+  if (!requested) return;
+  Object.assign(facts, launchFacts(sessions));
+  if (sessions.length === 0) observations.push({ id: "device.none", detail: "Live device checks were asked for, but no artifact was given or built, so nothing was installed." });
+  sessions.forEach((session, index) => {
+    const launch = session.checks.find((item) => item.id === "launch.crash");
+    evidence.push({
+      id: `ev_device_${index}`,
+      facts: [`live.device.${session.platform}_launch`],
+      kind: "file",
+      detail: `${session.platform} ${session.device ?? "no device"}: ${launch?.detail ?? "not checked"}`,
+      path: session.artifact,
+    });
+  });
+}
+
+async function applyBuild(scanned: ScanResult, projectPath: string, runner: BuildRunner | undefined, onArtifact?: (path: string) => Promise<void>): Promise<void> {
   const build = await buildProject(projectPath, runner ? { runner } : {});
   try {
     const drifts: string[] = [];
@@ -391,6 +426,7 @@ async function applyBuild(scanned: ScanResult, projectPath: string, runner: Buil
       try {
         applyArtifact(scanned, await readArtifact(outcome.artifactPath));
         drifts.push(String(scanned.facts["artifact.drift"]));
+        if (onArtifact) await onArtifact(outcome.artifactPath);
       } catch (error) {
         outcome.status = "failed";
         outcome.reason = `The built artifact could not be read: ${error instanceof Error ? error.message : String(error)}`;

@@ -69,5 +69,21 @@
   "history.header": "Сохранённые проверки, сначала старые.",
   "history.blockers": "блокеров",
   "history.trend": "Тенденция",
-  "cli.unsupported_lang": "Язык {lang} не поддерживается. Поддерживаются: {list}."
+  "cli.unsupported_lang": "Язык {lang} не поддерживается. Поддерживаются: {list}.",
+  "device.title": "Проверки на устройстве",
+  "device.no_device": "нет устройства",
+  "device.screenshot": "Снимок экрана",
+  "check.launch.crash": "Сбой при запуске",
+  "check.ui.privacy-link": "Ссылка на политику конфиденциальности на первом экране",
+  "check.ui.support-link": "Ссылка на поддержку на первом экране",
+  "check.ui.account-deletion": "Удаление аккаунта на первом экране",
+  "check.permission.prompts": "Запрос разрешения при запуске",
+  "check.permission.purpose-strings": "Пояснения к разрешениям",
+  "check.att.prompt": "Запрос App Tracking Transparency",
+  "cstatus.pass": "пройдено",
+  "cstatus.fail": "провал",
+  "cstatus.found": "найдено",
+  "cstatus.not-found": "не найдено",
+  "cstatus.not-checked": "не проверено",
+  "cstatus.not-applicable": "неприменимо"
 }

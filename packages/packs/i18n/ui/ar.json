@@ -69,5 +69,21 @@
   "history.header": "الفحوص المحفوظة، الأقدم أولًا.",
   "history.blockers": "موانع",
   "history.trend": "الاتجاه",
-  "cli.unsupported_lang": "اللغة {lang} غير مدعومة. المدعومة: {list}."
+  "cli.unsupported_lang": "اللغة {lang} غير مدعومة. المدعومة: {list}.",
+  "device.title": "فحوص على الجهاز",
+  "device.no_device": "لا جهاز",
+  "device.screenshot": "لقطة شاشة",
+  "check.launch.crash": "تعطّل عند التشغيل",
+  "check.ui.privacy-link": "رابط الخصوصية في الشاشة الأولى",
+  "check.ui.support-link": "رابط الدعم في الشاشة الأولى",
+  "check.ui.account-deletion": "حذف الحساب في الشاشة الأولى",
+  "check.permission.prompts": "طلب إذن عند التشغيل",
+  "check.permission.purpose-strings": "نصوص الغرض من الأذونات",
+  "check.att.prompt": "طلب App Tracking Transparency",
+  "cstatus.pass": "ناجح",
+  "cstatus.fail": "فاشل",
+  "cstatus.found": "موجود",
+  "cstatus.not-found": "غير موجود",
+  "cstatus.not-checked": "غير مفحوص",
+  "cstatus.not-applicable": "غير منطبق"
 }

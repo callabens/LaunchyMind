@@ -211,6 +211,15 @@ export interface LaunchReport {
   facts: Record<string, FactValue>;
   live: LiveCheckRecord[];
   sourceWatch: { needsReverify: SourceWatchItem[] };
+  /** Present only when live device checks were asked for. */
+  device?: Array<{
+    platform: "android" | "ios";
+    artifact: string;
+    appId: string | null;
+    device: string | null;
+    checks: Array<{ id: string; status: "pass" | "fail" | "found" | "not-found" | "not-checked" | "not-applicable"; detail: string }>;
+    screenshots: string[];
+  }>;
 }
 
 export const KNOWN_FACTS = [
@@ -312,6 +321,9 @@ export const KNOWN_FACTS = [
   "google.data_safety_declaration",
   "build.requested",
   "build.status",
+  "live.device.requested",
+  "live.device.android_launch",
+  "live.device.ios_launch",
   "android.target_sdk_basis",
   "ios.privacy_manifest.tracking",
   "ios.privacy_manifest.tracking_consistent",

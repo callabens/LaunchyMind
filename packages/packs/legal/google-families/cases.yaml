@@ -1,0 +1,9 @@
+cases:
+  - id: families-ad-id-removed
+    rule: legal.google.families-ad-id
+    expect: pass
+    facts: { legal.pack.google_families: true, platform.android: true, capability.ads: true, android.ad_id: "removed" }
+  - id: families-ad-id-declared
+    rule: legal.google.families-ad-id
+    expect: fail
+    facts: { legal.pack.google_families: true, platform.android: true, capability.ads: true, android.ad_id: "declared" }

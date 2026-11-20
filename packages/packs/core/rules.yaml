@@ -2174,3 +2174,65 @@ rules:
       confidence: direct
       note: "The provisioning profile signature is not verified. AAB manifests are read from aapt protobuf string fields. An attribute stored only as a resource id stays unread."
 
+  - id: sdk.manifest-label-mismatch
+    title: A verified SDK disclosure disagrees with the privacy manifest
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: product-rule
+    source:
+      url: https://developer.apple.com/app-store/app-privacy-details/
+      section: "Third-party partners"
+      publisher: Apple
+    summary:
+      en: "Apple says the privacy answers must include third-party partners whose code is in the app. If a vendor page opened for this knowledge base says an SDK may use data for third-party advertising, and the app privacy manifest sets NSPrivacyTracking to false, that disagreement is a risk. Unknown SDKs add no row."
+      tr: "Apple, gizlilik cevaplarının uygulamadaki üçüncü taraf ortakları kapsamasını söyler. Bu bilgi tabanı için açılan bir satıcı sayfası SDK'nın veriyi üçüncü taraf reklam için kullanabileceğini söylüyor ve privacy manifest NSPrivacyTracking false ise bu uyuşmazlık bir risktir. Bilinmeyen SDK satır eklemez."
+    appliesWhen:
+      all:
+        - { fact: sdk.manifest_mismatch, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: sdk.manifest_mismatch, eq: "no" }
+      fail:
+        all:
+          - { fact: sdk.manifest_mismatch, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Only verified knowledge-base rows can disagree. A missing manifest stays unchecked. The draft from launchymind labels is not itself the verdict."
+
+  - id: sdk.answer-label-mismatch
+    title: A verified SDK disclosure disagrees with a project answer
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: product-rule
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Libraries and SDKs"
+      publisher: Google Play
+    summary:
+      en: "Play says SDK data counts in the Data safety form. If the project answers that the advertising ID was not declared, and a verified SDK row lists a device or advertising identifier, that disagreement is a risk. A blank answer stays unchecked."
+      tr: "Play, SDK verisinin Data safety formuna girdiğini söyler. Proje reklam kimliğinin beyan edilmediğini söylüyor ve doğrulanmış bir SDK satırı cihaz veya reklam kimliği listeliyorsa bu uyuşmazlık bir risktir. Boş cevap kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: sdk.answer_mismatch, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: sdk.answer_mismatch, eq: "no" }
+      fail:
+        all:
+          - { fact: sdk.answer_mismatch, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Compared with attestations.google.data-safety-ad-id. Play Data safety itself is not read from an API."
+

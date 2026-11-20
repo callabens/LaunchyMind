@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.3.0";
+export const LAUNCHYMIND_VERSION = "0.4.0";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -227,6 +227,21 @@ export const KNOWN_FACTS = [
   "capability.analytics",
   "capability.listed_sdk",
   "audience.kids",
+  "region.tr",
+  "region.eu",
+  "region.us",
+  "legal.pack.kvkk",
+  "legal.pack.gdpr",
+  "legal.pack.coppa",
+  "legal.pack.apple_kids",
+  "legal.pack.google_families",
+  "legal.pack.dsa",
+  "legal.pack.accessibility",
+  "attestation.coppa.notice",
+  "attestation.eu.dsa_trader",
+  "sdk.coverage",
+  "sdk.manifest_mismatch",
+  "sdk.answer_mismatch",
   "audience.health",
   "audience.ugc",
   "kvkk.explicit_consent",

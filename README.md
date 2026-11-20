@@ -43,6 +43,7 @@ Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the 
 ```bash
 npm run launchymind -- explain path/to/flutter-app --why-not-ready --offline
 npm run launchymind -- connect
+npm run launchymind -- labels path/to/flutter-app --lang tr --offline
 npm run launchymind -- scan path/to/flutter-app --artifact app.apk
 npm run launchymind -- scan path/to/flutter-app --json
 npm run launchymind -- scan path/to/flutter-app --html report.html

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- A data-only SDK knowledge base drafts App Privacy and Play Data safety rows for vendor pages that were opened. Unknown SDKs add no row. `launchymind labels` and `launchymind_labels` print the draft in English or Turkish. A disagreement with the privacy manifest or with `google.data-safety-ad-id: false` is a risk finding.
+- Separate legal packs for KVKK, GDPR, COPPA, Apple Kids Category, Google Play Families, EU DSA trader status, and accessibility. A pack loads when `project.yaml` regions, kids, or an explicit packs flag say so. Rules whose source text was not re-opened stay disabled. The wording says this is not legal advice.
+
 ## 0.3.0
 
 - iPad-only apps are detected from `TARGETED_DEVICE_FAMILY`, `UIDeviceFamily`, or Expo `supportsTablet`. Their screenshots are checked against the 13-inch iPad sizes. If the device family cannot be read, an iPad-sized set stays unchecked.

@@ -1,0 +1,195 @@
+# SDK privacy knowledge base. Draft labels may use only entries whose
+# disclosure is "verified" and whose source page was opened on verifiedAt.
+# disclosure: unknown means the package is recognized but this version did
+# not open a vendor data-disclosure page, so it adds no draft answer.
+format: 1
+verifiedAt: 2026-11-20
+sdks:
+  - id: google-mobile-ads
+    names: [google_mobile_ads, react-native-google-mobile-ads]
+    vendor: Google
+    disclosure: verified
+    verifiedAt: 2026-11-18
+    source: https://developers.google.com/admob/ios/privacy/data-disclosure
+    section: "Google Mobile Ads SDK data collection"
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising, analytics]
+        note: "A device advertising identifier or other device identifier may be used for third-party advertising and analytics."
+      - type: Advertising Data
+        tracking: true
+        purposes: [advertising, analytics]
+        note: "Advertisements the user has seen may be used for advertising and analytics."
+      - type: Crash Data
+        tracking: false
+        purposes: [diagnostics, advertising, analytics]
+        note: "Non-user related crash logs may be used to diagnose problems and also for advertising and analytics."
+      - type: Performance Data
+        tracking: false
+        purposes: [analytics, advertising]
+        note: "User-associated performance data may be used to evaluate behavior and to display ads."
+      - type: Coarse Location
+        tracking: false
+        purposes: [advertising]
+        note: "Coarse location, including location derived from an IP address, if the user allows it."
+      - type: Product Interaction
+        tracking: false
+        purposes: [advertising]
+        note: "App launch taps and interaction information such as video views may be used to improve advertising."
+    play:
+      - type: Device or other IDs
+        purposes: [advertising, analytics]
+        note: "The same device-identifier sentence on Google's iOS disclosure page. Play's own AdMob data-safety grid was not copied from a separate Android page."
+  - id: revenuecat
+    names: [purchases_flutter, react-native-purchases]
+    vendor: RevenueCat
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://www.revenuecat.com/docs/platform-resources/apple-platform-resources/apple-app-privacy
+    section: Purchase History
+    apple:
+      - type: Purchase History
+        tracking: false
+        purposes: [analytics, app functionality]
+        note: "RevenueCat says every integration must disclose Purchase History, with Analytics and App Functionality selected. It says it does not inherently use purchase history to track users."
+    play: []
+  - id: sentry
+    names: [sentry_flutter, "@sentry/react-native"]
+    vendor: Sentry
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://docs.sentry.io/platforms/apple/data-management/apple-privacy-manifest/
+    section: NSPrivacyCollectedDataTypes
+    apple:
+      - type: Crash Data
+        tracking: false
+        purposes: [app functionality]
+        note: "Sentry's privacy manifest example marks crash data as not linked and not used for tracking, purpose App Functionality."
+      - type: Performance Data
+        tracking: false
+        purposes: [app functionality]
+        note: "The same manifest example includes performance data, not used for tracking."
+      - type: Other Diagnostic Data
+        tracking: false
+        purposes: [app functionality]
+        note: "The same manifest example includes other diagnostic data, not used for tracking."
+    play: []
+  - id: onesignal
+    names: [onesignal_flutter]
+    vendor: OneSignal
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://documentation.onesignal.com/docs/en/apple-app-privacy-requirements
+    section: "Required when using OneSignal"
+    apple:
+      - type: User ID
+        tracking: false
+        purposes: [app functionality]
+        note: "OneSignal says it assigns a OneSignal ID for each user and that the ID is not linked to identity by default."
+      - type: Purchase History
+        tracking: false
+        purposes: [analytics]
+        note: "OneSignal says consumable in-app purchase events are collected."
+      - type: Product Interaction
+        tracking: false
+        purposes: [analytics]
+        note: "OneSignal says session counts, durations, and notification interactions are collected."
+    play:
+      - type: Purchase history
+        purposes: [analytics]
+        note: "OneSignal's Play Data safety page says purchase history is collected if the app has in-app purchases."
+        source: https://documentation.onesignal.com/docs/en/google-play-data-safety-requirements
+      - type: App interactions
+        purposes: [analytics, developer communications]
+        note: "The same Play page says app interactions, including sessions and notification clicks, are collected."
+        source: https://documentation.onesignal.com/docs/en/google-play-data-safety-requirements
+  - id: facebook
+    names: [flutter_facebook_auth, react-native-fbsdk-next]
+    vendor: Meta
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://developers.facebook.com/blog/post/2022/07/18/resources-for-completing-app-store-data-practice-questionnaires-apps-facebook-or-audience-network-sdk/
+    section: Device Information
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising, analytics]
+        note: "Meta says the SDK may receive device identifiers. App events for ads and analytics are logged automatically unless the developer turns that logging off."
+      - type: Product Interaction
+        tracking: true
+        purposes: [analytics, third-party advertising]
+        note: "Meta says app installs, app launches, and in-app purchases can be logged automatically unless automatic event logging is disabled."
+    play: []
+  - id: applovin
+    names: [applovin_max]
+    vendor: AppLovin
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No AppLovin data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: unity-ads
+    names: [unity_ads_plugin]
+    vendor: Unity
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No Unity Ads data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: ironsource
+    names: [ironsource_mediation]
+    vendor: ironSource
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No ironSource data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: firebase-analytics
+    names: [firebase_analytics, "@react-native-firebase/analytics"]
+    vendor: Google
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No Firebase Analytics data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: firebase-crashlytics
+    names: [firebase_crashlytics]
+    vendor: Google
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No Firebase Crashlytics data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: firebase-messaging
+    names: [firebase_messaging, "@react-native-firebase/messaging"]
+    vendor: Google
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No Firebase Cloud Messaging data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: adjust
+    names: [adjust_sdk]
+    vendor: Adjust
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No Adjust data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: appsflyer
+    names: [appsflyer_sdk, react-native-appsflyer]
+    vendor: AppsFlyer
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "No AppsFlyer data-disclosure page was opened for this version, so this SDK adds no draft answer."
+  - id: store-billing
+    names: [in_app_purchase, react-native-iap]
+    vendor: Apple and Google
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: ""
+    section: ""
+    note: "StoreKit and Play Billing are platform APIs. No separate vendor nutrition-label page was opened, so they add no draft answer."

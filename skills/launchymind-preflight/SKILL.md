@@ -35,4 +35,5 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Store listing text and images come from `fastlane/metadata` and `.launchymind/store`. Do not invent a character count or a pixel size. If a screenshot size is not on the cited list, say the check stayed unchecked. An iPad-only target uses the 13-inch iPad sizes.
 - Do not ask the user to paste an App Store Connect `.p8` or a Play service-account JSON into the chat or the repository. `launchymind connect` reads paths from environment variables. Data safety and the Xcode SDK are not returned by those APIs.
 - `launchymind scan <project> --artifact <file>` compares the built IPA, APK, or AAB with the source scan. A difference is drift, not a new verdict you invent.
+- `launchymind labels` prints a draft. Say it is a draft and not legal advice. Do not turn an unknown SDK into a data type. A mismatch finding comes from the rule engine.
 - After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.

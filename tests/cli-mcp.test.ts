@@ -116,6 +116,7 @@ test("mcp server lists the planned tools and cannot set a verdict", async () => 
       "launchymind_explain_finding",
       "launchymind_get_overview",
       "launchymind_get_verdict",
+      "launchymind_labels",
       "launchymind_propose_fix",
       "launchymind_propose_fixes",
       "launchymind_scan",

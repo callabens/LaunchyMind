@@ -1,0 +1,36 @@
+rules:
+  - id: legal.google.families-ad-id
+    title: A kids-directed Play app should not keep the advertising ID
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9893335
+      section: "Data practices"
+      publisher: Google Play
+    summary:
+      en: "The Families policy says apps that solely target children should not request the AD_ID permission on Android API 33 or higher, and must not transmit the advertising ID from children. The project answer does not prove the app solely targets children, so this is a risk, not a rejection, and it is not legal advice."
+      tr: "Families politikası, yalnızca çocukları hedefleyen uygulamaların Android API 33 ve üzerinde AD_ID iznini istememesini ve çocuklardan reklam kimliği iletmemesini söyler. Proje cevabı uygulamanın yalnızca çocuklara yönelik olduğunu kanıtlamaz; bu bir risktir, ret değildir ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.google_families, eq: true }
+        - { fact: platform.android, eq: true }
+        - { fact: capability.ads, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: android.ad_id, eq: "removed" }
+          - { fact: android.ad_id, eq: "missing" }
+          - { fact: android.ad_id, eq: "not-applicable" }
+      fail:
+        any:
+          - { fact: android.ad_id, eq: "declared" }
+          - { fact: android.ad_id, eq: "merged-by-sdk" }
+    check:
+      confidence: heuristic
+      note: "The policy text distinguishes solely targeting children from a mixed audience. This project flag does not make that distinction."

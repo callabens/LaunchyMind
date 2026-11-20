@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { z } from "zod";
 import { LAUNCHYMIND_VERSION } from "../../core/src/index.ts";
 import { applyApprovedFix, applyApprovedFixes, listWritableFixes, proposeFix } from "../../fixes/src/index.ts";
+import { labelsForReport, renderLabels } from "../../labels/src/index.ts";
 import { runScan } from "../../pipeline/src/index.ts";
 
 const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true } as const;
@@ -58,6 +59,16 @@ export function createLaunchyMindServer(defaultRoot: string, allowApply = false)
       disclaimers: report.disclaimers,
       pack: report.pack,
     });
+  });
+
+  server.registerTool("launchymind_labels", {
+    description: "Draft App Privacy and Play Data safety rows from verified SDK disclosure pages. The result is a draft, not a verdict and not legal advice. Unknown SDKs add no row.",
+    inputSchema: { projectPath, offline, lang: z.enum(["en", "tr"]).optional() },
+    annotations: readOnly,
+  }, async (input) => {
+    const report = await scan(defaultRoot, input.projectPath, input.offline);
+    const draft = await labelsForReport(report);
+    return text({ ...draft, text: renderLabels(draft, input.lang === "tr" ? "tr" : "en") });
   });
 
   server.registerTool("launchymind_propose_fix", {

@@ -1,0 +1,11 @@
+format: 1
+id: launchymind.legal.accessibility
+name: Accessibility
+version: 2026.11.20
+license: Apache-2.0
+engine: ">=0.4.0"
+authors: [callabens]
+verifiedAt: 2026-11-20
+description: >
+  Design guidance only. No accessibility duty is enabled because a store
+  rejection rule was not re-opened. This pack is not legal advice.

@@ -1,0 +1,27 @@
+rules:
+  - id: legal.accessibility.basics
+    title: Accessibility guidance stays withheld
+    severity: info
+    platforms: [any]
+    enabled: false
+    origin: product
+    verification:
+      status: needs-manual-verification
+      note: "Apple's Human Interface Guidelines describe accessibility. They were not re-read as a store rejection rule, so nothing in this pack is enabled."
+    source:
+      url: https://developer.apple.com/design/human-interface-guidelines/accessibility
+      section: Accessibility
+      publisher: Apple
+    summary:
+      en: "Accessibility guidance is withheld. This pack does not change the verdict and it is not legal advice."
+      tr: "Erişilebilirlik rehberi askıdadır. Bu paket kararı değiştirmez ve hukuk görüşü değildir."
+    check:
+      confidence: heuristic
+      note: "Disabled. The Human Interface Guidelines page was not treated as a store rejection rule."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.accessibility, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: legal.pack.accessibility, eq: true }

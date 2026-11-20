@@ -1,0 +1,29 @@
+rules:
+  - id: legal.kvkk.consent-answered
+    title: KVKK açık rıza sorusu cevaplanmış olmalı
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://www.kvkk.gov.tr/Icerik/4132/aydinlatma-yukumlulugunun-yerine-getirilmesinde-uyulacak-usul-ve-esaslar-hakkinda-teblig
+      section: "Tebliğ"
+      publisher: KVKK
+    summary:
+      en: "The KVKK communiqué on the disclosure obligation is the source. This check only asks whether the project answered kvkk.explicitConsent. It does not decide that the processing needs consent, and it is not legal advice."
+      tr: "Kaynak, aydınlatma yükümlülüğüne ilişkin tebliğdir. Bu kontrol yalnızca projede kvkk.explicitConsent cevabının olup olmadığına bakar. İşlemenin açık rızaya dayanıp dayanmadığına karar vermez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.kvkk, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: kvkk.explicit_consent, eq: "yes" }
+          - { fact: kvkk.explicit_consent, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked and blocks ready. Leaving the answer blank is not treated as a no."

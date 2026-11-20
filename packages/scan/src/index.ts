@@ -10,6 +10,7 @@ import {
   type Limitation,
   type Observation,
 } from "../../core/src/index.ts";
+import { draftLabels, loadSdkBase, sdkFacts } from "../../labels/src/index.ts";
 import { readStore } from "../../store/src/index.ts";
 
 const capabilitySchema = z.object({
@@ -45,6 +46,16 @@ export const projectSchema = z.object({
     health: z.boolean().optional(),
     userGeneratedContent: z.boolean().optional(),
   }).strict().optional(),
+  regions: z.array(z.enum(["TR", "EU", "EEA", "US"])).optional(),
+  packs: z.object({
+    kvkk: z.boolean().optional(),
+    gdpr: z.boolean().optional(),
+    coppa: z.boolean().optional(),
+    appleKids: z.boolean().optional(),
+    googleFamilies: z.boolean().optional(),
+    dsa: z.boolean().optional(),
+    accessibility: z.boolean().optional(),
+  }).strict().optional(),
   kvkk: z.object({
     explicitConsent: z.boolean().optional(),
     consentSeparate: z.boolean().optional(),
@@ -64,6 +75,8 @@ export const projectSchema = z.object({
     "apple.listed-sdk-manifests": z.boolean().optional(),
     "google.data-safety-form": z.boolean().optional(),
     "google.data-safety-ad-id": z.boolean().optional(),
+    "coppa.notice": z.boolean().optional(),
+    "eu.dsa-trader": z.boolean().optional(),
   }).strict().optional(),
   google: z.object({
     account: z.enum(["organization", "personal-before-2023-11-13", "personal-after-2023-11-13"]).optional(),
@@ -90,6 +103,7 @@ export interface ScanResult {
   limitations: Limitation[];
   liveTargets: LiveTargets;
   storeUrls: string[];
+  legalPackIds: string[];
 }
 
 interface PackageHit {
@@ -496,6 +510,16 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   facts["connect.google"] = "off";
   facts["artifact.present"] = false;
   facts["artifact.drift"] = "not-applicable";
+  const sdkDraft = draftLabels(packages.map((item) => item.name), await loadSdkBase());
+  Object.assign(facts, sdkFacts(sdkDraft, facts));
+  if (sdkDraft.apple.items.length || sdkDraft.unknownSdks.length) {
+    bag.add({
+      facts: ["sdk.coverage", "sdk.manifest_mismatch", "sdk.answer_mismatch"],
+      kind: "dependency",
+      detail: `Verified SDK draft rows: ${sdkDraft.apple.items.length + sdkDraft.play.items.length}. Unknown SDKs: ${sdkDraft.unknownSdks.map((item) => item.id).join(", ") || "none"}.`,
+      path: "pubspec.yaml",
+    });
+  }
   const store = await readStore(projectPath, now, family);
   for (const [key, value] of Object.entries(store.facts)) facts[key] = value;
   for (const item of store.evidence) bag.add(item);
@@ -546,7 +570,24 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
       developerWebsite: config?.urls?.developerWebsite ?? null,
     },
     storeUrls: store.urls,
+    legalPackIds: [...enabledLegalPacks(config)],
   };
+}
+
+export function enabledLegalPacks(config: ProjectConfig | null): Set<string> {
+  const regions = new Set(config?.regions ?? []);
+  const kids = config?.audience?.kids === true;
+  const packs = config?.packs;
+  const enabled = new Set<string>();
+  const allow = (flag: boolean | undefined, inferred: boolean) => flag === true || (flag !== false && inferred);
+  if (allow(packs?.kvkk, regions.has("TR"))) enabled.add("kvkk");
+  if (allow(packs?.gdpr, regions.has("EU") || regions.has("EEA"))) enabled.add("gdpr");
+  if (allow(packs?.coppa, kids && regions.has("US"))) enabled.add("coppa");
+  if (allow(packs?.appleKids, kids)) enabled.add("apple-kids");
+  if (allow(packs?.googleFamilies, kids)) enabled.add("google-families");
+  if (allow(packs?.dsa, regions.has("EU") || regions.has("EEA"))) enabled.add("dsa");
+  if (packs?.accessibility === true) enabled.add("accessibility");
+  return enabled;
 }
 
 function capabilityRows(facts: Record<string, FactValue>): AppProfile["capabilities"] {
@@ -1018,6 +1059,20 @@ function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config:
   facts["attestation.apple.listed_sdk_manifests"] = yesNo(config?.attestations?.["apple.listed-sdk-manifests"]);
   facts["attestation.google.data_safety"] = yesNo(config?.attestations?.["google.data-safety-form"]);
   facts["attestation.google.data_safety_ad_id"] = yesNo(config?.attestations?.["google.data-safety-ad-id"]);
+  facts["attestation.coppa.notice"] = yesNo(config?.attestations?.["coppa.notice"]);
+  facts["attestation.eu.dsa_trader"] = yesNo(config?.attestations?.["eu.dsa-trader"]);
+  const regions = new Set(config?.regions ?? []);
+  facts["region.tr"] = regions.has("TR") ? "yes" : "no";
+  facts["region.eu"] = regions.has("EU") || regions.has("EEA") ? "yes" : "no";
+  facts["region.us"] = regions.has("US") ? "yes" : "no";
+  const enabled = enabledLegalPacks(config);
+  facts["legal.pack.kvkk"] = enabled.has("kvkk");
+  facts["legal.pack.gdpr"] = enabled.has("gdpr");
+  facts["legal.pack.coppa"] = enabled.has("coppa");
+  facts["legal.pack.apple_kids"] = enabled.has("apple-kids");
+  facts["legal.pack.google_families"] = enabled.has("google-families");
+  facts["legal.pack.dsa"] = enabled.has("dsa");
+  facts["legal.pack.accessibility"] = enabled.has("accessibility");
   facts["google.account"] = config?.google?.account ?? "unknown";
   facts["google.distribution"] = config?.google?.distribution ?? "unknown";
   facts["google.closed_test"] = yesNo(config?.google?.closedTest);

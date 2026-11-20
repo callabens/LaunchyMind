@@ -26,6 +26,7 @@ import {
 } from "../../live/src/index.ts";
 import { loadProjectPacks } from "../../packs/src/index.ts";
 import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.ts";
+import { join } from "node:path";
 import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
 import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
@@ -48,6 +49,15 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   const scanned = await scanProject(projectPath, pack.directory, options.now ?? new Date());
   if (scanned.profile.framework === "unknown" && !options.artifactPath) throw new NotFlutterProjectError(projectPath);
   if (options.artifactPath) applyArtifact(scanned, await readArtifact(options.artifactPath));
+  const legalPacks = [];
+  for (const id of scanned.legalPackIds) {
+    try {
+      legalPacks.push(await loadPack(join(findCorePackDir(), "..", "legal", id)));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      scanned.limitations.push({ id: `legal-pack-${id}`, detail: `Legal pack ${id} was not loaded: ${message}`, blocksReady: true });
+    }
+  }
   const projectPacks = await loadProjectPacks(projectPath);
   for (const problem of projectPacks.problems) {
     scanned.limitations.push({ id: "project-pack", detail: problem, blocksReady: true });
@@ -58,7 +68,7 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
       detail: `Loaded project pack ${pack.meta.id} ${pack.meta.version}.`,
     });
   }
-  const merged = mergePacks(pack, projectPacks.packs, scanned.limitations);
+  const merged = mergePacks(pack, [...legalPacks, ...projectPacks.packs], scanned.limitations);
   const offline = options.offline === true;
   const connect = await readConnect(readConnectConfig(options.env ?? process.env), options.fetchImpl ?? fetch, offline);
   Object.assign(scanned.facts, connect.facts);

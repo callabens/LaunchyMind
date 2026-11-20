@@ -6,6 +6,7 @@ import { blocksReady } from "../../../packages/verdict/src/index.ts";
 import { applyApprovedFix, applyApprovedFixes } from "../../../packages/fixes/src/index.ts";
 import { proposeFix } from "../../../packages/fixes/src/index.ts";
 import { initProject } from "../../../packages/init/src/index.ts";
+import { labelsForReport, renderLabels } from "../../../packages/labels/src/index.ts";
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runArtifactOnly, runScan } from "../../../packages/pipeline/src/index.ts";
 import { readConnect, readConnectConfig } from "../../../packages/connect/src/index.ts";
@@ -51,6 +52,7 @@ function help(): string {
     "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
+    "  labels <path> [--json] [--lang en|tr] [--offline]",
     "  explain <path> --why-not-ready [--offline] [--json]",
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
@@ -207,6 +209,16 @@ async function main(): Promise<void> {
       console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
       console.log(`After: ${result.after.headline} (${result.after.verdict})`);
     }
+    return;
+  }
+
+  if (command === "labels") {
+    if (!sub) throw new Error("Usage: launchymind labels <path> [--json] [--lang en|tr] [--offline]");
+    const lang = args.options.get("lang") === "tr" ? "tr" : "en";
+    const report = await runScan(resolve(sub), { offline: args.options.has("offline") });
+    const draft = await labelsForReport(report);
+    if (args.options.has("json")) console.log(JSON.stringify(draft, null, 2));
+    else console.log(renderLabels(draft, lang));
     return;
   }
 

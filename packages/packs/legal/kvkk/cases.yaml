@@ -1,0 +1,9 @@
+cases:
+  - id: kvkk-answered-no
+    rule: legal.kvkk.consent-answered
+    expect: pass
+    facts: { legal.pack.kvkk: true, kvkk.explicit_consent: "no" }
+  - id: kvkk-blank
+    rule: legal.kvkk.consent-answered
+    expect: unchecked
+    facts: { legal.pack.kvkk: true, kvkk.explicit_consent: "unknown" }

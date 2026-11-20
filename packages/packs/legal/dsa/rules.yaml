@@ -1,0 +1,30 @@
+rules:
+  - id: legal.dsa.trader-answered
+    title: EU trader status has been answered
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-compliance-information
+      section: "Trader self-assessment"
+      publisher: Apple
+    summary:
+      en: "Apple says Articles 30 and 31 of the DSA require it to collect trader contact information, and that Apple cannot determine whether you are a trader. This check only requires the project to answer yes or no. It does not decide trader status, and it is not legal advice."
+      tr: "Apple, DSA'nın 30 ve 31. maddelerinin tacir iletişim bilgisi istediğini ve tacir olup olmadığınıza Apple'ın karar veremediğini söyler. Bu kontrol yalnızca projede evet veya hayır cevabı arar. Tacir statüsüne karar vermez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.dsa, eq: true }
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: attestation.eu.dsa_trader, eq: "yes" }
+          - { fact: attestation.eu.dsa_trader, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked. The page says a hobbyist who does not commercialize an app may not be a trader. This check does not apply that test."

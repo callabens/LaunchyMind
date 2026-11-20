@@ -1,0 +1,31 @@
+rules:
+  - id: legal.coppa.notice-answered
+    title: COPPA notice question has an answer
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312/section-312.3
+      section: "312.3(a) and 312.3(b)"
+      publisher: eCFR
+    summary:
+      en: "16 CFR 312.3 says an operator of a child-directed service generally must provide notice and obtain verifiable parental consent before collecting personal information from a child. This check only records whether the project answered that the notice step was done. It does not decide that the app is child-directed, and it is not legal advice."
+      tr: "16 CFR 312.3, çocuklara yönelik bir hizmet işletenin genel olarak bildirim vermesini ve kişisel bilgi toplamadan önce doğrulanabilir ebeveyn izni almasını söyler. Bu kontrol yalnızca projede bu adımın cevaplanıp cevaplanmadığına bakar. Uygulamanın çocuklara yönelik olduğuna karar vermez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.coppa, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.coppa.notice, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.coppa.notice, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked. The eCFR page was opened on 2026-11-20. The pack does not decide who is an operator."

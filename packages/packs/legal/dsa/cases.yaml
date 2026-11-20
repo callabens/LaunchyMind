@@ -1,0 +1,9 @@
+cases:
+  - id: dsa-not-trader
+    rule: legal.dsa.trader-answered
+    expect: pass
+    facts: { legal.pack.dsa: true, platform.ios: true, attestation.eu.dsa_trader: "no" }
+  - id: dsa-blank
+    rule: legal.dsa.trader-answered
+    expect: unchecked
+    facts: { legal.pack.dsa: true, platform.ios: true, attestation.eu.dsa_trader: "unknown" }

@@ -656,3 +656,20 @@ cases:
     rule: artifact.drift
     expect: unchecked
     facts: { artifact.present: true, artifact.drift: "unknown" }
+
+  - id: sdk-manifest-agree
+    rule: sdk.manifest-label-mismatch
+    expect: pass
+    facts: { sdk.manifest_mismatch: "no" }
+  - id: sdk-manifest-disagree
+    rule: sdk.manifest-label-mismatch
+    expect: fail
+    facts: { sdk.manifest_mismatch: "yes" }
+  - id: sdk-answer-blank
+    rule: sdk.answer-label-mismatch
+    expect: unchecked
+    facts: { sdk.answer_mismatch: "unknown" }
+  - id: sdk-answer-disagree
+    rule: sdk.answer-label-mismatch
+    expect: fail
+    facts: { sdk.answer_mismatch: "yes" }

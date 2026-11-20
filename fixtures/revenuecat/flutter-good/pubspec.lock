@@ -1,0 +1,6 @@
+packages:
+  purchases_flutter:
+    dependency: "direct main"
+    version: "8.0.0"
+sdks:
+  flutter: ">=3.16.0"

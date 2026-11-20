@@ -45,7 +45,7 @@ test("verified SDK rows follow the pages that were opened", async () => {
   assert.equal(device?.tracking, true);
   assert.equal(device?.source, "https://docs.unity.com/en-us/grow/ads/privacy/apple-privacy-survey");
   assert.equal(draft.play.items.some((item) => item.sdk === "unity-ads" && item.type === "Approximate location"), true);
-  assert.ok(draft.unknownSdks.some((item) => item.id === "applovin" && item.reason.includes("does not list")));
+  assert.ok(draft.unknownSdks.some((item) => item.id === "applovin" && item.reason.includes("empty NSPrivacyCollectedDataTypes")));
   assert.ok(draft.unknownSdks.some((item) => item.id === "store-billing" && item.reason.includes("collected only by Apple")));
   assert.equal(draft.apple.items.some((item) => item.sdk === "firebase-analytics" && item.type === "Device ID"), false);
   assert.equal(draft.apple.items.some((item) => item.sdk === "firebase-analytics" && item.type === "App instance ID"), true);

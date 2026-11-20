@@ -1,1 +1,53 @@
-cases: []
+cases:
+  - id: gdpr-notice-complete
+    rule: legal.gdpr.notice-contents
+    expect: pass
+    facts: { legal.pack.gdpr: true, live.privacy.status: "ok", live.privacy.controller: "yes", live.privacy.purpose: "yes", live.privacy.legal_basis: "yes", live.privacy.transfer: "yes", live.privacy.rights: "yes", live.privacy.retention: "yes", live.privacy.complaint: "yes" }
+  - id: gdpr-notice-no-complaint
+    rule: legal.gdpr.notice-contents
+    expect: fail
+    facts: { legal.pack.gdpr: true, live.privacy.status: "ok", live.privacy.controller: "yes", live.privacy.purpose: "yes", live.privacy.legal_basis: "yes", live.privacy.transfer: "yes", live.privacy.rights: "yes", live.privacy.retention: "yes", live.privacy.complaint: "no" }
+  - id: gdpr-notice-offline
+    rule: legal.gdpr.notice-contents
+    expect: unchecked
+    facts: { legal.pack.gdpr: true, live.privacy.status: "skipped" }
+  - id: gdpr-basis-yes
+    rule: legal.gdpr.lawful-basis-answered
+    expect: pass
+    facts: { legal.pack.gdpr: true, attestation.gdpr.lawful_basis: "yes" }
+  - id: gdpr-basis-blank
+    rule: legal.gdpr.lawful-basis-answered
+    expect: unchecked
+    facts: { legal.pack.gdpr: true, attestation.gdpr.lawful_basis: "unknown" }
+  - id: gdpr-withdraw-missing
+    rule: legal.gdpr.consent-withdrawal
+    expect: fail
+    facts: { legal.pack.gdpr: true, ads.ump_requested: true, live.privacy.status: "ok", live.privacy.consent: "no" }
+  - id: gdpr-withdraw-found
+    rule: legal.gdpr.consent-withdrawal
+    expect: pass
+    facts: { legal.pack.gdpr: true, attestation.gdpr.consent_basis: "yes", live.privacy.status: "ok", live.privacy.consent: "yes" }
+  - id: gdpr-erasure-url
+    rule: legal.gdpr.erasure-path
+    expect: pass
+    facts: { legal.pack.gdpr: true, capability.accounts: true, account.deletion.in_app: false, urls.account_deletion.present: true }
+  - id: gdpr-erasure-none
+    rule: legal.gdpr.erasure-path
+    expect: fail
+    facts: { legal.pack.gdpr: true, capability.accounts: true, account.deletion.in_app: false, urls.account_deletion.present: false }
+  - id: gdpr-processors-blank
+    rule: legal.gdpr.processors-answered
+    expect: unchecked
+    facts: { legal.pack.gdpr: true, capability.ads: true, attestation.gdpr.processors: "unknown" }
+  - id: gdpr-processors-yes
+    rule: legal.gdpr.processors-answered
+    expect: pass
+    facts: { legal.pack.gdpr: true, capability.analytics: true, attestation.gdpr.processors: "yes" }
+  - id: gdpr-transfers-page
+    rule: legal.gdpr.transfers-disclosed
+    expect: pass
+    facts: { legal.pack.gdpr: true, capability.ads: true, attestation.gdpr.transfers: "unknown", live.privacy.status: "ok", live.privacy.third_country: "yes" }
+  - id: gdpr-transfers-missing
+    rule: legal.gdpr.transfers-disclosed
+    expect: fail
+    facts: { legal.pack.gdpr: true, capability.ads: true, attestation.gdpr.transfers: "unknown", live.privacy.status: "ok", live.privacy.third_country: "no" }

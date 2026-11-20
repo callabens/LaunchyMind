@@ -23,7 +23,7 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 
 ## Rules you do not break
 
-- Do not say the app is legally compliant, KVKK-compliant, or GDPR-compliant. Say this is not legal advice and a lawyer should review it.
+- Do not say the app is legally compliant, KVKK-compliant, GDPR-compliant, or EAA-compliant. Say this is not legal advice and a lawyer should review it.
 - Do not say Apple or Google will approve the app. The report already says they make the final decision.
 - Do not change a verdict. There is no tool for that. If you disagree, say why and leave the engine result as it is.
 - Do not write project files unless the user approves that exact fix. Call `launchymind_propose_fix`, show the diff, then call `launchymind_apply_fix` only with `approved: true` and the returned `fixId`. The server must be started with `LAUNCHYMIND_ALLOW_APPLY=1`. Legal text, account-deletion screens, and seller ids stay propose-only.
@@ -33,7 +33,8 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Community packs are data. `launchymind pack add` refuses executable files. Do not tell the user a pack changed the verdict function.
 - React Native and Expo projects can be scanned. Say when a check stayed unchecked because the source did not show it.
 - Store listing text and images come from `fastlane/metadata` and `.launchymind/store`. Do not invent a character count or a pixel size. If a screenshot size is not on the cited list, say the check stayed unchecked. An iPad-only target uses the 13-inch iPad sizes.
-- Do not ask the user to paste an App Store Connect `.p8` or a Play service-account JSON into the chat or the repository. `launchymind connect` reads paths from environment variables. Data safety and the Xcode SDK are not returned by those APIs.
+- Do not ask the user to paste an App Store Connect `.p8` or a Play service-account JSON into the chat or the repository. `launchymind connect` reads paths from environment variables. Data safety and the Xcode SDK are not returned by those APIs. Compare Data safety with a local `launchymind.datasafety.json` instead. `launchymind connect revenuecat` reads `REVENUECAT_API_KEY` from the environment; never ask for that key in chat and never put an `sk_` key in app code.
+- Run `scan --build` only when the user asks for a build. A build that did not run is unchecked, not a pass.
 - `launchymind scan <project> --artifact <file>` compares the built IPA, APK, or AAB with the source scan. A difference is drift, not a new verdict you invent.
 - `launchymind labels` prints a draft. Say it is a draft and not legal advice. Do not turn an unknown SDK into a data type. A mismatch finding comes from the rule engine.
 - `launchymind sources check` can say a cited page changed. Leave the rule text alone and say it needs a human to re-verify.

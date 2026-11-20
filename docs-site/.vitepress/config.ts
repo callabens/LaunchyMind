@@ -25,6 +25,7 @@ export default defineConfig({
           { text: "Writing a pack", link: "/writing-a-pack" },
           { text: "Approval flow", link: "/approval" },
           { text: "Store console", link: "/connect" },
+          { text: "RevenueCat", link: "/revenuecat" },
           { text: "Labels and legal packs", link: "/labels" },
           { text: "History and source watch", link: "/history" },
           { text: "Native projects", link: "/native" },

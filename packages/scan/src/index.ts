@@ -11,7 +11,9 @@ import {
   type Observation,
 } from "../../core/src/index.ts";
 import { draftLabels, loadSdkBase, sdkFacts } from "../../labels/src/index.ts";
+import { compareDataSafety, DATA_SAFETY_FILE, readDataSafety } from "../../labels/src/datasafety.ts";
 import { detectNative, substituteCatalog, versionCatalog } from "./native.ts";
+import { paymentSignals, type SourceText } from "./payments.ts";
 import { readStore } from "../../store/src/index.ts";
 
 const capabilitySchema = z.object({
@@ -78,6 +80,18 @@ export const projectSchema = z.object({
     "google.data-safety-ad-id": z.boolean().optional(),
     "coppa.notice": z.boolean().optional(),
     "eu.dsa-trader": z.boolean().optional(),
+    "payments.restore-control": z.boolean().optional(),
+    "gdpr.lawful-basis": z.boolean().optional(),
+    "gdpr.consent-basis": z.boolean().optional(),
+    "gdpr.processors": z.boolean().optional(),
+    "gdpr.transfers": z.boolean().optional(),
+    "accessibility.reviewed": z.boolean().optional(),
+    "apple.accessibility-labels": z.boolean().optional(),
+    "eaa.applies": z.boolean().optional(),
+    "eaa.information": z.boolean().optional(),
+    "apple.kids-parental-gate": z.boolean().optional(),
+    "apple.kids-analytics-exception": z.boolean().optional(),
+    "payments.paywall-links": z.boolean().optional(),
   }).strict().optional(),
   google: z.object({
     account: z.enum(["organization", "personal-before-2023-11-13", "personal-after-2023-11-13"]).optional(),
@@ -106,6 +120,8 @@ export interface ScanResult {
   liveTargets: LiveTargets;
   storeUrls: string[];
   legalPackIds: string[];
+  /** Product IDs written as string literals in purchase calls. Used only by the optional RevenueCat comparison. */
+  productIds: string[];
 }
 
 interface PackageHit {
@@ -196,12 +212,14 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   let umpRequested = false;
   let sampleUnguarded = false;
   const dartTexts: string[] = [];
+  const sourceTexts: SourceText[] = [];
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
   for (const file of [...dartFiles, ...scriptFiles, ...nativeCode]) {
     const text = await readText(file, 200_000);
     if (text === null) continue;
     const display = rel(projectPath, file);
+    sourceTexts.push({ path: display, text });
     for (const match of text.matchAll(/import\s+['"]package:([A-Za-z0-9_]+)\//g)) {
       const name = match[1];
       if (!name) continue;
@@ -471,6 +489,26 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   else if (!codeScanned) facts["payments.subscription_terms_found"] = "unknown";
   else facts["payments.subscription_terms_found"] = subscription && price;
 
+  const payments = paymentSignals(sourceTexts);
+  const labelPattern = /Semantics\s*\(|semanticLabel|semanticsLabel|accessibilityLabel|accessibilityHint|aria-label|contentDescription|\.accessibilityLabel\(|setContentDescription|AccessibilityNodeInfo/;
+  const labelFile = sourceTexts.find((item) => labelPattern.test(item.text));
+  const uiFrameworks = flutter || reactNative || nativeIos || nativeAndroid;
+  if (!codeScanned || !uiFrameworks) facts["a11y.labels"] = "unknown";
+  else facts["a11y.labels"] = labelFile ? "found" : "none";
+  if (labelFile) {
+    const index = labelFile.text.search(labelPattern);
+    bag.add(fileEv(["a11y.labels"], "An accessibility label API is used in the source.", labelFile.path, lineAt(labelFile.text, index), lineText(labelFile.text, index)));
+  } else if (facts["a11y.labels"] === "none") {
+    bag.add({ facts: ["a11y.labels"], kind: "absence", detail: "Source files were scanned and no Semantics, semanticLabel, accessibilityLabel, aria-label, or contentDescription use was found.", path: "source" });
+  }
+  applyPaymentSignals(facts, bag, payments, {
+    codeScanned,
+    payments: facts["capability.payments"],
+    subscription,
+    price,
+    revenueCat: knownPackages.has("revenuecat") || knownPackages.has("purchases_flutter") || knownPackages.has("react-native-purchases"),
+  });
+
   if (facts["attestation.apple.att_not_required"] === "yes") facts["tracking.att_required"] = "no";
   else if (facts["capability.ads"] === true || facts["capability.tracking"] === true) facts["tracking.att_required"] = "yes";
   else if (facts["capability.ads"] === "unknown" || facts["capability.tracking"] === "unknown") facts["tracking.att_required"] = "unknown";
@@ -565,6 +603,22 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   facts["artifact.drift"] = "not-applicable";
   const sdkDraft = draftLabels(packages.map((item) => item.name), await loadSdkBase());
   Object.assign(facts, sdkFacts(sdkDraft, facts));
+  if (facts["platform.android"] !== true) facts["google.data_safety_declaration"] = "not-applicable";
+  else {
+    const read = await readDataSafety(projectPath);
+    const comparison = compareDataSafety(read.declaration, read.present, read.problems, sdkDraft);
+    facts["google.data_safety_declaration"] = comparison.status === "match" || comparison.status === "mismatch" || comparison.status === "missing" ? comparison.status : "unknown";
+    if (comparison.status === "mismatch") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} does not declare data types that verified SDK rows say are collected: ${comparison.missingTypes.map((item) => `${item.type} (${item.sdks.join(", ")})`).join("; ")}.`, path: DATA_SAFETY_FILE });
+    } else if (comparison.status === "match") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} declares every Play data type that verified SDK rows name.`, path: DATA_SAFETY_FILE });
+    } else if (comparison.status !== "missing") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} was not compared: ${comparison.problems.join(" ")}`, path: DATA_SAFETY_FILE });
+    }
+    if (comparison.unmapped.length > 0) {
+      observations.push({ id: "datasafety.unmapped", detail: `These vendor rows have no unambiguous Play data type and need a manual mapping: ${comparison.unmapped.map((item) => `${item.sdk} "${item.type}"`).join(", ")}.` });
+    }
+  }
   if (sdkDraft.apple.items.length || sdkDraft.unknownSdks.length) {
     bag.add({
       facts: ["sdk.coverage", "sdk.manifest_mismatch", "sdk.answer_mismatch"],
@@ -624,6 +678,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     },
     storeUrls: store.urls,
     legalPackIds: [...enabledLegalPacks(config)],
+    productIds: payments.productIds,
   };
 }
 
@@ -1135,6 +1190,44 @@ function classifyUrl(context: string, signatures: Signatures): "privacy" | "supp
   return null;
 }
 
+function applyPaymentSignals(
+  facts: Record<string, FactValue>,
+  bag: EvidenceBag,
+  signals: ReturnType<typeof paymentSignals>,
+  context: { codeScanned: boolean; payments: FactValue | undefined; subscription: boolean; price: boolean; revenueCat: boolean },
+): void {
+  const ev = (fact: string, detail: string, item: { path: string; line: number; snippet: string }) =>
+    bag.add(fileEv([fact], detail, item.path, item.line, item.snippet));
+  facts["sdk.revenuecat"] = context.revenueCat;
+  if (context.revenueCat) {
+    bag.add({ facts: ["sdk.revenuecat"], kind: "dependency", detail: "A RevenueCat SDK package (purchases_flutter, react-native-purchases, purchases-ios, RevenueCat pod, com.revenuecat.purchases, or the Unity package) is a dependency.", path: "dependencies" });
+  }
+  if (context.payments !== true) {
+    const value = context.payments === false ? "not-applicable" : "unknown";
+    for (const fact of ["payments.subscriptions", "payments.restore_control", "payments.renewal_terms_found", "payments.terms_link_found"]) facts[fact] = value;
+  } else if (!context.codeScanned) {
+    for (const fact of ["payments.subscriptions", "payments.restore_control", "payments.renewal_terms_found", "payments.terms_link_found"]) facts[fact] = "unknown";
+  } else {
+    facts["payments.subscriptions"] = context.subscription || signals.renewal !== null;
+    facts["payments.restore_control"] = signals.restore !== null;
+    facts["payments.renewal_terms_found"] = context.price && signals.renewal !== null && signals.period !== null;
+    facts["payments.terms_link_found"] = signals.termsLink !== null;
+    if (signals.restore) ev("payments.restore_control", "A restore-purchases call or label is in the source.", signals.restore);
+    else bag.add({ facts: ["payments.restore_control"], kind: "absence", detail: "Source files were scanned and no restorePurchases call or restore-purchases label was found.", path: "source" });
+    if (signals.renewal) ev("payments.renewal_terms_found", "Auto-renew wording is in the source.", signals.renewal);
+    if (signals.period) ev("payments.renewal_terms_found", "A billing period word is in the source.", signals.period);
+    if (signals.termsLink) ev("payments.terms_link_found", "Terms of Use or EULA wording is in the source.", signals.termsLink);
+    else bag.add({ facts: ["payments.terms_link_found"], kind: "absence", detail: "Source files were scanned and no Terms of Use, Terms of Service, or EULA wording was found.", path: "source" });
+  }
+  if (!context.revenueCat) facts["revenuecat.secret_key"] = "not-applicable";
+  else if (!context.codeScanned) facts["revenuecat.secret_key"] = "unknown";
+  else facts["revenuecat.secret_key"] = signals.secretKey ? "present" : "absent";
+  if (context.revenueCat && signals.secretKey) {
+    bag.add({ facts: ["revenuecat.secret_key"], kind: "file", detail: "A string literal starts with sk_, the prefix RevenueCat uses for secret API keys. The value is not shown.", path: signals.secretKey.path, line: signals.secretKey.line, snippet: signals.secretKey.snippet });
+  }
+  facts["connect.revenuecat"] = "off";
+}
+
 function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config: ProjectConfig | null): void {
   const yesNo = (value: boolean | undefined): FactValue => value === undefined ? "unknown" : value ? "yes" : "no";
   facts["audience.kids"] = yesNo(config?.audience?.kids);
@@ -1152,6 +1245,20 @@ function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config:
   facts["attestation.google.data_safety_ad_id"] = yesNo(config?.attestations?.["google.data-safety-ad-id"]);
   facts["attestation.coppa.notice"] = yesNo(config?.attestations?.["coppa.notice"]);
   facts["attestation.eu.dsa_trader"] = yesNo(config?.attestations?.["eu.dsa-trader"]);
+  facts["attestation.payments.restore_control"] = yesNo(config?.attestations?.["payments.restore-control"]);
+  facts["attestation.payments.paywall_links"] = yesNo(config?.attestations?.["payments.paywall-links"]);
+  for (const [fact, key] of [
+    ["attestation.gdpr.lawful_basis", "gdpr.lawful-basis"],
+    ["attestation.gdpr.consent_basis", "gdpr.consent-basis"],
+    ["attestation.gdpr.processors", "gdpr.processors"],
+    ["attestation.gdpr.transfers", "gdpr.transfers"],
+    ["attestation.accessibility.reviewed", "accessibility.reviewed"],
+    ["attestation.apple.accessibility_labels", "apple.accessibility-labels"],
+    ["attestation.eaa.applies", "eaa.applies"],
+    ["attestation.eaa.information", "eaa.information"],
+    ["attestation.apple.kids_parental_gate", "apple.kids-parental-gate"],
+    ["attestation.apple.kids_analytics_exception", "apple.kids-analytics-exception"],
+  ] as const) facts[fact] = yesNo(config?.attestations?.[key]);
   const regions = new Set(config?.regions ?? []);
   facts["region.tr"] = regions.has("TR") ? "yes" : "no";
   facts["region.eu"] = regions.has("EU") || regions.has("EEA") ? "yes" : "no";

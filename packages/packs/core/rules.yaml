@@ -2242,3 +2242,261 @@ rules:
       confidence: heuristic
       note: "Compared with attestations.google.data-safety-ad-id. Play Data safety itself is not read from an API."
 
+
+  - id: apple.restore-purchases
+    title: Restorable in-app purchases need a restore control
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "3.1.1"
+      publisher: Apple
+    summary:
+      en: "Guideline 3.1.1 says you should make sure you have a restore mechanism for any restorable in-app purchases, and Apple's subscriptions page says the sign-up screen must include a way for current subscribers to sign in or restore purchases. This check looks for a restorePurchases call or a restore-purchases label in the source, or an attestation."
+      tr: "Kural 3.1.1, geri yüklenebilir uygulama içi satın alımlar için bir geri yükleme yolu olmasını ister. Apple'ın abonelik sayfası da kayıt ekranında mevcut abonelerin giriş yapabileceği veya satın alımları geri yükleyebileceği bir yol olması gerektiğini söyler. Bu kontrol kaynakta restorePurchases çağrısı veya geri yükleme etiketi ya da beyan arar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: payments.restore_control, eq: true }
+          - { fact: attestation.payments.restore_control, eq: "yes" }
+      fail:
+        all:
+          - { fact: payments.restore_control, eq: false }
+          - { fact: attestation.payments.restore_control, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "A RevenueCat paywall template is not assumed to include a restore button. Consumable-only apps may have nothing to restore; say so with attestations.payments.restore-control."
+    next:
+      en: "Add a Restore Purchases button that calls the SDK's restore method (RevenueCat: Purchases.restorePurchases()), or set attestations.payments.restore-control in .launchymind/project.yaml."
+      tr: "SDK'nın geri yükleme metodunu çağıran bir Satın Alımları Geri Yükle butonu ekleyin (RevenueCat: Purchases.restorePurchases()) ya da .launchymind/project.yaml içinde attestations.payments.restore-control değerini girin."
+
+  - id: apple.subscription-paywall-links
+    title: Subscription sign-up needs Terms of Use and Privacy Policy links
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/subscriptions/
+      section: "Sign-up screen details"
+      publisher: Apple
+    summary:
+      en: "Apple's auto-renewable subscriptions page lists what the sign-up screen must include: the subscription name and duration, the full renewal price, and a way to restore purchases. It also says the app and App Store metadata must include links to your Terms of Use and Privacy Policy. This check looks for Terms of Use or EULA wording and an in-app privacy URL in the source, or an attestation."
+      tr: "Apple'ın otomatik yenilenen abonelik sayfası, kayıt ekranında abonelik adı ve süresi, tam yenileme fiyatı ve geri yükleme yolu olmasını ister. Ayrıca uygulamanın ve App Store meta verisinin Kullanım Koşulları ve Gizlilik Politikası bağlantılarını içermesi gerektiğini söyler. Bu kontrol kaynakta Kullanım Koşulları veya EULA ifadesi ve uygulama içi gizlilik adresi ya da beyan arar."
+    appliesWhen:
+      all:
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.payments, eq: true }
+        - { fact: payments.subscriptions, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: attestation.payments.paywall_links, eq: "yes" }
+          - all:
+              - { fact: payments.terms_link_found, eq: true }
+              - { fact: urls.privacy.in_app, eq: true }
+      fail:
+        all:
+          - { fact: attestation.payments.paywall_links, neq: "yes" }
+          - any:
+              - { fact: payments.terms_link_found, eq: false }
+              - { fact: urls.privacy.in_app, eq: false }
+    check:
+      confidence: heuristic
+      note: "The words can be anywhere in the scanned source, not only on the paywall. App Store metadata links are not read here."
+    next:
+      en: "Put Terms of Use (or Apple's standard EULA) and Privacy Policy links on the paywall, or set attestations.payments.paywall-links after you check it by hand."
+      tr: "Ödeme ekranına Kullanım Koşulları (veya Apple'ın standart EULA'sı) ve Gizlilik Politikası bağlantıları koyun ya da elle kontrol ettikten sonra attestations.payments.paywall-links değerini girin."
+
+  - id: google.subscription-offer-terms
+    title: Play subscriptions must disclose price, billing period, and auto-renewal
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9900533
+      section: "Subscriptions"
+      publisher: Google Play
+    summary:
+      en: "Google Play's subscriptions policy says you must clearly and explicitly disclose your offer terms, the cost of your subscription, the frequency of your billing cycle, the automatic renewal terms, and whether a subscription is required to use the app. This check looks for price, billing-period, and auto-renew wording in the source, or the subscription-terms attestation."
+      tr: "Google Play abonelik politikası teklif koşullarının, abonelik ücretinin, faturalama sıklığının, otomatik yenileme koşullarının ve uygulamayı kullanmak için abonelik gerekip gerekmediğinin açıkça belirtilmesini ister. Bu kontrol kaynakta fiyat, dönem ve otomatik yenileme ifadeleri ya da abonelik beyanı arar."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: capability.payments, eq: true }
+        - { fact: payments.subscriptions, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: payments.renewal_terms_found, eq: true }
+          - { fact: attestation.apple.subscription_terms, eq: "yes" }
+      fail:
+        all:
+          - { fact: payments.renewal_terms_found, eq: false }
+          - { fact: attestation.apple.subscription_terms, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Words in the source are weak evidence. Prices that come from the store at run time are not seen; the attestation covers that case."
+    next:
+      en: "Show the price, the billing period, and that it renews automatically next to the subscribe button, or set attestations.apple.subscription-terms after a manual paywall review."
+      tr: "Abone ol butonunun yanında fiyatı, dönemi ve otomatik yenilendiğini gösterin ya da elle inceledikten sonra attestations.apple.subscription-terms değerini girin."
+
+  - id: revenuecat.secret-key-in-app
+    title: A RevenueCat secret API key must not ship in the app
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: industry
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://www.revenuecat.com/docs/projects/authentication
+      section: "API Keys"
+      publisher: RevenueCat
+    summary:
+      en: "RevenueCat says secret API keys are prefixed sk_, should be kept confidential, and should only be stored on your own servers, while public SDK keys are what the SDK is configured with. A string literal starting with sk_ was searched for in the app source. Public SDK keys are fine."
+      tr: "RevenueCat, sk_ ile başlayan gizli API anahtarlarının gizli tutulmasını ve yalnızca kendi sunucularınızda saklanmasını söyler; SDK genel (public) anahtarla yapılandırılır. Uygulama kaynağında sk_ ile başlayan metin arandı. Genel SDK anahtarları sorun değildir."
+    appliesWhen:
+      all:
+        - { fact: sdk.revenuecat, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: revenuecat.secret_key, eq: "absent" }
+      fail:
+        all:
+          - { fact: revenuecat.secret_key, eq: "present" }
+    check:
+      confidence: heuristic
+      note: "Stripe keys (sk_live_, sk_test_) are skipped. A key built from parts at run time is not seen. The value is never printed."
+    next:
+      en: "Remove the sk_ key from the app, revoke it in the RevenueCat dashboard, and configure the SDK with the public app-specific key."
+      tr: "sk_ anahtarını uygulamadan kaldırın, RevenueCat panelinden iptal edin ve SDK'yı uygulamaya özel genel anahtarla yapılandırın."
+
+  - id: revenuecat.products-configured
+    title: RevenueCat products and offerings match the code
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://www.revenuecat.com/docs/api-v2
+      section: "Products, entitlements, and offerings list endpoints"
+      publisher: RevenueCat
+    summary:
+      en: "With REVENUECAT_API_KEY set, LaunchyMind reads products, entitlements, and offerings from the RevenueCat REST API v2 (read only) and compares product store identifiers with product IDs written in the code. Without the key this rule does not run."
+      tr: "REVENUECAT_API_KEY tanımlıysa LaunchyMind RevenueCat REST API v2'den ürünleri, yetkileri (entitlement) ve teklifleri (offering) yalnızca okur ve ürün kimliklerini koddaki ürün kimlikleriyle karşılaştırır. Anahtar yoksa bu kural çalışmaz."
+    appliesWhen:
+      all:
+        - { fact: sdk.revenuecat, eq: true }
+        - { fact: connect.revenuecat, neq: "off" }
+    evaluate:
+      pass:
+        any:
+          - { fact: connect.revenuecat, eq: "match" }
+          - { fact: connect.revenuecat, eq: "configured" }
+      fail:
+        any:
+          - { fact: connect.revenuecat, eq: "mismatch" }
+          - { fact: connect.revenuecat, eq: "incomplete" }
+    check:
+      confidence: direct
+      note: "A failed or skipped API call stays unchecked. Store-side product state (App Store Connect or Play Console) is not read by this rule."
+    next:
+      en: "Add the missing products in RevenueCat, attach them to an entitlement and an offering, or fix the product IDs in the code."
+      tr: "Eksik ürünleri RevenueCat'e ekleyin, bir entitlement ve offering'e bağlayın ya da koddaki ürün kimliklerini düzeltin."
+
+  - id: google.data-safety-declaration-sdks
+    title: The local Data safety declaration covers what the SDKs collect
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Data collection"
+      publisher: Google Play
+    summary:
+      en: "Google says the Data safety form must include user data transmitted off the device by libraries and SDKs used in the app. The Play API for Data safety is write-only, so LaunchyMind compares the project's launchymind.datasafety.json with the Play data types that verified SDK rows name. Rows without an unambiguous Play type are listed for manual mapping and do not fail."
+      tr: "Google, Data safety formunun uygulamadaki kütüphane ve SDK'ların cihaz dışına gönderdiği verileri de içermesi gerektiğini söyler. Play'in Data safety API'si yalnızca yazılabilir olduğu için LaunchyMind projedeki launchymind.datasafety.json dosyasını doğrulanmış SDK satırlarının adlandırdığı Play veri türleriyle karşılaştırır. Tek anlamlı Play türü olmayan satırlar elle eşleştirme için listelenir ve hata sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: google.data_safety_declaration, neq: "missing" }
+        - { fact: google.data_safety_declaration, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: google.data_safety_declaration, eq: "match" }
+      fail:
+        all:
+          - { fact: google.data_safety_declaration, eq: "mismatch" }
+    check:
+      confidence: heuristic
+      note: "Runs only when launchymind.datasafety.json exists. A file with reviewed: false or invalid JSON stays unchecked. The live Play Console answers are not read."
+    next:
+      en: "Add the missing data types to launchymind.datasafety.json and to the Play Console Data safety form, or confirm with the SDK vendor that your setup does not collect them."
+      tr: "Eksik veri türlerini launchymind.datasafety.json dosyasına ve Play Console Data safety formuna ekleyin ya da kurulumunuzun bunları toplamadığını SDK sağlayıcısıyla doğrulayın."
+
+  - id: build.native-build
+    title: The requested native build ran and its artifact was read
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: product-rule
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: build
+      publisher: LaunchyMind
+    summary:
+      en: "With scan --build, LaunchyMind builds a debug APK and an iOS simulator app in a temporary copy of the project, then reads them like a scanned artifact. A build that failed is a risk. A build that did not run because the toolchain is missing stays unchecked, never a pass."
+      tr: "scan --build ile LaunchyMind projenin geçici bir kopyasında debug APK ve iOS simülatör uygulaması derler, sonra bunları taranan artifakt gibi okur. Başarısız derleme bir risktir. Araç zinciri olmadığı için çalışmayan derleme kontrol edilemedi kalır, asla geçti sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: build.requested, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: build.status, eq: "built" }
+      fail:
+        all:
+          - { fact: build.status, eq: "failed" }
+    check:
+      confidence: direct
+      note: "Debug builds without code signing. Release signing, bitcode, and store upload validation are not run. Unity projects are not built."
+    next:
+      en: "Read the build log lines in the report, fix the build, and run scan --build again. Install Flutter, a JDK, or Xcode where a build did not run."
+      tr: "Rapordaki derleme günlüğü satırlarını okuyun, derlemeyi düzeltin ve scan --build komutunu yeniden çalıştırın. Çalışmayan derleme için Flutter, JDK veya Xcode kurun."

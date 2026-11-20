@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0
+
+- RevenueCat support. The SDK is detected in Flutter, React Native, CocoaPods, Swift Package, Gradle, and Unity manifests. New rules check a restore control (Apple 3.1.1), Terms of Use and privacy links on a subscription paywall, Play subscription price, period, and auto-renew wording, and a RevenueCat `sk_` secret key in app source (redacted in reports). `launchymind connect revenuecat` reads products, entitlements, and offerings with `REVENUECAT_API_KEY` (GET only) and compares them with product IDs in code.
+- GDPR (6 rules), accessibility including the European Accessibility Act (4 rules), and Apple Kids (2 rules) packs are enabled with hashed sources. The live privacy-page check also reports retention, complaint-right, and third-country transfer wording.
+- A local Play Data safety declaration, `launchymind.datasafety.json`. `init --datasafety` writes a draft from verified SDK rows with `reviewed: false`. A reviewed file is compared with the Play data types the SDK rows name. `labels --play-csv` writes a review sheet.
+- `scan --build` (opt-in) builds a debug APK and an iOS simulator app in a temporary copy when the toolchain exists and reads them like `--artifact`. A build that did not run stays unchecked.
+- SDK knowledge base: Play rows for RevenueCat and Adjust from their Data safety pages. AppLovin stays unknown: its 13.7.0 privacy manifest lists no collected data types and no vendor page lists them. AppsFlyer has no Play row because its help page refused the request. StoreKit and Play Billing stay unknown with the pages that were opened.
+- Source watch: KVKK pages are hashed (with the GlobalSign intermediate certificate the server does not send). A non-200 response or an empty page is reported as broken, not unchanged. Empty stored hashes are dropped. Requests send `Accept-Language: en-US`.
+- `init` asks the payments, GDPR, accessibility, EAA, and Kids questions.
+
 ## 1.0.0-rc.1
 
 This is a release candidate, not 1.0.0. The owner publishes 1.0.0.

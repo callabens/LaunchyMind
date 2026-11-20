@@ -195,6 +195,46 @@
       "product.audience-answers:unchecked"
     ]
   },
+  "fixtures/revenuecat/flutter-bad": {
+    "framework": "flutter",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.privacy-policy-in-app:fail",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.restore-purchases:fail",
+      "apple.subscription-paywall-links:fail",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "google.privacy-policy:fail",
+      "google.subscription-offer-terms:fail",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked",
+      "revenuecat.secret-key-in-app:fail"
+    ]
+  },
+  "fixtures/revenuecat/flutter-good": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
   "fixtures/store/text-bad": {
     "framework": "flutter",
     "verdict": "reject",

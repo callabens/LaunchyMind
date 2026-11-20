@@ -22,6 +22,8 @@ export interface BaselineEntry {
   contentHash: string;
   verifiedAt: string;
   samples: SourceSample[];
+  /** Set when a script cannot read the page (for example a bot challenge) and a person hashed it from a browser. */
+  note?: string;
 }
 
 export interface BaselineFile {
@@ -86,7 +88,7 @@ export async function readBaseline(path: string): Promise<BaselineFile> {
   if (!existsSync(path)) return emptyBaseline();
   const document = parse(await readFile(path, "utf8")) as { format?: number; sources?: BaselineEntry[] };
   if (document.format !== 1 || !Array.isArray(document.sources)) throw new Error("Source baseline is not format 1.");
-  return { format: 1, sources: document.sources };
+  return { format: 1, sources: document.sources.filter((item) => item.contentHash !== EMPTY_PAGE_HASH) };
 }
 
 export async function writeBaseline(path: string, baseline: BaselineFile): Promise<void> {
@@ -103,6 +105,9 @@ export function defaultBaselinePath(): string {
   return join(findPackRoot(), "source-watch", "baseline.yaml");
 }
 
+/** Hash of an empty page. A stored entry with this hash never proved anything and is dropped on read. */
+export const EMPTY_PAGE_HASH = contentHash("");
+
 export async function listRuleSources(packRoot = findPackRoot()): Promise<SourceRef[]> {
   const dirs = [join(packRoot, "core")];
   const legal = join(packRoot, "legal");
@@ -115,6 +120,24 @@ export async function listRuleSources(packRoot = findPackRoot()): Promise<Source
   for (const dir of dirs) {
     const pack = await loadPack(dir);
     for (const rule of [...pack.rules, ...pack.withheld]) rows.push({ ruleId: rule.id, url: rule.source.url });
+  }
+  rows.push(...(await listSdkSources(join(packRoot, "sdk", "sdks.yaml"))));
+  return rows;
+}
+
+/** Vendor pages behind SDK draft rows are watched like rule sources. The id is sdk:<id>. */
+export async function listSdkSources(path: string): Promise<SourceRef[]> {
+  if (!existsSync(path)) return [];
+  const document = parse(await readFile(path, "utf8")) as { sdks?: Array<{ id?: string; source?: string; apple?: Array<{ source?: string }>; play?: Array<{ source?: string }> }> };
+  const rows: SourceRef[] = [];
+  for (const sdk of document.sdks ?? []) {
+    if (!sdk?.id) continue;
+    const urls = new Set<string>();
+    if (sdk.source?.startsWith("https://")) urls.add(sdk.source);
+    for (const item of [...(sdk.apple ?? []), ...(sdk.play ?? [])]) {
+      if (item?.source?.startsWith("https://")) urls.add(item.source);
+    }
+    for (const url of urls) rows.push({ ruleId: `sdk:${sdk.id}`, url });
   }
   return rows;
 }
@@ -146,7 +169,7 @@ async function checkOne(url: string, ruleIds: string[], baseline: BaselineFile, 
   const stored = baseline.sources.find((item) => item.url === url);
   let response: Response;
   try {
-    response = await fetchImpl(url, { signal: AbortSignal.timeout(20000), headers: { "user-agent": "LaunchyMind" } });
+    response = await fetchImpl(url, { signal: AbortSignal.timeout(20000), headers: { "user-agent": "LaunchyMind", "accept-language": "en-US,en;q=0.8" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const cause = error instanceof Error && error.cause instanceof Error ? `: ${error.cause.message}` : "";
@@ -156,6 +179,10 @@ async function checkOne(url: string, ruleIds: string[], baseline: BaselineFile, 
     return { url, ruleIds, status: "broken", contentHash: null, storedHash: stored?.contentHash ?? null, excerpt: "", error: `HTTP ${response.status}`, samples: [] };
   }
   const text = normalizePage(await response.text());
+  if (response.status !== 200 || text.length === 0) {
+    const reason = response.headers.get("x-amzn-waf-action") ? "a bot challenge" : "an empty page";
+    return { url, ruleIds, status: "broken", contentHash: null, storedHash: stored?.contentHash ?? null, excerpt: "", error: `HTTP ${response.status} returned ${reason}, so the page text could not be hashed. Open it in a browser.`, samples: [] };
+  }
   const hash = contentHash(text);
   const samples = pageSamples(text);
   if (!stored) return { url, ruleIds, status: "unbaselined", contentHash: hash, storedHash: null, excerpt: "", error: null, samples };

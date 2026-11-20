@@ -41,7 +41,7 @@ rules:
         Phase 5 is the planned home for GDPR checks. Article text was not
         copied into this pack, and no GDPR duty is asserted here.
     source:
-      url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
       section: not-specified
       publisher: European Union
     summary:

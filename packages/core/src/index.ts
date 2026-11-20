@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "1.0.0-rc.1";
+export const LAUNCHYMIND_VERSION = "1.0.0";
 export const LAUNCHPACK_SCHEMA_VERSION = 1;
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
@@ -300,6 +300,18 @@ export const KNOWN_FACTS = [
   "capability.play_games",
   "ads.ump_requested",
   "payments.stub_ui",
+  "payments.subscriptions",
+  "payments.restore_control",
+  "payments.renewal_terms_found",
+  "payments.terms_link_found",
+  "attestation.payments.restore_control",
+  "attestation.payments.paywall_links",
+  "sdk.revenuecat",
+  "revenuecat.secret_key",
+  "connect.revenuecat",
+  "google.data_safety_declaration",
+  "build.requested",
+  "build.status",
   "android.target_sdk_basis",
   "ios.privacy_manifest.tracking",
   "ios.privacy_manifest.tracking_consistent",
@@ -314,6 +326,20 @@ export const KNOWN_FACTS = [
   "live.privacy.transfer",
   "live.privacy.legal_basis",
   "live.privacy.rights",
+  "live.privacy.retention",
+  "live.privacy.complaint",
+  "live.privacy.third_country",
+  "attestation.gdpr.lawful_basis",
+  "attestation.gdpr.consent_basis",
+  "attestation.gdpr.processors",
+  "attestation.gdpr.transfers",
+  "a11y.labels",
+  "attestation.accessibility.reviewed",
+  "attestation.apple.accessibility_labels",
+  "attestation.eaa.applies",
+  "attestation.eaa.information",
+  "attestation.apple.kids_parental_gate",
+  "attestation.apple.kids_analytics_exception",
   "live.support.status",
   "live.support.contact",
   "live.account_deletion.status",

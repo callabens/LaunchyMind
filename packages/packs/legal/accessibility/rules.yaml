@@ -1,1 +1,128 @@
-rules: []
+rules:
+  - id: legal.accessibility.element-labels
+    title: Interactive elements should have accessibility labels
+    severity: info
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.android.com/guide/topics/ui/accessibility/apps
+      section: "Describe each UI element"
+      publisher: Android Developers
+    summary:
+      en: "Android's accessibility guide says to include a description of each UI element's purpose, usually in contentDescription, and Apple's VoiceOver evaluation criteria say an important item on screen should have a label or description VoiceOver can speak. This check only looks for label APIs (Semantics, semanticLabel, accessibilityLabel, aria-label, contentDescription) in the source. Finding one does not mean every element is labeled."
+      tr: "Android erişilebilirlik rehberi her arayüz öğesinin amacını, genellikle contentDescription ile açıklamayı önerir; Apple'ın VoiceOver değerlendirme ölçütleri ekrandaki önemli öğelerin VoiceOver'ın okuyabileceği bir etiketi olması gerektiğini söyler. Bu kontrol kaynakta yalnızca etiket API'lerini (Semantics, semanticLabel, accessibilityLabel, aria-label, contentDescription) arar. Bulunması her öğenin etiketli olduğu anlamına gelmez."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.accessibility, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: a11y.labels, eq: "found" }
+          - { fact: attestation.accessibility.reviewed, eq: "yes" }
+      fail:
+        all:
+          - { fact: a11y.labels, eq: "none" }
+          - { fact: attestation.accessibility.reviewed, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Unity C# UI is not inspected, so Unity stays unchecked unless attestations.accessibility.reviewed is set after a manual VoiceOver and TalkBack pass."
+    next:
+      en: "Label icon buttons and images (Flutter Semantics or semanticLabel, React Native accessibilityLabel, SwiftUI .accessibilityLabel, Android contentDescription), then test with VoiceOver and TalkBack."
+      tr: "İkon butonlara ve görsellere etiket verin (Flutter Semantics veya semanticLabel, React Native accessibilityLabel, SwiftUI .accessibilityLabel, Android contentDescription), sonra VoiceOver ve TalkBack ile deneyin."
+
+  - id: legal.accessibility.nutrition-labels-answered
+    title: Accessibility Nutrition Labels have been considered for the App Store
+    severity: info
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/manage-app-accessibility/overview-of-accessibility-nutrition-labels
+      section: "Overview of Accessibility Nutrition Labels"
+      publisher: Apple
+    summary:
+      en: "Apple says Accessibility Nutrition Labels are voluntary to start, and that over time you will be required to share accessibility support details to submit new apps and updates. This check only asks whether the project answered attestations.apple.accessibility-labels. Either answer passes today."
+      tr: "Apple, Erişilebilirlik Besin Etiketlerinin başlangıçta isteğe bağlı olduğunu ve zamanla yeni uygulama ve güncelleme göndermek için erişilebilirlik bilgisinin zorunlu olacağını söyler. Bu kontrol yalnızca projede attestations.apple.accessibility-labels cevabı olup olmadığına bakar. Bugün iki cevap da geçer."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.accessibility, eq: true }
+        - { fact: platform.ios, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: attestation.apple.accessibility_labels, eq: "yes" }
+          - { fact: attestation.apple.accessibility_labels, eq: "no" }
+    check:
+      confidence: attestation
+      note: "App Store Connect is not read. A blank answer stays unchecked."
+
+  - id: legal.accessibility.eaa-scope-answered
+    title: Whether the European Accessibility Act covers the app has been answered
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L0882
+      section: "Article 2(2) and Article 4(5)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 2(2) lists services provided to consumers after 28 June 2025 that the Directive covers, including electronic communications, access to audiovisual media, mobile apps for passenger transport, consumer banking, e-books, and e-commerce. Article 4(5) exempts microenterprises providing services. Many games are outside that list. This check only asks whether the project answered attestations.eaa.applies. It does not decide scope and it is not legal advice."
+      tr: "Madde 2(2), 28 Haziran 2025'ten sonra tüketicilere sunulan ve Direktif kapsamındaki hizmetleri sayar: elektronik haberleşme, görsel-işitsel medyaya erişim, yolcu taşımacılığı mobil uygulamaları, tüketici bankacılığı, e-kitap ve e-ticaret. Madde 4(5) hizmet sunan mikro işletmeleri muaf tutar. Birçok oyun bu listenin dışındadır. Bu kontrol yalnızca attestations.eaa.applies cevabına bakar. Kapsama karar vermez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.accessibility, eq: true }
+        - { fact: region.eu, eq: "yes" }
+    evaluate:
+      pass:
+        any:
+          - { fact: attestation.eaa.applies, eq: "yes" }
+          - { fact: attestation.eaa.applies, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked. National transposition laws are not read."
+
+  - id: legal.accessibility.eaa-information
+    title: An in-scope service publishes its accessibility information
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L0882
+      section: "Article 13(1) and 13(2), Annex V"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 13 says service providers design and provide services in accordance with the accessibility requirements, prepare the information in Annex V, explain how the service meets the requirements, and make that information public in an accessible way. This runs only when the project said the Act applies, and asks whether that information is published (attestations.eaa.information). It is not legal advice."
+      tr: "Madde 13, hizmet sağlayıcıların hizmetleri erişilebilirlik gerekliliklerine uygun tasarlamasını, Ek V'teki bilgiyi hazırlamasını, hizmetin gereklilikleri nasıl karşıladığını açıklamasını ve bu bilgiyi erişilebilir biçimde kamuya sunmasını ister. Yalnızca proje Direktif'in uygulandığını söylediğinde çalışır ve bu bilginin yayımlanıp yayımlanmadığını sorar (attestations.eaa.information). Hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.accessibility, eq: true }
+        - { fact: attestation.eaa.applies, eq: "yes" }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.eaa.information, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.eaa.information, eq: "no" }
+    check:
+      confidence: attestation
+      note: "The published statement itself is not opened."

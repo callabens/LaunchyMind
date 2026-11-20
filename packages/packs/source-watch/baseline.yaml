@@ -956,34 +956,6 @@ sources:
         excerpt: llect" refers to transmitting data off the device and storing it in a
           readable form for longer than the time it takes you and/or your
           third-party partners to se
-  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679
-    contentHash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-    verifiedAt: 2026-11-20
-    samples:
-      - at: 0
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.12
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.25
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.37
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.5
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.62
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.75
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.87
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
   - url: https://developer.apple.com/design/human-interface-guidelines/accessibility
     contentHash: sha256:ad27d73f88f3fe990e1282e8315251303f43f4d1a165a13ba43482592e96ca02
     verifiedAt: 2026-11-20
@@ -1110,34 +1082,6 @@ sources:
         excerpt: so be asked to certify that you only offer products or services that
           comply with the applicable rules of EU law. Enter EU Digital Services
           Act compliance inform
-  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679
-    contentHash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-    verifiedAt: 2026-11-20
-    samples:
-      - at: 0
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.12
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.25
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.37
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.5
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.62
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.75
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
-      - at: 0.87
-        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        excerpt: ""
   - url: https://support.google.com/googleplay/android-developer/answer/9893335
     contentHash: sha256:b7111ce55b0c549176986860e726e44ae6be79fe335f56ce571f4424d95df895
     verifiedAt: 2026-11-20
@@ -1182,3 +1126,1346 @@ sources:
         excerpt: " on these requirements and refer here to see the current list of
           Families Self-Certified ads SDK versions. If you use AdMob, refer to
           the AdMob Help Center for "
+  - url: https://www.kvkk.gov.tr/SharedFolderServer/CMSFiles/a569a068-c079-4189-b134-f57bc727af7d.pdf
+    contentHash: sha256:3773df37ea97d2ed310be5906df68d43de68dc833bba32d0faf174661b351dbd
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:29cb05ec79c9efced3ec403cd9d98d357b6b062f2cef832296af807c216fa3dc
+        excerpt: "%PDF-1.4 %���� 535 0 obj > endobj xref 535 27 0000000016 00000 n
+          0000002191 00000 n 0000002305 00000 n 0000003507 00000 n 0000003756
+          00000 n 0000004349 00000 n "
+      - at: 0.12
+        hash: sha256:b3e4d4b1afd92fe4e176553649328192b720047e4df428dd17bcb11941cb6250
+        excerpt: "�7F|���ܵ��c�Ẉ�ޯ�����B��r�&tC��\b�ߵβ���\"�Ц�\x12������ݟ'� \e
+          �g\x02R��n;һ\x03��\x1c\x0e͝�\x0ex�h�\x0f�{
+          o3�@�\0�q�Jp��sW���\b�w��U�\\�k�~���p��C[G]�:ϔMd�\x14o6w]ݰ�J��rh5\
+          \x13��!��p����F��wW\b�\x06�"
+      - at: 0.25
+        hash: sha256:271684cacdc1e72d78ecde32efb25b0b7e50f83c1d5f3fdbe8d48813c3aa0732
+        excerpt: "\x13��O.y\x19>t^uMqړL��tڟV�Pq&'�X|�9\x13��]WMk�{����|\x17�R�v\x1d��#y\
+          ����l��Ӷ�D����w �r_�\"�u�8m^g��G��c�0v��is\x1f(\x1d{�/
+          ��WY\x12���a(���>4T��kg��}̇R4\x13�
+          �U�_H���&#��M,�U\x1f\x1c�-�=�9\x16��i�"
+      - at: 0.37
+        hash: sha256:afdf7392831b67311ded5da63dfe4c7c0176745ad8b74d7426ab65ca075a9279
+        excerpt: "%\x1f\0 }.�OfQ\x15��1�#[� �I����A�i�6��
+          �\0g5�L�*k��\x19��N���\x1d\x1c��#�/_��\b[\x18͐�D�9���Ƃ�!
+          )zزX���a��R�f@�-|Y\x156=���H\bF�\"\x06�
+          ��\x05\x1a�\b�t�\"ׯЎ\x06��ǿD���38�\\�w
+          ���ێ�7+\x1c��'&���\x18�X\x17K��\e"
+      - at: 0.5
+        hash: sha256:9e8b474166ba20b82886879a2c4a4a56ff5652f8a226ff71effb0e8dba11f88c
+        excerpt: "!̙ ē\x1c���Ť���\"��\e�L&tyq(�R
+          �1Ꞓ\x03���\x1f�_�[ގ�!�#EiS��_���M��\x1e4׺�\x14+k\b�B(�
+          +5�:4��2�^�gr�\x0fE�B3ے�p� OC���Fh���zv��[��\x05� ,z\x15\x1d
+          F4Z����F�\0\x04T\x15\x03��|�QC����4�\0Ūmr\a�D�;U��J�\x1d\x1aP"
+      - at: 0.62
+        hash: sha256:58e4dbc02b0da7349c783537560d6549fd94a62061da4751bf22e97241f1fb01
+        excerpt: "�K�\x1dC��9hG��2�q%�ș���f\0}L�gp�)�ـ�) b��*�
+          �Z\x1a�����jθ�y�Ru�LMZ\x1a��q{\e�\x06���T�� y�\x16E��*�v
+          1:��y�\0\x18�K\x19\x01�T�3\0/k6ڎ�SwjUZ�c�X��sz��8;�K� ��*V{����J�Y^M�
+          \x1a��\x11��|\a\x014��C�䁺�"
+      - at: 0.75
+        hash: sha256:bcb61e828fda699d23d38a24424206a73ab4156eedbbfe4208bd029a1690f5cf
+        excerpt: "�\0 � ������K Xd��/�Ǚ�����\x19��m��\x1c�\x19t:M�8Q%w?���Q�
+          \x1e��n��/�P�~�מ��\x0f��h\x1d��
+          �{@���u�ǽu�=?�3�G\x13�A\x15�V��\\Uv̺O0\x14\x15͎�hs��\x11��?\x18��C��\
+          \0��Lz\x1e\x04��y��\x06k\x01oQ)N��� ���IK�^Qw\x12\x05�&��"
+      - at: 0.87
+        hash: sha256:b120f1bf791421291416cb1896c5490523d99c1facc828d7eb01bc3a05f5b133
+        excerpt: "R\x061�\aE\x04\x01\x18c���\x06��n\x12Zf@�J�A**\x06�5�R\x1a\x03���e�\
+          \x11�6���v�\x02 �[�K� ϔ
+          \a�|�)�b�H��!�\x01��cB��h\x06�&�M\0N�4\e\x12�v\x03֘\x02��\x06:�jM�*M�
+          ����\x12\a�X��O�{\0
+          ���kG\x0f\x14���I�Խ��I��_~���E���\0�-\x05���\x1eѸ��"
+  - url: https://www.kvkk.gov.tr/Icerik/4132/aydinlatma-yukumlulugunun-yerine-getirilmesinde-uyulacak-usul-ve-esaslar-hakkinda-teblig
+    contentHash: sha256:7a1ce3ac85f362c5e269adb6f64ce39f5ad864a30c7310f006086407207d4c51
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:54aebaf2b4e393e66f7903e37046d2b6a19a4f084321aeb48e083a24a3d8d41b
+        excerpt: Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve
+          Esaslar Hakkında Tebliğ | Kişisel Verileri Koruma Kurumu +90 312 216
+          50 00 Başkanın Mesajı TR E
+      - at: 0.12
+        hash: sha256:fcd1e1abd5a3c64d55d2bd7d7f784906f801c1723ada2752bf28686f8a4ea33e
+        excerpt: dan Yapılan Başvuruların Cevaplanması Yükümlülüğü Kurul Kararlarının
+          Yerine Getirilmesi Yükümlülüğü Kişisel Verilerin İşlenmesi Kişisel
+          Verilerin İşlenmesinde T
+      - at: 0.25
+        hash: sha256:44afc989b9e2114b0ee886317a32372e9b4efe101d91809a19e3e1c950ead448
+        excerpt: ast Kanalımız Etkinlikler Kütüphane İletişim Tebliğler Aydınlatma
+          Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında
+          Tebliğ Yayınlanma Tarih
+      - at: 0.37
+        hash: sha256:c8cef95e0aa85bc8b70519809f749f0dbec14373911629d42712b64c3591d2a2
+        excerpt: "Veri Sorumluları Sicilini, f) (Değişik:RG-28/4/2019-30758) Veri kayıt
+          sistemi: Kişisel verilerin belirli kriterlere göre yapılandırılarak
+          işlendiği kayıt sistem"
+      - at: 0.5
+        hash: sha256:d4bd4b2b30b639e7d00f9905fb846e4d8c433d78bbbd4bd6259accc0986879e4
+        excerpt: " b) Kişisel verilerin hangi amaçla işleneceği, c) Kişisel verilerin
+          kimlere ve hangi amaçla aktarılabileceği, ç) Kişisel veri toplamanın
+          yöntemi ve hukuki sebeb"
+      - at: 0.62
+        hash: sha256:0140a425c8612368e8bfb4838ce19f684bd6219e9f4bbf555a925aec5fbb5101
+        excerpt: etirildiğinin ispatı veri sorumlusuna aittir. f) Kişisel veri işleme
+          faaliyetinin açık rıza şartına dayalı olarak gerçekleştirilmesi
+          halinde, aydınlatma yükümlü
+      - at: 0.75
+        hash: sha256:07db937dc722b50dfd00b6067e623503747c16fef74b0c381225e254ee76f207
+        excerpt: işisel verilerin, tamamen veya kısmen otomatik yollarla ya da veri
+          kayıt sisteminin parçası olmak kaydıyla otomatik olmayan yöntemlerden
+          hangisiyle elde edildiğ
+      - at: 0.87
+        hash: sha256:7d1fdf20fceb841ce428c282d9893d5287cc28408e26feadb84ce2d4cda867eb
+        excerpt: 28/4/2019 30758 2. Duyurular "Kişisel Veri İhlalinde Hukuka Uygunluk
+          Sebepleri" Konulu Çarşamba Semineri Gerçekleştirilecektir 18 Kasım
+          2026 Seçilmiş Güncel Gel
+  - url: https://www.kvkk.gov.tr/Icerik/8710/veri-sorumlulari-tarafindan-acik-riza-ve-aydinlatma-metinlerinin-ayri-ayri-duzenlenmesi-gerektigi-hakkinda-kisisel-verileri-koruma-kurulunun-18-02-2026-tarihli-ve-2026-347-sayili-ilke-kararina-iliskin-kamuoyu-duyurusu
+    contentHash: sha256:7c2808f3fb0db7e69529139642ced0c5386e838153d43d633d98d3b3db5586ad
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:d18cdefabeeda2c357a73d93a60b1b0ff785f9f47d05b628242fb960f6b61c18
+        excerpt: "Veri Sorumluları Tarafından Açık Rıza ve Aydınlatma Metinlerinin Ayrı
+          Ayrı Düzenlenmesi Gerektiği Hakkında Kişisel Verileri Koruma Kurulunun
+          18.02.2026 Tarihli "
+      - at: 0.12
+        hash: sha256:f780af3ddc477b1d6aa5c21a7202f76d54c644c81b593b3f14578f24fc94ba13
+        excerpt: mlusunun Yükümlülükleri Aydınlatma Yükümlülüğü Veri Güvenliğine İlişkin
+          Yükümlülükler Veri Sorumluları Siciline Kayıt Yükümlülüğü Veri
+          Sorumluları Sicili Nedir?
+      - at: 0.25
+        hash: sha256:7e8c41866174bd502a78b1140604284cc29f2bd4029a6f54f8f6062fcc8db246
+        excerpt: kenler Yapay Zekâ Araçları Kullanan Çocuklar İçin Ebeveynlere Yönelik
+          Tavsiyeler Testler Verican Verinaz Eğitici Video Serisi Verican ile
+          Kişisel Verileri Öğren
+      - at: 0.37
+        hash: sha256:0985072397e818b76c75f74da7084c2ee65cc692876e34dc66f37c2ec23e974d
+        excerpt: a metninin iç içe geçmiş şekilde ilgili kişilere sunulması, Kişisel
+          Verileri Koruma Kurumuna (Kurum) intikal eden ihbar ve şikâyetlerde en
+          çok karşılaşılan huku
+      - at: 0.5
+        hash: sha256:78d51ed0f9fecabce5c15c9362f8cddc8da3db7552bc1fa341c30b3548010a85
+        excerpt: mektedir. Bu itibarla; İlgili kişinin talebine veya herhangi bir onaya
+          bağlı olmayan aydınlatma yükümlülüğünün kişisel veri işleme
+          faaliyetinin açık rıza da dah
+      - at: 0.62
+        hash: sha256:fe1a0ca13c7830d6179c063fd03d907ce15f55374b3f290e4c339bfb708a49a1
+        excerpt: ümlülüğünün yerine getirilmesi, ilgili kişilere ayrıca açık rıza metni
+          sunulmaması, İlgili kişilerden sadece, aydınlatma metninin okunduğuna
+          ve bilgi edinildiği
+      - at: 0.75
+        hash: sha256:dee5ad1a24aa9773df2c6505546c38f59e8cbd0295bcf3cb3fa604350dd67991
+        excerpt: ", Kanun’un 12’nci maddesinin birinci fıkrası uyarınca kişisel
+          verilerin hukuka uygun işlenmesini teminen veri sorumluları tarafından
+          alınması gereken idari ve t"
+      - at: 0.87
+        hash: sha256:67a952113a2a4ef6250f6025d1bbae37e136949f6da59948b077b93ff60332aa
+        excerpt: eler 11 Kasım 2026 Klinik Araştırmalarda Kişisel Verilerin Korunması
+          Çalıştayı 28 Ekim 2026 Etkinlikler Kurumumuz, Küresel Mahremiyet
+          Asamblesi’nin (GPA) 48&#03
+  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+    contentHash: sha256:4cd03beb33dfd56dfb519bc039f1fa6b8ba31ac8afeabf7a392e25bd22037781
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:0aba0a004bacc333eaa95ad1011d421646609d37da7fce8af2afd7d2251e0016
+        excerpt: L_2016119EN.01000101.xml REGULATION (EU) … preamble citation recital 1
+          recital 2 recital 3 recital 4 recital 5 recital 6 recital 7 recital 8
+          recital 9 recital 1
+      - at: 0.12
+        hash: sha256:f9215e149db9c92da4e4ab7c8fa976c3cfbba0cf6b75d8c2cbf98ae47894966d
+        excerpt: "rovided that the interests or the fundamental rights and freedoms of
+          the data subject are not overriding, taking into consideration the
+          reasonable expectations "
+      - at: 0.25
+        hash: sha256:f4f730f1a7b611a5822c71390bfe064f692758b3c71c6b1cb2e510eee06a2114
+        excerpt: "k to the rights and freedoms of data subjects, in particular where
+          those operations render it more difficult for data subjects to
+          exercise their rights. A data "
+      - at: 0.37
+        hash: sha256:b07dfa12b7b38d51bcef120ffc5b0601b2b94a866d386dfd68b9f11b0511bdef
+        excerpt: jects. A Member State may provide for such a body, organisation or
+          association to have the right to lodge a complaint in that Member
+          State, independently of a d
+      - at: 0.5
+        hash: sha256:19185271672bbe83c112ed0b08bf2c7efc85e5a00d85d7c574ee7ed8a7a3842f
+        excerpt: m the other matters, in an intelligible and easily accessible form,
+          using clear and plain language. Any part of such a declaration which
+          constitutes an infringe
+      - at: 0.62
+        hash: sha256:23414f11f40483a847688ef23a66c6934a98959ccecb3ff4745ba1b2310363f0
+        excerpt: ed to in paragraphs 3 and 4 of this Article may be based, in whole or
+          in part, on standard contractual clauses referred to in paragraphs 7
+          and 8 of this Article
+      - at: 0.75
+        hash: sha256:7f409820130b37133a45793e47a8dc7d18e0e312ad159e1f440cb1310185abe4
+        excerpt: stion; (c) their legally binding nature, both internally and
+          externally; (d) the application of the general data protection
+          principles, in particular purpose li
+      - at: 0.87
+        hash: sha256:7d0bad2036a00f4ef1189f1413842f38cabab45edb865ce0be0ca8a861d16986
+        excerpt: "the Board issued under Article 64. In that case, any supervisory
+          authority concerned or the Commission may communicate the matter to
+          the Board. 2. The decision "
+    note: EUR-Lex answers scripts with HTTP 202 and an empty bot-challenge page.
+      This hash was taken from the page loaded in a browser on 2026-11-20, so
+      the scheduled check reports the URL as broken until a person re-opens it.
+  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L0882
+    contentHash: sha256:ab3ca0bfe9ed46438169e33ef5a58c957303362015aa151d103ac9609b3948d8
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:bb9c224b5b7a278fbf0d43209f2e84072ac58c1dbe62d1eba2a416c7c0ca9543
+        excerpt: L_2019151EN.01007001.xml DIRECTIVE (EU) … preamble citation recital 1
+          recital 2 recital 3 recital 4 recital 5 recital 6 recital 7 recital 8
+          recital 9 recital 10
+      - at: 0.12
+        hash: sha256:a04059627233d88f2ee91f8b7ee41fe702da92ae0f6eb9c8db00c8b72dc07d2b
+        excerpt: tions. (33) This Directive should also cover websites, mobile
+          device-based services including mobile applications developed or made
+          available by operators of pa
+      - at: 0.25
+        hash: sha256:76685c497683231aa833ba8c319c5350362cd06bd44f2460a96817f6a828a30b
+        excerpt: onate burden on it. Consequently, the service providers should assess
+          the extent to which a limited level of accessibility in all
+          self-service terminals or a li
+      - at: 0.37
+        hash: sha256:82aff50ccbacf29d09acb014bb7739415202e0095515df9a493cb4af115d2904
+        excerpt: hines; — interactive self-service terminals providing information,
+          excluding terminals installed as integrated parts of vehicles,
+          aircrafts, ships or rolling st
+      - at: 0.5
+        hash: sha256:35e42590be5d436461c4bbe46e870cb9578a99f432d874240f25867ac91bf792
+        excerpt: uired by that Annex, that the product bears the CE marking and is
+          accompanied by the required documents and that the manufacturer has
+          complied with the requirem
+      - at: 0.62
+        hash: sha256:009900bbdd055e31b7ef6e610fe044639fec23e346c52f5dc560ec23a586c288
+        excerpt: "easures. 5. The information referred to in the second subparagraph of
+          paragraph 4 shall include all available details, in particular the
+          data necessary for the "
+      - at: 0.75
+        hash: sha256:3fce2690e57e3f6b2bd928cae65c13193f0f1edb6697589139f92d4eb3a82475
+        excerpt: " repealing Council Directive 85/577/EEC and Directive 97/7/EC of the
+          European Parliament and of the Council ( OJ L 304, 22.11.2011, p. 64
+          ). ( 21 ) Regulation ("
+      - at: 0.87
+        hash: sha256:6019dab1c23f484889ca568b71cdb087466b1fee3908874e5fb788cb5feb6eb4
+        excerpt: information concerning the functioning and accessibility features
+          related to products complies with the corresponding elements set out
+          in point 1 of Section I o
+    note: EUR-Lex answers scripts with HTTP 202 and an empty bot-challenge page.
+      This hash was taken from the page loaded in a browser on 2026-11-20, so
+      the scheduled check reports the URL as broken until a person re-opens it.
+  - url: https://www.revenuecat.com/docs/platform-resources/apple-platform-resources/apple-app-privacy
+    contentHash: sha256:6082e5bd30a7bea878cddf0f96bb034816219e178c3ec31cb14d1c2f64bdef70
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:60d0bb62b670f5f9478ed86334c313b49edb620977e792e647ef87eff2fd8c1d
+        excerpt: "Apple App Privacy | In-App Subscriptions Made Easy – RevenueCat Skip
+          to main content Skip to navigation On this page AI agents: the
+          complete RevenueCat document"
+      - at: 0.12
+        hash: sha256:ecbefdeb7b2781687fcbd6a49f666640bc2f024034c61ffd480ee9a1c0967455
+        excerpt: ot required when using RevenueCat Data Type Required? Contact Info,
+          including name or email address 💡 If you use customer attributes to
+          collect identifiable co
+      - at: 0.25
+        hash: sha256:e80908f33d54040c54a8fce31f02b03fe90f7eac023e287dcc975b42b5161d60
+        excerpt: t browsing history from users Search History ❌ RevenueCat does not
+          collect search history from users Identifiers 💡 If you are
+          identifying users with a custom a
+      - at: 0.37
+        hash: sha256:d706721dffab57063344eb0e7e06a115c9f91cf5b50884d636eb13d3e4e50c82
+        excerpt: pp collects ‘Purchases’ information from the App Privacy tab in App
+          Store Connect. 1. Purchase History Usage ​ At the bare minimum , you
+          must select the followi
+      - at: 0.5
+        hash: sha256:a97c5b2eb3f966e91f32d5c659bfa8b7f3124bcadd9827b8cace7977bd9be3c3
+        excerpt: y, click ‘Next’. 2. Purchase History Linked to Identity ​ Apple will
+          now ask if you are linking purchase history to a user’s identity. If
+          you are using RevenueC
+      - at: 0.62
+        hash: sha256:4039e1a012b7608f6f5e9ad2407ad81cab77e998a9250f5bb25df736f600d887
+        excerpt: ently use purchase history to track users across different apps for
+          advertising. If you are using integrations or other SDK’s that do
+          this, you may need to disc
+      - at: 0.75
+        hash: sha256:fe9363e298b22491333b4b42ee72e6a27d17b023366b738868b328411f2fa6be
+        excerpt: " Apple will show a preview of your app&#x27;s privacy section. If you
+          have chosen Purchases and Identifiers as described above, your privacy
+          details should look"
+      - at: 0.87
+        hash: sha256:a1307fd8b3a8257270638b283eb3cfb610d0ebfecd6bd00fda41b498f3957613
+        excerpt: Launch Your App Targeting Run an Experiment View Charts & Metrics
+          Configure Integrations Store Configuration Apple App Store App Store
+          Connect Setup Guide Servi
+  - url: https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety
+    contentHash: sha256:6a22161a513d6158cdc274985170f420149f7313759846c61e3d68173e4b4612
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f5152c68378d556b2d9214bbd0a366edb3cfae1a161bbd4f98028d5cf922ef45
+        excerpt: "Google Play&#x27;s Data Safety | In-App Subscriptions Made Easy –
+          RevenueCat Skip to main content Skip to navigation On this page AI
+          agents: the complete Revenu"
+      - at: 0.12
+        hash: sha256:26971c152d973eea93453b288dd9d9ff936c1a0d37f129fd299571df9346954f
+        excerpt: ity ​ Does your app collect or share any of the required user data
+          types? ​ Select &#x27;Yes&#x27;. RevenueCat collects a customer&#x27;s
+          purchase history. Is a
+      - at: 0.25
+        hash: sha256:8adef5204acd46d6823f9b6635f5b651682c3205c4be4d471b78f4666e620e09
+        excerpt: en using RevenueCat Data Type Required? Location ❌ RevenueCat does not
+          collect approximate or precise location data, only locale and currency
+          code Personal info
+      - at: 0.37
+        hash: sha256:de75bf96b1db8a9a069749010a741e697302b95302205a10bba8dde6f0790218
+        excerpt: "ect photos or videos from users Audio Files ❌ RevenueCat does not
+          collect video, music, or audio files from users. Files and docs ❌
+          RevenueCat does not collect "
+      - at: 0.5
+        hash: sha256:e09138e2517076ea9065de45c1dea794c39bd86eb899a4c39045cc628f646b46
+        excerpt: "androidId . Required Data Types ​ Type: Financial Info ​ If you are
+          using RevenueCat, you must disclose that your app collects
+          &#x27;Purchase history&#x27; info"
+      - at: 0.62
+        hash: sha256:247f30ba2aa06b5571e484922ad62da96b3567e6555d91bae8a656ad9ccc0aba
+        excerpt: lection is required and cannot be turned off. Why is this user data
+          collected? / Why is this user data shared? ​ Select the &#x27;App
+          functionality&#x27; and &#
+      - at: 0.75
+        hash: sha256:82969a78b71ed35bff7cdef43bf2bdf1b5edc8dc312488a52ec8984cb8e11eb3
+        excerpt: ncrease Request Data collection and security Does your app collect or
+          share any of the required user data types? Is all of the user data
+          collected by your app e
+      - at: 0.87
+        hash: sha256:c8212abe0ce51969434381e67df2fbfe0594ef5da83094dc23ee9c9654235f57
+        excerpt: etrics Configure Integrations Store Configuration Apple App Store
+          Google Play Store Service Credentials Server Notifications → Google
+          Play Store FAQs Google Pla
+  - url: https://docs.sentry.io/platforms/apple/data-management/apple-privacy-manifest/
+    contentHash: sha256:557c64ad627616bfc33fd4f0175f051175d16a3d2a7097079ecd019cf3ac196a
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:0319efe7cdfdb05253c00664a669e12f1511b0a7f5ec2121dabac8ebb290952f
+        excerpt: Apple Privacy Manifest | Sentry for Apple Skip to content Docs Get
+          Started SDKs Product AI Concepts API Manage Ask AI Go to Sentry Open
+          Main Menu Sentry for App
+      - at: 0.12
+        hash: sha256:1857da0c1fb77abba234fbf1f9d86b28876fffb0fd60c4f309c996f5d56c9378
+        excerpt: . To do this, the SDK needs to access certain information about the
+          device and the application. Some of the APIs required for this are
+          considered privacy-releva
+      - at: 0.25
+        hash: sha256:78012e3c3f88a85ebfad404bc30df65276578f042eba7f0eb1910416d1b94e10
+        excerpt: of your Xcode project. Follow the Privacy manifest files guide by Apple
+          to create the file. Note that the application privacy manifest covers
+          all data usages (v
+      - at: 0.37
+        hash: sha256:7e958a79f4208ddc48d6378da01aa667210bab6d534dfe94beb4491b5970fc13
+        excerpt: taTypeTracking </ key > < false /> < key >
+          NSPrivacyCollectedDataTypePurposes </ key > < array > < string >
+          NSPrivacyCollectedDataTypePurposeAppFunctionality </
+      - at: 0.5
+        hash: sha256:7cfab405b97e13ec3af056a64f6186d9010eac03d98cefedfb1235251026807c
+        excerpt: " > < dict > < key > NSPrivacyAccessedAPIType </ key > < string >
+          NSPrivacyAccessedAPICategoryUserDefaults </ string > < key >
+          NSPrivacyAccessedAPITypeReasons </"
+      - at: 0.62
+        hash: sha256:4ea7d0d30784b3ee6728826239f52b32fcb65f61ccae7034b2c3a540a963b229
+        excerpt: rivacyCollectedDataType </ key > < string >
+          NSPrivacyCollectedDataTypeCrashData </ string > < key >
+          NSPrivacyCollectedDataTypeLinked </ key > < false /> < key >
+      - at: 0.75
+        hash: sha256:fe1076fcbdfbdf24a8c7d49d2e63bfb8812d23f4e15ac52087c3c273a378386c
+        excerpt: rposes </ key > < array > < string >
+          NSPrivacyCollectedDataTypePurposeAppFunctionality </ string > </ array
+          > </ dict > </ array > < key > NSPrivacyAccessedAPIT
+      - at: 0.87
+        hash: sha256:2d9ad174203424661c1cad490d83f96d847faf325f8de4b0a5fdacd51e00be73
+        excerpt: y and there is no way to opt-out of them. If you are using an older
+          version of the SDK, you may need to update to version 8.25.0 or later
+          to automatically inclu
+  - url: https://documentation.onesignal.com/docs/en/apple-app-privacy-requirements
+    contentHash: sha256:2db02f4fc6bc85767daf6c7b945f87f4155b1ad602753235fc193436f21257bc
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:135b38e639616421808da06b5b701195c028dee925d347abe9bed02cdb91a9e6
+        excerpt: "Apple App Privacy Requirements - OneSignal Documentation Documentation
+          Index Fetch the complete documentation index at: /llms.txt Use this
+          file to discover all "
+      - at: 0.12
+        hash: sha256:e524d4610427448cb4d647cf71660a6210c55c30e7d93e9fdd278baf4290fed1
+        excerpt: '},{"language":"ko","tag":"메시지
+          채널","count":85},{"language":"pt-BR","tag":"Canais de
+          mensagem","count":85},{"language":"tr","tag":"Mesaj
+          kanalları","count":85},{"'
+      - at: 0.25
+        hash: sha256:286741ea972a3be16e7614e043bc9a321ce9ca0907454f23da74c81f257acfc5
+        excerpt: rn which data types OneSignal collects and how to report them in App
+          Store Connect.","keywords":["Apple App Privacy","App Store
+          Connect","OneSignal data usage",
+      - at: 0.37
+        hash: sha256:51a6b24933ea1f80d963eef202fc2acfd9552b5507f3cf93dd68f06910611030
+        excerpt: xzleD8du3j6/images/docs/5452615-Purchase_usage.png?w=1100\u0026fit=max\u0026auto=format\u0026n=jFWn5xzleD8du3j6\u0026q=85\u0026s=90745772e106cb2ed7a8506c25b686f
+      - at: 0.5
+        hash: sha256:aec72b500f4a158407d6e8d09a99bb6796ae4c7915220403a0faf5eb9657105e
+        excerpt: ther purposes, such as app functionality or personalization, include
+          those as
+          well.`})}),`\n`,_jsx(Heading,{level:`4`,id:`linked-to-user-identity-2`,children:`L
+      - at: 0.62
+        hash: sha256:99e16f89f8adbf02a4321d46202b6104fc8b6d379f46205707023886a66fe436
+        excerpt: 'used-for-tracking","depth":4,"children":[]},{"title":"Type: Usage Data
+          – Product
+          Interaction","slug":"type-usage-data-–-product-interaction","depth":3,"children'
+      - at: 0.75
+        hash: sha256:7ca796eb580f86c1810bbb6cb969c0858cc85e22b837f75cedee6ce4ea68ee2a
+        excerpt: nal.com/docs/en/gdpr-compliance\"},{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Apple
+          App Privacy Requirements\",\"item\":\"https://documentation.onesignal
+      - at: 0.87
+        hash: sha256:7e374205e3cb0735e14f3d3046795aa68dad21de3784592dccf196c6bf4f2bc6
+        excerpt: cs/en/links"},{"title":"Deep
+          linking","href":"/docs/en/deep-linking"},{"title":"Email unsubscribe
+          links \u0026 headers","href":"/docs/en/unsubscribe-links-email
+  - url: https://documentation.onesignal.com/docs/en/google-play-data-safety-requirements
+    contentHash: sha256:d3510044b2f498d33ce2d7012a40195aa34cf4098f1696966a89507280da63fe
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:7222e4fea924496ddf79db7be163a9213caf828609ab2dc559b1c2816c75a880
+        excerpt: "Google Play Data Safety Requirements - OneSignal Documentation
+          Documentation Index Fetch the complete documentation index at:
+          /llms.txt Use this file to discove"
+      - at: 0.12
+        hash: sha256:4e63a0d87ffdd20bb677c298dfe21315c49583365594ae8b56bb0095c9ebc5dc
+        excerpt: '","tag":"Analitik ve
+          Entegrasyonlar","count":53},{"language":"cn","tag":"分析和集成","count":52},{"language":"cn","tag":"开发者指南","count":50},{"language":"es","tag":"G'
+      - at: 0.25
+        hash: sha256:7ad65c2eab8ab00f348a4228157c66d6d837965969083dde6710c676ac02f3f2
+        excerpt: '};\n return _jsx(_components.p, {\n children: \"Learn how to
+          accurately complete the Google Play Data Safety form when using
+          OneSignal. Understand what data is '
+      - at: 0.37
+        hash: sha256:7af245415868cb9c768561e53e9e7e14e5bbe26900adc2e0bce4bbd2ffd63a0f
+        excerpt: "dren:`Diagnostics`}),_jsx(_components.td,{children:`❌ Not
+          collected`})]}),_jsxs(_components.tr,{children:[_jsx(_components.td,{\
+          }),_jsx(_components.td,{children:"
+      - at: 0.5
+        hash: sha256:13e6bfcd15d2e2e9a617720581d5d5cbdc56be6ef348ee1dfa593abc6929a383
+        excerpt: 026q=85\u0026s=fafa5c0cb104f3ca81a643c7f0d965d1
+          2500w`})}),`\n`,_jsx(Frame,{caption:`Collected and shared
+          settings`,children:_jsx(OptimizedImage,{src:`https://m
+      - at: 0.62
+        hash: sha256:b830bf671920e77511d28b6d5446d716d3651bcb2f3fa5f67095b9e604383264
+        excerpt: w-of-store-listing","depth":2,"children":[]},{"title":"Keep your
+          disclosure up to
+          date","slug":"keep-your-disclosure-up-to-date","depth":2,"children":[]}],"code
+      - at: 0.75
+        hash: sha256:bbc0ceee3d8d34150b96b1069f73d118b7a26dc578806ff5560ba83ad30e5927
+        excerpt: ation.onesignal.com/docs/en/google-play-data-safety-requirements\"}]},{\"@type\":[\"Article\",\"TechArticle\"],\"@id\":\"https://documentation.onesignal.com/doc
+      - at: 0.87
+        hash: sha256:e479d62234a5b867a35a837828a697fb5889632f5dac0105b55f8c0685ddae35
+        excerpt: subscribe links \u0026
+          headers","href":"/docs/en/unsubscribe-links-email-subscriptions"}]},{"title":"Retargeting
+          messages","href":"/docs/en/retargeting"},{"titl
+  - url: https://developers.facebook.com/blog/post/2022/07/18/resources-for-completing-app-store-data-practice-questionnaires-apps-facebook-or-audience-network-sdk/
+    contentHash: sha256:b5e836a9052139946936dc1daf7eeb0e38cb02fa2a2c45f65b9090983d3c4fa1
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:6e0c4b58dd9ce1bfe8b988abcd63e91a585c5e42568adbf1d8d3902bb9979019
+        excerpt: Resources for Completing App Store Data Practice Questionnaires for
+          Apps That Include the Facebook or Audience Network SDK Home Blog
+          Resources for Completing Ap
+      - at: 0.12
+        hash: sha256:70d6fa5f84306255ef3a18524d61a0c0324a840875331cf67e15434644d47f8e
+        excerpt: " stores, such as Google Play and the Apple App Store, including the
+          functionality of SDKs provided by Meta. To help make it easier for you
+          to complete these req"
+      - at: 0.25
+        hash: sha256:f591dbd647b19aa6d11a33ff876c899c4869406f54c96323cf6a7dcf64f4a6b5
+        excerpt: ications use and we have structured the document below according to
+          these features. App Ads, Facebook Analytics, & App Events Facebook App
+          Events allow you to m
+      - at: 0.37
+        hash: sha256:595a779ce31ae4c0c4ea5402f36552d869232e21745fe51c89cacff9f00e80f3
+        excerpt: DK , there are app events that are automatically logged (app installs,
+          app launches, and in-app purchases) and collected for Facebook
+          Analytics unless you disab
+      - at: 0.5
+        hash: sha256:d5eb7100970d78a202fb01eda45ef98db7529f746fbead8fd06ced2668ef2b0e
+        excerpt: Events Manager to determine which data types they are sending to
+          Facebook. It’s the developer’s responsibility to ensure this is
+          reflected in their application’
+      - at: 0.62
+        hash: sha256:46d38d0960e2ac266b5fb8bcf100d7d50cf59a144ca7dc0e36188ca40078cd6d
+        excerpt: "cenarios for applications that use Facebook Login via the Facebook
+          SDK: Authenticated Sign Up or Sign In, and User Data Access via
+          Permissions . For authenticat"
+      - at: 0.75
+        hash: sha256:5538dbba2f927df7f1103b115ed7b967e0c658853818bfc72ee21acca1187520
+        excerpt: "ng information if your app is integrated with the Facebook SDK: Device
+          identifiers; Device attributes, such as device model and screen
+          dimensions, CPU core, sto"
+      - at: 0.87
+        hash: sha256:d754eb789b7831296b0e045f646b13cdf0546d983c72c3aa3ef16b4731c56e01
+        excerpt: s, such as device model and screen dimensions, operating system,
+          mediation platform and SDK versions; and Ad performance information,
+          such as impressions, click
+  - url: https://artifacts.applovin.com/ios/com/applovin/applovin-sdk/AppLovinSDK-13.7.0.xcframework.zip
+    contentHash: sha256:36a57c131da25e9df4a8aec05d008bfd4bd94ebcb0ac9b9a52c6976e895b44aa
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:94184248baf9fd5dd0ade8332a440c28f51b831cad058dcd1fdc19a277c49a71
+        excerpt: "PK\x03\x04
+          \0\0\0\0\0�\x10^]\0\0\0\0\0\0\0\0\0\0\0\0\x18\0\x1c\0AppLovinSDK.xcfr\
+          amework/UT \0\x03\x04^�j\x04^�jux
+          \0\x01\x04�\x01\0\0\x04P\0\0\0PK\x03\x04
+          \0\0\0\0\0�\x10^]\0\0\0\0\0\0\0\0\0\0\0\03\0\x1c\0AppLovinSDK.xcframe\
+          work/ios-arm64_x86_64-simulat"
+      - at: 0.12
+        hash: sha256:091648adc1c88d5191d865506377a8e80beb41b3af799502e4f3d4d836fdd828
+        excerpt: "li9�d˙�Q�r\x17�j�V�wGj%�\eY\e�[�;\e�C+�2G�\x021;���C���zd���ry�Q\x0e\
+          f��m$T�|{
+          x��F-#�7R6����Y*����B\x11��Pw��G�z}�\x0e2��g��\b9\x05;یD��9̭~y�K��\\o\
+          \\����\b-צ���Y��~r�L^�0��!���#�fC@�u"
+      - at: 0.25
+        hash: sha256:212b35bc0ac2d43ba12949e7702e4e1afe52d07adb07b4c21c4402c595594496
+        excerpt: "2�G^ߡ[�DE�
+          �j\x1d�z�aժ��hc���:�3K���y���/��,�\x14�;t\e����\x1a_-Y�WW�\x1e��(UѦ�\
+          Mm_�:� \x10��Q\x0f3���b#V6]Z���'Y\b����Fv�99ɥ��үS6�ì�V=ú��Z�\x1eTG�cϘ�
+          >j\x1e\x13�md�v6�ݐD����n �d����f�h�h�"
+      - at: 0.37
+        hash: sha256:f336089a2d33d5aaf1c6d4a799d98a5ae9b14ba763ae39fcae12091454e637e0
+        excerpt: "��Vc��t���\x12k�O��+&��W�/)^��7���UV�/X
+          ~\x17Z�q����OP=��\x1d��j�\x03\x1c\x1d�\x18��\x03�d*�~������Y���f�Ӷ�h
+          �\x0e�h\\���U�\x17���\x15d�nm�.j%JƩ-\"�\x1f9�1kg��3��+V�\x1e�\x19��wV\
+          �`�z�\x1a\x13U�{>�C�SiK\x15aq5`K�t}"
+      - at: 0.5
+        hash: sha256:c575a3b53600344b61da2a97e14673b73251bb6917f5230729bbc46922972f13
+        excerpt: "c/�g\x02��\x11s� �`��܏#��\x1c�f�^�B��6��I
+          �y��|j�ߙ�\\�ݼ���`^�cOnf�޾O��?�Ov�_p\0�b\x02\x0f3^?��
+          ��\x038����ט��`M.�^^�=�\x1cf^��p��rS��!��$��Mf\x1d\x1e���X��8�G�w�
+          u{��:*�,�*l�Ό�\x04�� 3V��&[�;G"
+      - at: 0.62
+        hash: sha256:52b2260932e2e1c1464ed819490a35d58b7be98f0bb6af9ed15ef7ce0ff8d9cb
+        excerpt: "\x0e�X�l
+          Xfd\x04`@.�\x11�W�N޾�Am�\x1e\x17��C�{��8��`�&�\x1ek�����,�mD�W_��C2�
+          �/`0�y$\x05�\x12�8�$��[6j ��SiEh\"\x16�qB$��GwG�:�\x0f�I�
+          |\x02�\x04�$w
+          ^�\as�8W\x0e�\x13\x10��GB�E��_\x03N�\x14\x1c���\x1ae��O\x1ffWK\x06H�i\
+          �_j�Q"
+      - at: 0.75
+        hash: sha256:562277449bcc6faaf0d026ff74c397279d9f9b75ca92b0b66f3f886590a68ee3
+        excerpt: "\x05�ȥv�\x1c�p\x15�b�x�}5�q�k\x1e��\x06x�s0\a�!
+          �C��@�?ٓ��\x16r����r*���0� �3\x12r>�����\x17r>���:9�NJ;P��;��*�
+          죒���+\x0f��X���dX\x04BB& �\0>vqa\x15Y\x064\x02*�� W�@��
+          �\x1f3�=\x19\x12D��H\0\x055a\x138(�k�\x05\x05A|�^�JP��"
+      - at: 0.87
+        hash: sha256:f79288d958929b4b8cd0b45d955d387cbb85e5a3c7ae3a9da181f322b0532f6b
+        excerpt: "x}ޙ#\x1fʉ�p�k��=��\\����C:o�\x1f� o�5��:G\x0e
+          ��#:��Ǒo����or��O��\\�fn��
+          �#O��39�l.�7nyqO��;U���;q��8�\x04N|\x16g��
+          ��-�v�>\x0f����s�\x138�E��6� �+��ͱ�����s�W8�
+          μ�\x14}��-�Ǖ\x17ps\\�m���\x1c"
+  - url: https://docs.unity.com/en-us/grow/ads/privacy/apple-privacy-survey
+    contentHash: sha256:d31736cb312cf0904c043cb841c95c7540cf6cb0cafb951d5382dbfd72038e66
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:59ae40f5bab0cd84942dfcb9d5b912b3c870f8af03e0df2ff7ee82964f86fb62
+        excerpt: Apple privacy survey for Unity Ads • Unity Grow Documentation
+          Development User Acquisition Monetization Industry Development User
+          Acquisition Monetization Indus
+      - at: 0.12
+        hash: sha256:e2d5c14e668530e5674bd9cc359f63d342f4a9661464431148cb1dfc468bb278
+        excerpt: data collected by integrated third-party SDKs such as Unity Ads. For
+          your convenience, Unity Ads provides information on its data
+          collection practices as of Aug
+      - at: 0.25
+        hash: sha256:baec4fe8701fadb9c291fb4a77aa7e0d9c4b0ea356c4f0b3cb9030067bcad8b6
+        excerpt: her User Contact Info Any other information that can be used to contact
+          the user outside the app. No Not applicable Not applicable Not
+          applicable Health and Fit
+      - at: 0.37
+        hash: sha256:525c45ad715e032cf7eea0162949efe0c55ff6a55c63afabadc385cd777ad257
+        excerpt: l information. No Not applicable Not applicable Not applicable Location
+          data Collected? Linked to user? Purpose Notes Precise Location
+          Information that describe
+      - at: 0.5
+        hash: sha256:6791384a86d59e318e3085335b5197e140cd721a8fdbc87661baab19aac96367
+        excerpt: cted? Linked to user? Purpose Notes Contacts Such as a list of contacts
+          in the user&#x27;s phone, address book, or social graph. No Not
+          applicable Not applicabl
+      - at: 0.62
+        hash: sha256:0713b4895a05adbf1f05d19fa2a0f1362e2b8967be7855928af521fb5f27b9c4
+        excerpt: formation about the content the user has viewed that is not part of the
+          app, such as websites. No Not applicable Not applicable Not applicable
+          Search data Colle
+      - at: 0.75
+        hash: sha256:4ea562f2811c1fc284519635a0123d28e48b5926a089c02242c38102eefffb00
+        excerpt: on Such as app launches, taps, clicks, scrolling information, music
+          listening data, video views, saved place in a game, video, or song, or
+          other information abo
+      - at: 0.87
+        hash: sha256:5cf58d472d86dd361666315c4be185a8209a0a4a43ee350dc5ca671359cecd86
+        excerpt: poses of measuring technical diagnostics related to the app. No Not
+          applicable Not applicable Not applicable Other data Collected? Linked
+          to user? Purpose Notes
+  - url: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+    contentHash: sha256:2d3835b9843d258cb8eb92f1dde9b7b79e1056ca2143ccaf6c33e4248e652c60
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:12ab309b103782ffe0127f411b2d460d1b6761294eab8f5bd3440205e6b31a1e
+        excerpt: Google Play data safety section for Unity Ads • Unity Grow
+          Documentation Development User Acquisition Monetization Industry
+          Development User Acquisition Monetiz
+      - at: 0.12
+        hash: sha256:b0cb97659d6b5b11605a6b3293c56303f0b0755b99fb3603aa93eecf17285965
+        excerpt: ta deletion options are available. Read time 12 minutes Last updated a
+          year ago Starting April 2022, Android developers publishing on the
+          Google Play store must
+      - at: 0.25
+        hash: sha256:4a11efe40679c0a43737dc1515359b80739d08b181ea0615e2a115da2b1e3a23
+        excerpt: es Does the SDK provide a way for users to request that their data is
+          deleted? Yes Data types Location Collected Shared Ephemeral Required
+          Purpose Notes Does th
+      - at: 0.37
+        hash: sha256:47faf77c08eb912e44d0dcb1c19deebc5e22af8bbe069c46ba9d4134903d5b5a
+        excerpt: "K collect the user’s race and ethnicity? No N/A N/A N/A N/A N/A Does
+          the SDK collect the user’s political or religious beliefs? No N/A N/A
+          N/A N/A N/A Does the "
+      - at: 0.5
+        hash: sha256:47e30d2f833feac3120343639088e082b30326ea9d459f3ba00bd80948d8b4fd
+        excerpt: "ct the user’s fitness information? No N/A N/A N/A N/A N/A Messages
+          Collected Shared Ephemeral Required Purpose Notes Does the SDK collect
+          the user’s emails? No "
+      - at: 0.62
+        hash: sha256:522348fd6c5e0a8e3dfdcc27b3d7180463e407a18c689bfb1fd715ff42a6a93f
+        excerpt: d Shared Ephemeral Required Purpose Notes Does the SDK collect the
+          user’s files and or documents? No N/A N/A N/A N/A N/A Calendar
+          Collected Shared Ephemeral Req
+      - at: 0.75
+        hash: sha256:23e0dc90ca25967ee5132b2ba379e95c30ba5aeebd33b8ca4327d52663d1a5ad
+        excerpt: " N/A N/A Does the SDK collect data on any other app activity? Yes Yes
+          No Yes Advertising or marketing, analytics, fraud prevention,
+          security, and compliance Uni"
+      - at: 0.87
+        hash: sha256:af9151916c0409c12274f9c9d8aa64a06ef29aa1bdd15598d828ad2c7e8eeb82
+        excerpt: tifiers Collected Shared Ephemeral Required Purpose Notes Does the SDK
+          collect data on the user’s device or other identifiers? Yes Yes No Yes
+          Advertising or mar
+  - url: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/google-data-safety-questionnaire
+    contentHash: sha256:48eba4023b4f6472ad4804f363e8e81eeafa059597d73cfe888371a8f03d5aea
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:111329674aa7aed6ac80ab0b23f2e30fbbe3a3042cf1b0b39e371671408f2079
+        excerpt: Google Data Safety Questionnaire • Unity Grow Documentation Development
+          User Acquisition Monetization Industry Development User Acquisition
+          Monetization Industr
+      - at: 0.12
+        hash: sha256:687bc2ee5bf7d143874f37b7e03915bc7535f892da12bdb7833ef880c93aa89d
+        excerpt: acy Questionnaire Children and Child-Directed Apps Google Data Safety
+          Questionnaire ironSource GDPR Compliance ironSource US State Privacy
+          Laws Open Source Term
+      - at: 0.25
+        hash: sha256:ec8d4346431ba325112af1c0292cddb4c1f0566970a60736d4d3f2f08a35025d
+        excerpt: dated a year ago Data collection and security Question Answer Does the
+          SDK collect or share any of the required user data types? Yes Is all
+          of the data collecte
+      - at: 0.37
+        hash: sha256:7073a7d2937e7df2610ebf4d1a02f885421a54b9e31925f2e28e6d12b98547dd
+        excerpt: ed Purposes for collection & sharing Location No Required Yes –
+          Approximate location Yes – Approximate location Analytics; Fraud
+          prevention, security and compli
+      - at: 0.5
+        hash: sha256:fd0522543518a0acb275b05e2de55d35190c0fffb72c2b86dcc3138b8d5dc4de
+        excerpt: /A N/A N/A N/A Files and docs N/A N/A N/A N/A N/A Calendar N/A N/A N/A
+          N/A N/A Contacts N/A N/A N/A N/A N/A App Activity No Required Yes –
+          Other actions (intera
+      - at: 0.62
+        hash: sha256:10b5dfb1e8d6e8444455bdafdb3d98c9be34a20ff2b1142e6194b733f429c911
+        excerpt: nce No Required Yes – Diagnostics No Analytics; Fraud prevention,
+          security and compliance; Advertising or marketing. Device or other IDs
+          No Required Yes Yes Ana
+      - at: 0.75
+        hash: sha256:11351d49e155f4817a4687494b858eb105ba5f48bcd8595c875a4f7d0768ef7b
+        excerpt: "ons under the GDPR Apple’s app privacy questionnaire Copyright © 2026
+          Unity Technologies Legal Privacy Policy Cookies Documentation Terms of
+          Use Do Not Sell or "
+      - at: 0.87
+        hash: sha256:a33310dff572909ee50b7dc50a493e63183b88c273ae0202a1d685af65b59b0a
+        excerpt: ates in the U.S and elsewhere ( more info here ). Other names or brands
+          are trademarks of their respective owners. Some pages are
+          machine-translated for conveni
+  - url: https://raw.githubusercontent.com/adjust/ios_sdk/master/Adjust/PrivacyInfo.xcprivacy
+    contentHash: sha256:e1135ca61b9e535e745dada7daf0ad7f95a71379639a4b4ad86cdc22d8d5de9e
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f916582060c79c243f98ed99d9cf0649a28f67b0a803cf8877f16153868daa62
+        excerpt: NSPrivacyTracking NSPrivacyTrackingDomains https://consent.adjust.com
+          https://consent.adjust.io https://consent.adjust.net.in
+          https://consent.adjust.world https
+      - at: 0.12
+        hash: sha256:005e7e04a967d17057e82ebe79ca59511a5e9eea0b70bb4face662090bb8c767
+        excerpt: t.in https://consent.adjust.world https://consent.adjust.cn
+          https://consent.eu.adjust.com https://consent.tr.adjust.com
+          https://consent.us.adjust.com NSPrivacyA
+      - at: 0.25
+        hash: sha256:4fb90035c7cfadb0655581611dc4a774812c535a54e9db52d8cab50586320d36
+        excerpt: nt.us.adjust.com NSPrivacyAccessedAPITypes NSPrivacyAccessedAPIType
+          NSPrivacyAccessedAPICategoryUserDefaults
+          NSPrivacyAccessedAPITypeReasons CA92.1 NSPrivacyAcc
+      - at: 0.37
+        hash: sha256:da3c9a63e93a2db05761c482ff67b27348a686adc4b6c40efaa22c7151f17dad
+        excerpt: essedAPITypeReasons CA92.1 NSPrivacyAccessedAPIType
+          NSPrivacyAccessedAPICategoryFileTimestamp
+          NSPrivacyAccessedAPITypeReasons C617.1 NSPrivacyCollectedDataTypes
+      - at: 0.5
+        hash: sha256:3ccf2a45c25df6043039edf445c841209af879a48a8c2f7d4d695ed98f6c0d93
+        excerpt: NSPrivacyCollectedDataTypes NSPrivacyCollectedDataType
+          NSPrivacyCollectedDataTypeDeviceID NSPrivacyCollectedDataTypeLinked
+          NSPrivacyCollectedDataTypeTracking NS
+      - at: 0.62
+        hash: sha256:8b3cc6c6428f91484cc188374d0635ba85ebd5f33069f8c91cd92f18d9913446
+        excerpt: d NSPrivacyCollectedDataTypeTracking NSPrivacyCollectedDataTypePurposes
+          NSPrivacyCollectedDataTypePurposeAnalytics
+          NSPrivacyCollectedDataTypePurposeThirdPartyAd
+      - at: 0.75
+        hash: sha256:f11383b9ef1787b9b65500cb99226bff71a4322b9e73c4f065840603e12ce475
+        excerpt: DataTypePurposeThirdPartyAdvertising NSPrivacyCollectedDataType
+          NSPrivacyCollectedDataTypeProductInteraction
+          NSPrivacyCollectedDataTypeLinked NSPrivacyCollected
+      - at: 0.87
+        hash: sha256:415a401f3e329dedf1858ce39c71fe0862e1502a1d1abeaccf6e24fbe4c270c4
+        excerpt: lectedDataTypeLinked NSPrivacyCollectedDataTypeTracking
+          NSPrivacyCollectedDataTypePurposes
+          NSPrivacyCollectedDataTypePurposeAnalytics
+  - url: https://help.adjust.com/en/article/google-play-data-safety
+    contentHash: sha256:1a14620fb2f7b7a047681a1a38c012b0e1c6e6c76cd1f2c16b8357fd585b0dab
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:001fde5309a6be6d7f5519ba29d888dcf55fcea51cc73001be8e85a7ed193852
+        excerpt: Google Play Data Safety | Adjust Help Center We constantly publish
+          updates to our documentation, which may not yet be available in your
+          language. For the most c
+      - at: 0.12
+        hash: sha256:63c68a1527838cfa87f568c2ae69e28dfe7004d7a0bd1b6de9bccb993b94dd00
+        excerpt: "esting tracks. Important : Google states that from April 2022, Play
+          Store users can see the Data safety section. From July 20th 2022,
+          privacy policies and appro"
+      - at: 0.25
+        hash: sha256:f272688281775cb591a8fffe592aed0e208f788f0ef4c319f7f3dbfda08485c8
+        excerpt: a. This means you are mostly choosing the data Adjust can access in
+          your app based on how you configure and implement Adjust’s SDK code.
+          While there is some dat
+      - at: 0.37
+        hash: sha256:a74766e67707bed82b08ce45c5816ec30b03210937b9bb08138da8a50a41890d
+        excerpt: fic app. This includes if the email address is hashed. In the table
+          below, you can see what data the Adjust SDK does and does not collect
+          by default. In instanc
+      - at: 0.5
+        hash: sha256:33f0d36bfc59e91ce13c0d393cd61283f0ccdcd4b41a68a4c2223183040d97cc
+        excerpt: lt. Other types of “Usage Data” is optional and Adjust can collect them
+          on your behalf if you configure it). Learn more . Web browsing No App
+          info and performan
+      - at: 0.62
+        hash: sha256:b25713434d16d6903adbef6414c3350510595464ab5c3e30238b3c08be7b20b1
+        excerpt: "Purpose of collection and subsequent sharing and use: For session
+          tracking, the Adjust SDK needs to know when an activity resumes &
+          pauses. For this, the SDK ke"
+      - at: 0.75
+        hash: sha256:5950eb5f51225359d6847d11daee43f5e916b49ca036f6d3909b489357ad9f7f
+        excerpt: "re advertising identifier. If not available, the SDK reads the Android
+          ID as a fallback. For other devices the SDK reads the IMEI with the
+          IMEI plugin added or "
+      - at: 0.87
+        hash: sha256:ad8772e637f276452cf603a68607609e1968b56c7802bedd38283c89e8e7100e
+        excerpt: " Yes Analytics Yes Developer communications Optional: Adjust can share
+          the data with you, if you configure the integration. Advertising or
+          marketing Optional: A"
+  - url: https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/Resources/PrivacyInfo.xcprivacy
+    contentHash: sha256:acb5f43bbc77018462dc39d72813f6ebbd580a16e7d4fef1f9aa67271357e8fb
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:3ccf2a45c25df6043039edf445c841209af879a48a8c2f7d4d695ed98f6c0d93
+        excerpt: NSPrivacyCollectedDataTypes NSPrivacyCollectedDataType
+          NSPrivacyCollectedDataTypeDeviceID NSPrivacyCollectedDataTypeLinked
+          NSPrivacyCollectedDataTypeTracking NS
+      - at: 0.12
+        hash: sha256:675f97374a81b65f7db6cb48782a0c6d97abf4427298ab63e742ac441bab4b27
+        excerpt: eTracking NSPrivacyCollectedDataTypePurposes
+          NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising
+          NSPrivacyCollectedDataType NSPrivacyCollectedDataTypeProduct
+      - at: 0.25
+        hash: sha256:15c1a35e63f327d384b6c17c3a3df7b7986f09daf59183fe4acadf2c32c41cf4
+        excerpt: nteraction NSPrivacyCollectedDataTypeLinked
+          NSPrivacyCollectedDataTypeTracking NSPrivacyCollectedDataTypePurposes
+          NSPrivacyCollectedDataTypePurposeAnalytics NSP
+      - at: 0.37
+        hash: sha256:2a2afcc8bb57bd38f0963d30e55fafc2b59569a6f913ecc8a8964cde15e71595
+        excerpt: nalytics NSPrivacyTrackingDomains att-attr.whappsflyer.com
+          att-attr.appsflyer-cn.com att-attr.hevents.appsflyer-cn.com
+          att-launches.whappsflyer.com att-launches
+      - at: 0.5
+        hash: sha256:b2cf358ce260f0049ea78433679f0cbe89cea68d750771821b95b6790c0a746d
+        excerpt: appsflyer-cn.com att-launches.hevents.appsflyer-cn.com
+          att-conversions.hevents.appsflyer-cn.com
+          att-conversions.appsflyer-cn.com att-conversions.whappsflyer.com
+      - at: 0.62
+        hash: sha256:6afe860836f94e4fa32a3f2d1d9686b4386089c6a44a32f570031afe07b396bf
+        excerpt: ppsflyer.com att-dlsdk.hevents.appsflyer-cn.com
+          att-dlsdk.appsflyer-cn.com att-dlsdk.whappsflyer.com
+          att-dlsdk.appsflyersdk.com att-conversions.appsflyersdk.com
+      - at: 0.75
+        hash: sha256:35d1ae413ad92da67b603a3acc70b8d6411bf983c6c89dc36807b8b3ce5e7ae9
+        excerpt: att-launches.appsflyersdk.com att-attr.appsflyersdk.com
+          NSPrivacyTracking NSPrivacyAccessedAPITypes
+          NSPrivacyAccessedAPITypeReasons CA92.1 NSPrivacyAccessedAPIT
+      - at: 0.87
+        hash: sha256:6b7bfa694dc4192163994ccad9f943dbcca9fd0ddea702181ddf2d94e484e479
+        excerpt: ccessedAPIType NSPrivacyAccessedAPICategoryUserDefaults
+          NSPrivacyAccessedAPITypeReasons C617.1 NSPrivacyAccessedAPIType
+          NSPrivacyAccessedAPICategoryFileTimestam
+  - url: https://support.apple.com/en-us/102399
+    contentHash: sha256:c920f71eadf686e0faa1a9e38341692562e408ddcaf4137e2c93e3c3be914c41
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:4064af04c5930c574979002c094fa19ea479a159cc07fe72efb4b999f8566684
+        excerpt: About privacy information on the App Store and the choices you have to
+          control your data - Apple Support Apple Store Mac iPad iPhone Watch
+          Vision AirPods Home E
+      - at: 0.12
+        hash: sha256:dd55d55fea1eea2c3e27fee09847dc66b01a7cf5ae54fc93039d66f3c0ecf67f
+        excerpt: " protections such as stripping any direct identifiers, for example
+          user ID, before collection, and avoid practices like linking the data
+          back to your identity a"
+      - at: 0.25
+        hash: sha256:143195857e738d583629e601f591fba04df4e6b31eddee49f233ade2c83e38b8
+        excerpt: s not part of the app&rsquo;s primary functionality, it is collected in
+          a way that is clear in the experience what data is collected, your
+          account information o
+      - at: 0.37
+        hash: sha256:278d68c6169e20a5e9b1fdb9e5e152fe80edb524c5719dd386f74eec36fd87f0
+        excerpt: " else &mdash; can access. The privacy information summaries for our
+          own apps detail our own data collection practices, listing the types
+          of data our apps may co"
+      - at: 0.5
+        hash: sha256:14a7f0214fbd0902312d164007be362bb2d9fe586d57586190e7b5aed81bf6fa
+        excerpt: be linked to your identity we have listed it as Data Linked to You, and
+          if it cannot be linked to your identity, then it is listed as Data Not
+          Linked to you. Fo
+      - at: 0.62
+        hash: sha256:81886e5fe075e4c9a6b2bfdbc774be524eef164cbc58b2720b5854bf5dd3ce62
+        excerpt: "tion from your iOS device and Apple Watch will be sent to Apple in
+          order to develop, improve, and understand the effectiveness of health,
+          activity, and fitness "
+      - at: 0.75
+        hash: sha256:acdfd780e536058c7b4fdd9d33abccf98a330d2c499dd865f723a8bdb2da5cca
+        excerpt: vent fraud. Apple Pay does not store the original credit or debit card
+          number. And when you use Apple Pay with credit, debit, or prepaid
+          cards, Apple doesn&rsqu
+      - at: 0.87
+        hash: sha256:2f5fbd3308204f441256b50aeb57bff9f295d9684f0e4d81a0dfbcfa6185a40f
+        excerpt: ity. In addition, data is collected to improve the product, including
+          to understand the effectiveness of existing product features, plan new
+          features, or measur
+  - url: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/apple-privacy-questionnaire
+    contentHash: sha256:0d082b6a626eb1c169d04112a9a4e71d2c4bdb6cd49d07726f2796d5de11c4d0
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:9771e2b0c896e5af7dfd46c49e0896e4f65a51af26623de6d63319a3b2a60ab3
+        excerpt: Apple Privacy Questionnaire • Unity Grow Documentation Development User
+          Acquisition Monetization Industry Development User Acquisition
+          Monetization Industry Uni
+      - at: 0.12
+        hash: sha256:972321f6265ee143a70a530631c87320d5ecc917a6516d6517b555d5b8f24a9b
+        excerpt: d Child-Directed Apps Google Data Safety Questionnaire ironSource GDPR
+          Compliance ironSource US State Privacy Laws Open Source Terms and
+          Conditions Account Grow
+      - at: 0.25
+        hash: sha256:6c49170a1c7ec6c19f96883b64ee0b9269209eead3e6059b907ed7e0daad9dc6
+        excerpt: details on the App Store requirements (since December 8, 2020), app
+          developers must define which data is collected by their apps and SDKs.
+          The table below speci
+      - at: 0.37
+        hash: sha256:025f06b0c25f978b0abdeabef1844cb1f5353b7363797bfc87bba455d446efc0
+        excerpt: policy . Only data collected by ironSource is described in the
+          following table. This doesn&#x27;t include data collected indirectly
+          by the SDK, third-party netw
+      - at: 0.5
+        hash: sha256:793d2731cae64a4edd10ed00804929fff9f21e5edb2fa31946e54c5b051fabf6
+        excerpt: o No Credit Info No Other Financial Info No Location Precise Location
+          No Coarse Location (IP-based) No Sensitive Info Sensitive Info No
+          Contacts Contacts No Use
+      - at: 0.62
+        hash: sha256:245a1c9326d1ea5ea3a0ec27c856806536bed0c049d23b92697001bd9172c1b5
+        excerpt: er ID No Device ID Yes Yes 3rd party advertising Purchases Purchase
+          History No Usage Data Product Interaction (if mediation partners
+          share) Yes No 3rd party adv
+      - at: 0.75
+        hash: sha256:3029b96983471d43523676d1aa8be1b480cc5a173852df83a5aba9e1b09e4737
+        excerpt: " policy Children and child-directed apps ironSource US state privacy
+          laws ironSource SDK implementations under the GDPR Google’s Data
+          Safety Questionnaire Copyr"
+      - at: 0.87
+        hash: sha256:6cdae93235e36b995e4e549c2c7f3684854e5b690a957660730d02c67a6eee19
+        excerpt: ks are trademarks or registered trademarks of Unity Technologies or its
+          affiliates in the U.S and elsewhere ( more info here ). Other names or
+          brands are tradem
+  - url: https://developers.google.com/admob/ios/privacy/data-disclosure
+    contentHash: sha256:ac9fa006400f1adcb651a6d2a3e6ea90338c93c366f4252eb86d4f00ad4292eb
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:73c2f024e6e1c6fc79d538f2b53fddc484d8d669e2a6cda13f68207583bed76c
+        excerpt: App store data disclosure | iOS | Google for Developers Skip to main
+          content Google AdMob Documentation GMA Next-Gen SDK for Android Mobile
+          Ads SDK for iOS Mobi
+      - at: 0.12
+        hash: sha256:733a224c4d25688845667063fec7f0bbee1946be70a7d8016c8d440ae7a51b07
+        excerpt: Enable test ads Support form factors and displays iPhone X ad rendering
+          Support multiple windows and foldables Use agent skills Choose an ad
+          format App open Ban
+      - at: 0.25
+        hash: sha256:a7952d99a8ade95ca32ee508009d17143ce24cab526db3d2ce8b292a453f87d0
+        excerpt: User Messaging Platform (UMP) SDK Set up UMP SDK Manage IAB support
+          Disclose to EEA users Disclose to US users Interpret consent mode
+          values Sync consent across
+      - at: 0.37
+        hash: sha256:7350f5e4d92dbb91cabe97ff9c13b9f699e68381c1ab3b6210e25b59789e0ff8
+        excerpt: "oogle Mobile Ads SDK support AdMob support Help Center AdMob Help
+          Center AdMob Help Community Community Discord Ads Developer Blog
+          YouTube Google Advertisement "
+      - at: 0.5
+        hash: sha256:dbb4dda18e5e358e023f508740521a048b65f1a48ce8325793a3e1a00a2d6c34
+        excerpt: nformation regarding their apps' data use. Apple has announced that
+          these disclosures will be required for new apps and app updates
+          starting December 8, 2020. T
+      - at: 0.62
+        hash: sha256:1837e2b7ff15446bb72d4a7bf0ec2f7b958c1857951edcd8559a1c7db1e2982e
+        excerpt: purpose of third-party advertising and analytics. Advertising data,
+          such as advertisements the user has seen, may be used to power
+          analytics and advertising fea
+      - at: 0.75
+        hash: sha256:3d1c7f1e4725e8625fc22aa229b8e67da10bf070160f84570404f21431e54882
+        excerpt: le Ads SDK version 11.2.0 and higher supports privacy manifest
+          declarations. You are responsible for checking the privacy manifest
+          and ensuring that your applic
+      - at: 0.87
+        hash: sha256:295f0caa4878c45488245020a1bee1349844732b434e686820a9634c078cd923
+        excerpt: b-down"]],["Last updated 2026-11-18 UTC."],[],["Apple mandates that app
+          developers disclose data usage practices. The Google Mobile Ads SDK,
+          from version 7.68.0
+  - url: https://developers.google.com/admob/android/privacy/play-data-disclosure
+    contentHash: sha256:8a9da6f64a6f014ed8f936ef6f4bf06b008e69dd78d8ad6f8a4837c12c364915
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:0efd5300b2a20976cf78d51343962c2365966a0dcf506b73eeb2f0cca8fade2c
+        excerpt: Google Play data disclosure | Android | Google for Developers Skip to
+          main content Google AdMob Documentation GMA Next-Gen SDK for Android
+          Mobile Ads SDK for iO
+      - at: 0.12
+        hash: sha256:c0f07f12725cea751fb09cae32448cd747713777bdeb34718e979ea8ec4fc91a
+        excerpt: zation and ad loading Use AI tools Choose an ad format App open Banner
+          Set up banner ads Use inline adaptive for scrolling banners Use
+          collapsible banners Set a
+      - at: 0.25
+        hash: sha256:08bb82ea0501160944e4a212cebe9daeeade401686177328a864cc01afff5392
+        excerpt: " inspector Verify adapter integrations Test ad units Troubleshoot ad
+          units Troubleshoot privacy settings Copy troubleshooting output Test
+          creative types Ad load"
+      - at: 0.37
+        hash: sha256:39481c257341a91b86eba031c199ae0147da2418ece35d1cdad85414f08d3d5b
+        excerpt: ". Home Products AdMob Help and community Mobile Ads SDK (Legacy) for
+          Android Send feedback Google Play data disclosure Stay organized with
+          collections Save and "
+      - at: 0.5
+        hash: sha256:02625c25cb9f810039543906c37096cc4f3a768bb812f539e1f9003b40339f32
+        excerpt: "find information on whether and how our SDK handles end-user data,
+          including any applicable settings or configurations you can control as
+          the app developer. We "
+      - at: 0.62
+        hash: sha256:aaaecc45e5fc125f22bb0b1bc7dbc8cdcd0fa338ec2a73fbeb0998b7acd4600b
+        excerpt: ted data. Data collected and shared automatically The Google Mobile Ads
+          SDK (Legacy) collects and shares the following data types
+          automatically for advertising,
+      - at: 0.75
+        hash: sha256:c454e2a0ae315d9cbfccb5b4ecad10fa9d4b3680cb1629cc26e4d8df3b14afe3
+        excerpt: " may also disable transmission of the ad ID and other data. Data
+          collected and shared depending on your usage If you are using any
+          optional product features tha"
+      - at: 0.87
+        hash: sha256:564c88106efc142906a075789abb4cc1350f910a84d9e7e19261f4457968be35
+        excerpt: '],["Out of date","outOfDate","thumb-down"],["Samples / code
+          issue","samplesCodeIssue","thumb-down"],["Other","otherDown","thumb-down"]],["Last
+          updated 2026-11-1'
+  - url: https://support.google.com/analytics/answer/10285841
+    contentHash: sha256:9f88fa423cd72f545a96859f96c35ee3e00529fa83d6198c10c022f39906eb99
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:2e50926a07d74b9b9696164dd4d91fb983c37f5ea7b817ae36ad738b041be1bd
+        excerpt: Prepare for Apple's App Store data-disclosure requirements - Analytics
+          Help Skip to main content Analytics Help Sign in Google Help Help
+          Center Get started with
+      - at: 0.12
+        hash: sha256:74d2121e65c42ef7c7cfcbb72a9df30dee2334b50dd6e4a37a045d32d33e1f37
+        excerpt: d generation First-party data Troubleshoot data issues Report and
+          explore Reports Explorations Dimensions and metrics Analytics
+          Intelligence The Analytics app H
+      - at: 0.25
+        hash: sha256:21fca0e33826a8735ea97ffd76a4454d2a6a757928960be4e797f1d120fe90fc
+        excerpt: ps’ data use. Apple has announced that these disclosures will be
+          required for new apps and app updates starting December 8, 2020.
+          Google Analytics automatically
+      - at: 0.37
+        hash: sha256:58d0470b67bce55c7cbfd345ac15f5848f48c137b8e28bcfb1b485b27f6d0586
+        excerpt: rchase and subscription events are measured via StoreKit. Event
+          parameters include product ID, name, and price. By default, these
+          events are only associated wit
+      - at: 0.5
+        hash: sha256:46c8a9f9342a4f62f8b45e0768efe7c78df691a6fb2b71c5a059185b9be278d1
+        excerpt: ettings with Google products & services If you are using any optional
+          product features that involve additional data or participating in any
+          tests of new product
+      - at: 0.62
+        hash: sha256:706323421020ceabed93592c0d8facf31f297912edd1382060bd665174030778
+        excerpt: " apps’ data use , and no additional action is required to ensure
+          continued functionality of the SDK. If you are using a prior version
+          of the Google Analytics fo"
+      - at: 0.75
+        hash: sha256:0ac58f11d1a5a0ae325f0352366539a5deb8f9a3afc6c122c0fa0bf4a32f7295
+        excerpt: otection Terms 13 of 19 U.S. State Privacy Laws Controller Addendum to
+          Google Measurement Controller-Controller Data Protection Terms 14 of
+          19 Shared Data Under
+      - at: 0.87
+        hash: sha256:c60850ce2b1846ed2c63377ce233d47cd7ca5bf1c6e2e714555ee8bac310bb88
+        excerpt: ay! ©2026 Google Privacy Policy Terms of Service Language català&lrm;
+          dansk&lrm; Deutsch&lrm; español&lrm; español (Latinoamérica)&lrm;
+          Filipino&lrm; français&l
+  - url: https://firebase.google.com/docs/ios/app-store-data-collection
+    contentHash: sha256:9ae54672986332bd23f2a50c0d93f2221b1284686eb04eb4a86212e801c5cb55
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:bd3e935b29e263a5b8b1dc8a23e3f3b472acec6b45b77e639a6e3dd3ca468ecb
+        excerpt: Prepare for Apple's App Store data disclosure requirements | Firebase
+          for Apple platforms Skip to main content Build Build Get to market
+          quickly and securely wi
+      - at: 0.12
+        hash: sha256:da3478667b31f20357291c27458943aff6cfa8697e7dc34e4551eba8d6b28f97
+        excerpt: tore and serve content like images, audio, video with a secure
+          cloud-hosted solution. Hosting & Serverless App Hosting Deploy your
+          modern, full-stack web apps w
+      - at: 0.25
+        hash: sha256:3b5b10388ddc9d15ed7a5e75bc2e5d7f665f4b57fbaddc785eb6a13210b53a69
+        excerpt: " SDK Node.js Java Python Manage project access (IAM) Overview Roles
+          Overview Owner, Editor, Viewer roles Firebase predefined roles
+          Overview Firebase-level roles"
+      - at: 0.37
+        hash: sha256:14ccadb801942410dda24aed0cc590fed28620ada1f04c1cc75d3825dbe54ee3
+        excerpt: tion Crashlytics Performance Monitoring Test Lab (deprecated) Iterate &
+          Measure Remote Config A/B Testing Google Analytics Engage Users Cloud
+          Messaging In-App M
+      - at: 0.5
+        hash: sha256:e910bc58aa7156d9109c244c487905f3cfa6fbd946110ec3530d5c9ac4cfb1ef
+        excerpt: " size of the client log event cache and the number of client log
+          events dropped for various reasons, to monitor and maintain product
+          quality. FirebaseABTesting "
+      - at: 0.62
+        hash: sha256:6f4230c33a9848dc36d4c1fe80498de17f7886c1f5ebd718c2e4c5a733ba8079
+        excerpt: "hone auth or if the user's phone number is added as an authentication
+          method. Also collected during SMS-as-second-factor authentication
+          flows. Collects contact "
+      - at: 0.75
+        hash: sha256:597999a71796c400d9ca340c690ca0ddd8b454e060f368028021016434ea7618
+        excerpt: "unch. Developers can disable the use of Pasteboard by setting the
+          FirebaseDeepLinkPasteboardRetrievalEnabled property to NO in the app's
+          Info.plist file. Usage "
+      - at: 0.87
+        hash: sha256:37df3f19ed108aa4d5b4daf44461ea4e344f6ab28614f620003f35f6b28b49cc
+        excerpt: o target parameters that are based on this data. OS version and SDK
+          version are also collected and aggregated to understand usage trends
+          and inform product dire
+  - url: https://developer.apple.com/app-store/subscriptions/
+    contentHash: sha256:b7a2eac4a1b8f5b1cf7fa2c684ee7122f3c8395b56290e53cd71de76ca5da7d9
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:76cec620d6f5761e105b3394e6066a46a0b33ef53f0a05dc256ab41341ea7268
+        excerpt: Auto-renewable Subscriptions - App Store - Apple Developer View in
+          English Apple Developer Get Started Explore Get Started Overview Learn
+          Apple Developer Progra
+      - at: 0.12
+        hash: sha256:7f13453ef0a846803e50d13d611df3025b80b4922f1af61f58f7036edb41c0eb
+        excerpt: cluded from days of paid service. Days of paid service are specific to
+          each subscription group. Upgrades, downgrades, or crossgrades between
+          subscriptions in th
+      - at: 0.25
+        hash: sha256:114293d0efdde5a063e88ed608504a98ac951adb511014e8f863b91e27300862
+        excerpt: example, if you decide to lower the subscription price for users in
+          Germany, the revenue you’ll receive will be the purchase price minus
+          the European Union’s va
+      - at: 0.37
+        hash: sha256:01352e74af821fdc89c4c78081e7ee2464d24165a3b9ec0fc728a2937f1a1b05
+        excerpt: enjoy the app. Offer a metered paywall. A metered paywall allows access
+          to a finite amount of content for a specified duration before needing
+          to make a purchase
+      - at: 0.5
+        hash: sha256:dc7ea63632dc35b986c70dce7d3eda966cceb100e83a3976f9bc87632530d7a6
+        excerpt: hin your app using StoreKit , and promote the offer’s Apple In-App
+          Purchase to display it on the App Store. When promoted, your offer
+          appears on your product pa
+      - at: 0.62
+        hash: sha256:10df9a608940c2ef7eec5bf6b37197399890b80ea6f1245f940a47466f8a1d97
+        excerpt: " on your configuration, Apple displays these offers to eligible
+          customers in various places, such as on the App Store or in your app
+          or game. For example, you c"
+      - at: 0.75
+        hash: sha256:572f93a502f7888322910abf3446b64010d8ab37b94af63dd9d006516573b44a
+        excerpt: "er a subscription is active, expired, in billing retry, or in grace
+          period. Use this information to inform your retention strategy and
+          provide subscribers with "
+      - at: 0.87
+        hash: sha256:34e526bd41ca42f7767442056682a02e12576bd2d41ce960e5915ee2624ca889
+        excerpt: ting someone during a critical moment. You can keep an unlimited number
+          of active subscribers at their existing price while increasing the
+          price for new subscri
+  - url: https://support.google.com/googleplay/android-developer/answer/9900533
+    contentHash: sha256:9855ed1c5ecb981749e2b5cc9abf39577b3845dca2ba679ee006ea967378a352
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:e0c82f7b91754072d68d9706a81522db9a31d3288f30647c229aba392d1db39f
+        excerpt: "Subscriptions - Play Console Help Skip to main content Play Console
+          Help Sign in Google Help Help Center Play Console Help Policy Center
+          Community Play Console "
+      - at: 0.12
+        hash: sha256:bae0266cfd49003986733389c5280fac8160d98e6c7ca8b83932ddcce8b311e8
+        excerpt: "this article This article will be updated with recently announced
+          changes. Subscriptions with ongoing eligibility-based discounts :
+          Subscriptions with ongoing e"
+      - at: 0.25
+        hash: sha256:43eb7d01bc7dd7dca75298a66e9e271fb50ee8e6af3bde257b6f303f2e15eaa2
+        excerpt: o review the information. Subscriptions must provide sustained or
+          recurring value to users throughout the life of the subscription, and
+          may not be used to offer
+      - at: 0.37
+        hash: sha256:8e54a814739e42a635b36da01bf39c456d01c6f07000f06fbe62495cfc63e1e4
+        excerpt: y demonstrate that a user can access content without a subscription
+          (when available). SKU names that do not accurately convey the nature
+          of the subscription, su
+      - at: 0.5
+        hash: sha256:6bb036f96418683d6c7b4356ed006109dd2f91e2303b47423cd4fa20866627d8
+        excerpt: because its language and currency are not localized to the user's
+          country, unlike the terms and conditions. This prevents the user from
+          being able to understand
+      - at: 0.62
+        hash: sha256:1c6d21c50662c95ae1e5efd2e35d601125e839cf407aac1c743591b5d2e241e5
+        excerpt: ate that a user can access content without a trial (when available).
+          Offer pricing and terms that are incompletely localized. ① Dismiss
+          button is missing or not
+      - at: 0.75
+        hash: sha256:616d205d15a97da8bb279c8b5ee307148c6d60704deb0647b32d0dcd8d20231f
+        excerpt: " Google Play's Subscription Center (for subscriptions that use Google
+          Play's billing system); and/or direct access to your cancellation
+          process. If a user cance"
+      - at: 0.87
+        hash: sha256:b82499f80b75a50eed6098d3b91e1ec155d219070a2c22a9abd4ffc9d60a7081
+        excerpt: ommunity Get answers from community members Contact us Tell us more and
+          we’ll help you get there true Monetization and Ads 1 of 5 Payments 2
+          of 5 Ads 3 of 5 Sub
+  - url: https://www.revenuecat.com/docs/projects/authentication
+    contentHash: sha256:59b1b6b0c28a0884e3ac58f967fb9f57e875d20f010e0166bc34fe79dd5fd428
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:a452000798bfa8eb562e0d7c90a10a44891139600b86adfe2791d6091c64be32
+        excerpt: "API Keys | In-App Subscriptions Made Easy – RevenueCat Skip to main
+          content Skip to navigation On this page AI agents: the complete
+          RevenueCat documentation ind"
+      - at: 0.12
+        hash: sha256:7f09eea5815141564b1b63cf19dd2af6236e25c410273b537308032d386e601b
+        excerpt: " building one that other developers will connect to, use OAuth instead
+          of sharing API keys. API Keys ​ There are two types of API keys:
+          Public API keys (also kn"
+      - at: 0.25
+        hash: sha256:9b025c1b202583c5fd08927f0faace0f06d0d3ef26458c636158697309cba0c0
+        excerpt: h as deleting subscribers and granting entitlements. Secret API keys
+          are project-wide and can be created and revoked by project Admins .
+          REST API v2 Authenticat
+      - at: 0.37
+        hash: sha256:1ede6fee4c834f0a2a97062779076eb595e80c4aba2a4debac0827243269c7a0
+        excerpt: m-specific API keys are automatically created when adding an App to
+          your Project and cannot be changed. Secret API keys can be created by
+          selecting the + New se
+      - at: 0.5
+        hash: sha256:b7e15e61d6902bf37d8010c038a4326d26e9d47e77240167bbcca305a9e4c86d
+        excerpt: " the Purchases SDK with your public API key Reminder, never embed
+          secret API keys in your app or website. Keeping Secret API Keys Safe ​
+          Secret API keys can be "
+      - at: 0.62
+        hash: sha256:93ad12c9a5e9722a8a994ec16072ec0b7f00dbe6aa929dfcf18cbe258dc6f339
+        excerpt: ⚠️ Only configure the Purchases SDK with your public API key Consider
+          rotating your secret API keys regularly to ensure they are not
+          compromised. Do the same wh
+      - at: 0.75
+        hash: sha256:a5071cac3fefe55606985973a7c0864ff240effbfa1fe4980ba29ae58bab0bbc
+        excerpt: " Settings Next OAuth API Keys REST API v2 Authentication Finding API
+          Keys Keeping Secret API Keys Safe Adding and Revoking Secret API Keys
+          Welcome Start here SD"
+      - at: 0.87
+        hash: sha256:7ce7bcdbdf7961eb7735afca8c323735aaccabefb6a89c31c56dd9ae67b79e66
+        excerpt: og Manage Customers Authentication Build a Paywall Funnels Test Your
+          App Launch Your App Targeting Run an Experiment View Charts & Metrics
+          Configure Integration
+  - url: https://www.revenuecat.com/docs/api-v2
+    contentHash: sha256:7d1b8eb2dd57b08e4a606154aa6036cdd6726629398bb79dcfda5c392ae862cf
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f4b6599309c1f39f30ee290a2af47885180efc3a971ff9c4ec4c2eed202c0af1
+        excerpt: "REST API v2 Reference | In-App Subscriptions Made Easy – RevenueCat
+          Skip to main content Skip to navigation AI agents: the complete
+          RevenueCat documentation ind"
+      - at: 0.12
+        hash: sha256:0c58a7996cc06f0f0b9d2f177ae8ba95a1e7145a9a7b58326be9ed9d78f0bbd4
+        excerpt: entication Authentication for the RevenueCat REST API is achieved by
+          setting the Authorization header with a valid API key. You'll find two
+          types of API keys in
+      - at: 0.25
+        hash: sha256:439087568f0bec1dc58644d37a2f906ff92a8d74950e4ac8410010e6336cf150
+        excerpt: i.e., if you make a request to this endpoint, you will get the first
+          page), e.g. /v2/projects/{project_id}/products next_page is the URL
+          for the next page, if t
+      - at: 0.37
+        hash: sha256:2cff04e852748db31a664eb39b31f1147264485d52e2ba51ddfbcd975d12cea1
+        excerpt: " Below is an example of the response body that will be sent when the
+          rate limit is reached. The value of the backoff_ms field corresponds
+          to the Retry-After hea"
+      - at: 0.5
+        hash: sha256:2787e1e79102fc3c26392427ed5bb65534dbdc77da3e0eb38dbaf4a3c6354196
+        excerpt: 'urn the modified entity. Errors return the following fields: { "type"
+          : "parameter_error" , "param" : "customer_id" , "message" : "id is too
+          long" , "retryable"'
+      - at: 0.62
+        hash: sha256:c67211f2301b66b943b8248a740c23cd80bc32fbce0ca0a9df8eba9915a64a70
+        excerpt: "s ) parameter_error The parameter provided is invalid. Please refer to
+          the message field for more information. IDs (e.g: entitlement_id ,
+          project_id , etc): 1 t"
+      - at: 0.75
+        hash: sha256:957ab0cd387d042f086a64be6d66e52f0801e5c965305839adeede76fa3f41a4
+        excerpt: "you to access your data without needing to understand the
+          specificities and idiosyncrasies of each individual store.
+          Additionally, the REST API v2 subscription "
+      - at: 0.87
+        hash: sha256:40e6c65791a341d4486c98179537b6a1b5ed6eba888b9f42ce0a0ed3a7f6bf6a
+        excerpt: "psed (e.g: after a billing retry or letting subscription expire after
+          an unsubscribe), if a customer subscribes to the same product it will
+          be considered a new "
+  - url: https://developer.android.com/guide/topics/ui/accessibility/apps
+    contentHash: sha256:02a7d6c9089aae24fb8af98172b511f8e329f287b88135f2e8cf3e1400d01c1d
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:8d579e52d2c16a7e883c300c10886ab091da54704937b188b5888cad095efbee
+        excerpt: Make apps more accessible | App quality | Android Developers Skip to
+          main content Essentials Build AI experiences Build AI-powered Android
+          apps with Gemini APIs
+      - at: 0.12
+        hash: sha256:321105e7238886a469bf28e859f00835ef792c0d04fba106cd1e6318f53d2a2f
+        excerpt: view Privacy Permissions Identity Fraud prevention Develop Build more
+          with agents in Android Turn prompts into real Android experiences
+          using your favorite agen
+      - at: 0.25
+        hash: sha256:07f84dd67c9ce96e462cdbbe1a159516b035a5505b755c468ebee904f767a50a
+        excerpt: nd-the-scenes looks at how we’re evolving. Community Discover stories
+          from our users, spotlight features, and the collaborative projects
+          that bring us all toget
+      - at: 0.37
+        hash: sha256:c4f52b2d6580fd723b9acce0c603582ec583aeecfd56db8d409b0c28ce8f27e6
+        excerpt: eriences Get started Get started Hello, world! Adaptive apps Compose
+          for UI AI-powered IDE Monetization with Play ↗️ Developer Verification
+          Registered App Store
+      - at: 0.5
+        hash: sha256:1a5857fb82130a6531736ed91742ffcc3de3338bcca92fa043db75851b225e38
+        excerpt: "ay libraries ⤵️ Tools & resources Android App Bundles Brand &
+          marketing Play Console APIs ↗️ the Android Developer's Blog Read the
+          latest Explore the authors → "
+      - at: 0.62
+        hash: sha256:8436d1cf7a5f841578949390c186dd339ac7e44e8440f693cd8079b7d877ff24
+        excerpt: "result in a color contrast ratio of at least 4.5:1. For all other
+          text, set the color contrast ratio to at least 3:1. The following
+          image shows two examples of "
+      - at: 0.75
+        hash: sha256:42a708f30503fdf66bda4647a614486ef9e0bb6d9b660c5b2ae0c720b91e3dc6
+        excerpt: mageVector = Icons . Filled . Share , contentDescription =
+          stringResource ( R . string . label_share ) ) } }
+          AccessibilitySnippets . kt Note that you do not nee
+      - at: 0.87
+        hash: sha256:b7a8d7ae95ae794239d539b73ec5ef2674c13698d0b902371b9cfbfe4f1895f5
+        excerpt: "ditional resources To learn more about making your app more
+          accessible, see the following additional resources: Codelabs
+          Accessibility in Jetpack Compose Videos"
+  - url: https://developer.apple.com/help/app-store-connect/manage-app-accessibility/overview-of-accessibility-nutrition-labels
+    contentHash: sha256:1e725622f1801dd2ed869ee9fa6127c52ab6c859f077e5096fd31d0ac10f2d95
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:d010f828905987e96f552beeb7e8b5f5f9168747b073752378221714136f4e7c
+        excerpt: Overview of Accessibility Nutrition Labels - Manage App Accessibility -
+          App Store Connect - Help - Apple Developer ' /> ' /> View in English
+          Apple Developer Get
+      - at: 0.12
+        hash: sha256:3134472c5a5c52a3a5138f6f79107078d1e9e2537f8ffca1ef722376df3f1438
+        excerpt: "ns to App Review Manage a submission with unresolved issues Manage
+          submissions to App Review Upload a geographic coverage file Manage
+          submissions to App Review "
+      - at: 0.25
+        hash: sha256:de1d9f494b9cb587f14b6ddadb9a8ad75f89e665c8c771915119b46b5efbaf47
+        excerpt: ges Manage subscriptions Overview of testing in sandbox Test In-App
+          Purchases Create Sandbox Apple Account Test In-App Purchases Manage
+          Sandbox Apple Account se
+      - at: 0.37
+        hash: sha256:bca40ab1cfe63e0d635afed9446979512d0c741ed8581efc92dbab64077cea16
+        excerpt: ebhooks Set up OS data transfer Create an app record Add a new app Set
+          your developer name View and edit app information Add watchOS app
+          information Add iMessag
+      - at: 0.5
+        hash: sha256:23697bde2e997986957afd971acc0c5f1964759f8d46195fc8f9c434714cd0c7
+        excerpt: ions Set up promotional offers for auto-renewable subscriptions Set up
+          subscription offer codes Set up win-back offers Manage Streamlined
+          Purchasing Enable bill
+      - at: 0.62
+        hash: sha256:e445c5abcc995ac767bc2b00629c9fb44b4eb583ac50c4e3bfd32f17443e5d36
+        excerpt: " video or audio-only content with time-synchronized text. Audio
+          Descriptions Users can hear audio descriptions of video content in a
+          clip, show, or movie with t"
+      - at: 0.75
+        hash: sha256:d99845a0318fb6b11cc29747d0dfb39a6ccee103c64ca5ec1bad2ee1696d1451
+        excerpt: "odifying settings. Ensuring a comprehensive list As you make your
+          list, consider the following to ensure you have a comprehensive list
+          of common tasks: Make sur"
+      - at: 0.87
+        hash: sha256:9d6bcde4eb5b5b898bb6e804fa1bad926e9ec4ef201481524b1e740ec388f155
+        excerpt: essibility features, like site-specific font size settings, which allow
+          users to enlarge the font sizes of web sites to 200% the default size,
+          or sometimes larg

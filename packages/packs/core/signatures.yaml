@@ -64,8 +64,8 @@ capabilities:
     iosUsage: []
     androidPermissions: []
   payments:
-    packages: [in_app_purchase, purchases_flutter, flutter_inapp_purchase]
-    npm: [react-native-iap, react-native-purchases]
+    packages: [in_app_purchase, purchases_flutter, flutter_inapp_purchase, revenuecat, com.android.billingclient:billing]
+    npm: [react-native-iap, react-native-purchases, expo-in-app-purchases]
     iosUsage: []
     androidPermissions: [com.android.vending.BILLING]
   analytics:

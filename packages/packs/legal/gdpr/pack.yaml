@@ -7,5 +7,7 @@ engine: ">=0.4.0"
 authors: [callabens]
 verifiedAt: 2026-11-20
 description: >
-  EU and EEA audience. Enabled rules are empty because the regulation text
-  was not re-opened for this version. This pack is not legal advice.
+  EU and EEA audience. Rules cite Regulation (EU) 2016/679 article by article,
+  read on EUR-Lex on 2026-11-20. Page checks are phrase matches and answers are
+  the developer's statements. This pack is not legal advice and does not decide
+  whether the GDPR applies.

@@ -1,1 +1,66 @@
-rules: []
+rules:
+  - id: legal.apple.kids-parental-gate
+    title: Kids Category purchases and links out sit behind a parental gate
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.3"
+      publisher: Apple
+    summary:
+      en: "Guideline 1.3 says Kids Category apps must not include links out of the app, purchasing opportunities, or other distractions to kids unless reserved for a designated area behind a parental gate. The app has purchases. This check asks whether the project states the purchase flow is behind a parental gate (attestations.apple.kids-parental-gate)."
+      tr: "Kural 1.3, Kids Category uygulamalarının ebeveyn kapısının arkasındaki ayrı bir alan dışında uygulama dışı bağlantı, satın alma fırsatı veya çocuğu oyalayan başka unsur içermemesini ister. Uygulamada satın alma var. Bu kontrol projede satın alma akışının ebeveyn kapısı arkasında olduğunun beyan edilip edilmediğini sorar (attestations.apple.kids-parental-gate)."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.apple_kids, eq: true }
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.apple.kids_parental_gate, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.apple.kids_parental_gate, eq: "no" }
+    check:
+      confidence: attestation
+      note: "The gate itself is not exercised. A blank answer stays unchecked."
+
+  - id: legal.apple.kids-third-party-analytics
+    title: Kids Category apps should not include third-party analytics
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.3 and 5.1.4"
+      publisher: Apple
+    summary:
+      en: "Guidelines 1.3 and 5.1.4 say Kids Category apps should not include third-party analytics. In limited cases it may be permitted if the service does not collect or transmit the IDFA or any identifiable information about children, their location, or their devices. An analytics SDK is a dependency. The check fails unless the project states the exception applies (attestations.apple.kids-analytics-exception)."
+      tr: "Kural 1.3 ve 5.1.4, Kids Category uygulamalarında üçüncü taraf analiz olmaması gerektiğini söyler. Hizmet IDFA'yı veya çocuklar, konumları ya da cihazları hakkında tanımlayıcı bilgi toplamıyor ve iletmiyorsa sınırlı durumlarda izin verilebilir. Bağımlılıklarda bir analiz SDK'sı var. Proje istisnanın geçerli olduğunu beyan etmezse (attestations.apple.kids-analytics-exception) kontrol başarısız olur."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.apple_kids, eq: true }
+        - { fact: platform.ios, eq: true }
+        - { fact: capability.analytics, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.apple.kids_analytics_exception, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.apple.kids_analytics_exception, neq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Crash reporters count as analytics here because the capability map groups them. Say so with the attestation if the vendor's kids mode meets the exception."

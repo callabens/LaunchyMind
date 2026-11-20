@@ -1,1 +1,17 @@
-cases: []
+cases:
+  - id: kids-gate-yes
+    rule: legal.apple.kids-parental-gate
+    expect: pass
+    facts: { legal.pack.apple_kids: true, platform.ios: true, capability.payments: true, attestation.apple.kids_parental_gate: "yes" }
+  - id: kids-gate-blank
+    rule: legal.apple.kids-parental-gate
+    expect: unchecked
+    facts: { legal.pack.apple_kids: true, platform.ios: true, capability.payments: true, attestation.apple.kids_parental_gate: "unknown" }
+  - id: kids-analytics-default
+    rule: legal.apple.kids-third-party-analytics
+    expect: fail
+    facts: { legal.pack.apple_kids: true, platform.ios: true, capability.analytics: true, attestation.apple.kids_analytics_exception: "unknown" }
+  - id: kids-analytics-exception
+    rule: legal.apple.kids-third-party-analytics
+    expect: pass
+    facts: { legal.pack.apple_kids: true, platform.ios: true, capability.analytics: true, attestation.apple.kids_analytics_exception: "yes" }

@@ -1,0 +1,8 @@
+name: store_clean
+description: Synthetic store listing. Not a real app.
+version: 0.0.1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter

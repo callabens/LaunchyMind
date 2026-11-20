@@ -1425,3 +1425,720 @@ rules:
     check:
       confidence: attestation
       note: "A blank answer stays unchecked. This does not read the Play Console form."
+
+  - id: store.ios.name-length
+    title: App Store name stays within 2 to 30 characters
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/
+      section: Name
+      publisher: Apple
+    summary:
+      en: "App Store Connect says the localized app name must be at least 2 characters and no more than 30. This reads a local name.txt only."
+      tr: "App Store Connect, yerelleştirilmiş uygulama adının en az 2, en çok 30 karakter olmasını söyler. Bu kontrol yalnızca yerel name.txt dosyasını okur."
+    appliesWhen:
+      all:
+        - { fact: store.ios.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.name, eq: "ok" }
+      fail:
+        any:
+          - { fact: store.ios.name, eq: "over" }
+          - { fact: store.ios.name, eq: "under-min" }
+    check:
+      confidence: direct
+      note: "Character count uses Unicode code points after trimming the file. A missing name file stays unchecked."
+
+  - id: store.ios.subtitle-length
+    title: App Store subtitle is at most 30 characters
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/
+      section: Subtitle
+      publisher: Apple
+    summary:
+      en: "The subtitle under the app name cannot be longer than 30 characters. A project with no subtitle file is not failed."
+      tr: "Adın altındaki alt başlık 30 karakterden uzun olamaz. Alt başlık dosyası yoksa bu bir başarısızlık sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: store.ios.subtitle, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.subtitle, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.subtitle, eq: "over" }
+    check:
+      confidence: direct
+      note: "Only a subtitle.txt or subtitle file that exists is measured."
+
+  - id: store.ios.description-length
+    title: App Store description is at most 4000 characters
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: Description
+      publisher: Apple
+    summary:
+      en: "The App Store description is limited to 4000 characters and must be plain text. This counts a local description file."
+      tr: "App Store açıklaması 4000 karakterle sınırlıdır ve düz metin olmalıdır. Bu kontrol yerel açıklama dosyasını sayar."
+    appliesWhen:
+      all:
+        - { fact: store.ios.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.description, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.description, eq: "over" }
+    check:
+      confidence: direct
+      note: "HTML is not interpreted. A missing description file stays unchecked rather than a pass."
+
+  - id: store.ios.keywords-length
+    title: App Store keywords stay within 100 bytes
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: Keywords
+      publisher: Apple
+    summary:
+      en: "Keywords can be up to 100 bytes. The App Store Connect reference counts bytes, so this check does too."
+      tr: "Anahtar kelimeler en fazla 100 bayt olabilir. App Store Connect başvurusu bayt saydığı için bu kontrol de bayt sayar."
+    appliesWhen:
+      all:
+        - { fact: store.ios.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.keywords, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.keywords, eq: "over" }
+    check:
+      confidence: direct
+      note: "UTF-8 byte length of the trimmed keywords file. Missing keywords stay unchecked."
+
+  - id: store.ios.promo-length
+    title: Promotional text is at most 170 characters
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: Promotional Text
+      publisher: Apple
+    summary:
+      en: "Promotional text cannot be longer than 170 characters. It is optional, so a missing file is not a failure."
+      tr: "Tanıtım metni 170 karakterden uzun olamaz. İsteğe bağlıdır; dosya yoksa başarısızlık değildir."
+    appliesWhen:
+      all:
+        - { fact: store.ios.promo, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.promo, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.promo, eq: "over" }
+    check:
+      confidence: direct
+      note: "Reads promotional_text.txt or promo.txt."
+
+  - id: store.ios.release-notes-length
+    title: What's New text is at most 4000 characters
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: "What's New in this Version"
+      publisher: Apple
+    summary:
+      en: "What's New in this Version is limited to 4000 characters. No local release-notes file means this check does not run."
+      tr: "Bu Sürümdeki Yenilikler 4000 karakterle sınırlıdır. Yerel sürüm notu yoksa bu kontrol çalışmaz."
+    appliesWhen:
+      all:
+        - { fact: store.ios.release_notes, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.release_notes, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.release_notes, eq: "over" }
+    check:
+      confidence: direct
+      note: "Reads release_notes.txt or release-notes.txt."
+
+  - id: store.play.title-length
+    title: Play title is at most 30 characters
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9859152
+      section: App name
+      publisher: Google Play
+    summary:
+      en: "Play Console limits the app name to 30 characters, counting full-width and half-width characters as one each."
+      tr: "Play Console uygulama adını 30 karakterle sınırlar. Tam genişlik ve yarım genişlik karakterler birer sayılır."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.title, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.title, eq: "over" }
+    check:
+      confidence: direct
+      note: "Reads title.txt. A missing title stays unchecked."
+
+  - id: store.play.short-description-length
+    title: Play short description is at most 80 characters
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9866151
+      section: Short description
+      publisher: Google Play
+    summary:
+      en: "The Play short description has an 80 character limit. This measures the local short description file."
+      tr: "Play kısa açıklamasının sınırı 80 karakterdir. Bu kontrol yerel kısa açıklama dosyasını ölçer."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.short_description, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.short_description, eq: "over" }
+    check:
+      confidence: direct
+      note: "Reads short_description.txt or short-description.txt."
+
+  - id: store.play.full-description-length
+    title: Play full description is at most 4000 characters
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9859152
+      section: Full description
+      publisher: Google Play
+    summary:
+      en: "The Play full description allows 4000 characters. This counts the local full description file."
+      tr: "Play tam açıklaması 4000 karaktere izin verir. Bu kontrol yerel tam açıklama dosyasını sayar."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.full_description, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.full_description, eq: "over" }
+    check:
+      confidence: direct
+      note: "Reads full_description.txt or full-description.txt."
+
+  - id: store.placeholder-text
+    title: Store listing text is not placeholder copy
+    severity: blocker
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.1(a)"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.1(a) says placeholder text and other temporary content should be scrubbed before submission. Lorem ipsum, TODO, and TBD in a local listing are a failure."
+      tr: "Kılavuz 2.1(a), yer tutucu metnin ve geçici içeriğin gönderimden önce temizlenmesini söyler. Yerel listede lorem ipsum, TODO veya TBD bir başarısızlıktır."
+    appliesWhen:
+      any:
+        - { fact: store.ios.present, eq: true }
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.text.placeholder, eq: "no" }
+      fail:
+        all:
+          - { fact: store.text.placeholder, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Matches lorem ipsum, TODO, TBD, placeholder, and your text here. Other draft wording can be missed."
+
+  - id: store.ios.other-platform
+    title: iOS listing does not name another mobile platform
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.3.10"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.3.10 says not to include names of other mobile platforms or alternative marketplaces in the app or its metadata."
+      tr: "Kılavuz 2.3.10, uygulama veya metaverisinde başka mobil platformların ya da alternatif mağazaların adının bulunmamasını söyler."
+    appliesWhen:
+      all:
+        - { fact: store.ios.other_platform, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.other_platform, eq: "no" }
+      fail:
+        all:
+          - { fact: store.ios.other_platform, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Looks for Android, Google Play, and Windows Phone in iOS listing text. An approved cross-platform feature is not detected."
+
+  - id: store.play.other-platform
+    title: Play listing does not center another mobile platform
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/13393723
+      section: Full description
+      publisher: Google Play
+    summary:
+      en: "Play says the description should accurately describe the app. Naming iPhone, iPad, iOS, or the App Store in the Play listing is a risk, not an automatic rejection."
+      tr: "Play, açıklamanın uygulamayı doğru anlatmasını söyler. Play metninde iPhone, iPad, iOS veya App Store geçmesi bir risktir, kendiliğinden ret değildir."
+    appliesWhen:
+      all:
+        - { fact: store.android.other_platform, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.other_platform, eq: "no" }
+      fail:
+        all:
+          - { fact: store.android.other_platform, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Play's page does not ban Apple names outright. This is a risk when those names appear in the local Play text."
+
+  - id: store.future-promise
+    title: Listing text does not promise a feature that is not here
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.3.7"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.3.7 says subtitles should not make unverifiable product claims. Coming soon and will be added are flagged outside promotional text, which Apple allows to mention upcoming features."
+      tr: "Kılavuz 2.3.7, alt başlığın doğrulanamayan ürün iddiaları taşımamasını söyler. Yakında ve eklenecek ifadeleri tanıtım metni dışında işaretlenir; Apple tanıtım metninde yaklaşan özelliklere izin verir."
+    appliesWhen:
+      all:
+        - { fact: store.text.future_promise, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.text.future_promise, eq: "no" }
+      fail:
+        all:
+          - { fact: store.text.future_promise, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Phrases: coming soon, will be added, available soon, yakında, gelecek sürüm. Promotional text is skipped."
+
+  - id: store.copyright-year
+    title: Copyright year is not in the future
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: Copyright
+      publisher: Apple
+    summary:
+      en: "Apple says the copyright field starts with the year the rights were obtained. A year after the scan year cannot be that year. An older year is not treated as wrong."
+      tr: "Apple, telif alanının hakların alındığı yılla başladığını söyler. Tarama yılından sonraki bir yıl bu olamaz. Daha eski bir yıl yanlış sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: store.copyright.year, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.copyright.year, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.copyright.year, eq: "future" }
+    check:
+      confidence: direct
+      note: "A past year passes. No copyright line stays unchecked. This does not decide who owns the rights."
+
+  - id: store.price-claims
+    title: Listing text does not add a price the page already shows
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.3.7"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.3.7 says not to pack metadata with pricing information. Play also says title text should not promote a deal such as Free or a percent off."
+      tr: "Kılavuz 2.3.7, metaverinin fiyat bilgisiyle doldurulmamasını söyler. Play de başlıkta Free veya yüzde indirim gibi bir kampanya istemez."
+    appliesWhen:
+      any:
+        - { fact: store.ios.present, eq: true }
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.text.price, eq: "no" }
+      fail:
+        all:
+          - { fact: store.text.price, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "Prices and percent-off phrases are flagged in listing text. The words free and no ads are flagged only in the name or title. Play's deal guidance is https://support.google.com/googleplay/android-developer/answer/13393723"
+
+  - id: store.keyword-stuffing
+    title: Keywords are not repeated or filled with other brands
+    severity: risk
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.3.7"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.3.7 says not to pack keywords with trademarked terms, popular app names, or irrelevant phrases. A repeated keyword or a small set of other product names is a risk, not a rejection by itself."
+      tr: "Kılavuz 2.3.7, anahtar kelimelerin ticari marka, popüler uygulama adı veya ilgisiz ifadelerle doldurulmamasını söyler. Tekrar veya küçük bir ürün adı listesi başlı başına ret değil, risktir."
+    appliesWhen:
+      all:
+        - { fact: store.keywords.stuffing, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.keywords.stuffing, eq: "no" }
+      fail:
+        all:
+          - { fact: store.keywords.stuffing, eq: "yes" }
+    check:
+      confidence: heuristic
+      note: "The brand list is facebook, instagram, whatsapp, tiktok, snapchat, spotify, netflix, and youtube. It is not a trademark search."
+
+  - id: store.locale-consistency
+    title: English and Turkish listings mention the same features
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+      section: Language
+      publisher: Apple
+    summary:
+      en: "Apple localizes metadata per language. When both an English and a Turkish description exist, a feature word in only one of them is a risk. When only one language is on disk, the other language stays unchecked."
+      tr: "Apple metaveriyi dil dil yerelleştirir. Hem İngilizce hem Türkçe açıklama varken bir özellik kelimesi yalnızca birindeyse bu bir risktir. Diskte tek dil varsa diğeri kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.locale.features, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.locale.features, eq: "match" }
+      fail:
+        all:
+          - { fact: store.locale.features, eq: "differ" }
+    check:
+      confidence: heuristic
+      note: "Compares subscription, account, camera, location, ads, offline, and notification with abonelik, hesap, kamera, konum, reklam, çevrimdışı, and bildirim. This is not a translation review."
+
+  - id: store.urls-reachable
+    title: URLs written in the store listing open
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "2.1(a)"
+      publisher: Apple
+    summary:
+      en: "Guideline 2.1(a) says submissions should include fully functional URLs. Listing URLs are fetched only when the scan is online. Offline leaves them unchecked."
+      tr: "Kılavuz 2.1(a), gönderimin çalışan URL'ler içermesini söyler. Liste URL'leri yalnızca çevrimiçi taramada istenir. Çevrimdışı durumda kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.urls.status, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.urls.status, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.urls.status, eq: "http-error" }
+    check:
+      confidence: direct
+      note: "At most eight http or https URLs from the listing files are requested. No URL in the files makes the rule not applicable."
+
+  - id: store.ios.icon
+    title: App Store icon is 1024 by 1024 and has no alpha
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/documentation/xcode/configuring-your-app-icon
+      section: "Specify an App Store icon"
+      publisher: Apple
+    summary:
+      en: "Xcode's App Store icon well for iOS is a 1024 by 1024 image. App Store Connect rejects an icon that is transparent or has an alpha channel. A file that cannot be measured stays unchecked."
+      tr: "Xcode'daki iOS App Store ikon yuvası 1024'e 1024 görseldir. App Store Connect saydam veya alfa kanallı ikonu reddeder. Ölçülemeyen dosya kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.ios.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.icon, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.icon, eq: "bad" }
+    check:
+      confidence: direct
+      note: "Reads .launchymind/store/ios/icon.png or fastlane metadata icon.png. The no-alpha part matches Apple's ITMS-90717 upload error. An unknown image stays unchecked."
+
+  - id: store.ios.screenshots
+    title: iPhone screenshots match a required App Store size
+    severity: blocker
+    platforms: [ios]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
+      section: "iPhone with Dynamic Island (medium display)"
+      publisher: Apple
+    summary:
+      en: "App Store Connect requires at least one screenshot for iPhone with Dynamic Island (medium display), and screenshots cannot include an alpha channel. Up to 10 are allowed per size. A size that is not on the specification list stays unchecked."
+      tr: "App Store Connect, Dynamic Island'lı iPhone orta ekran için en az bir ekran görüntüsü ister ve görüntülerde alfa kanalı olamaz. Boyut başına en fazla 10. Şartname listesinde olmayan boyut kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.ios.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.ios.screenshots, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.ios.screenshots, eq: "bad" }
+    check:
+      confidence: direct
+      note: "Required pixels checked on 2026-11-20: 1179x2556, 2556x1179, 1206x2622, and 2622x1206. iPad-only catalogs are not detected. Missing files stay unchecked."
+
+  - id: store.play.icon
+    title: Play icon is a 512 by 512 PNG
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9866151
+      section: App icon
+      publisher: Google Play
+    summary:
+      en: "Play requires a 512 by 512 32-bit PNG icon with alpha, at most 1024 KB. The byte cap is not measured. A file that cannot be read stays unchecked."
+      tr: "Play, alfa kanallı 512'ye 512 32 bit PNG ikon ister; en fazla 1024 KB. Bayt sınırı ölçülmez. Okunamayan dosya kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.icon, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.icon, eq: "bad" }
+    check:
+      confidence: direct
+      note: "Alpha is required for the Play icon, unlike the App Store icon. Missing and unreadable icons stay unchecked."
+
+  - id: store.play.feature-graphic
+    title: Play feature graphic is 1024 by 500 without alpha
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9866151
+      section: Feature graphic
+      publisher: Google Play
+    summary:
+      en: "Play requires a 1024 by 500 feature graphic as JPEG or 24-bit PNG with no alpha. An unreadable file stays unchecked."
+      tr: "Play, alfa kanalı olmayan JPEG veya 24 bit PNG olarak 1024'e 500 özellik grafiği ister. Okunamayan dosya kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.feature_graphic, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.feature_graphic, eq: "bad" }
+    check:
+      confidence: direct
+      note: "Reads feature-graphic.png or featureGraphic.png. A missing file stays unchecked."
+
+  - id: store.play.screenshots
+    title: Play phone screenshots meet the published size and count
+    severity: blocker
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/9866151
+      section: Screenshots
+      publisher: Google Play
+    summary:
+      en: "Play asks for at least two and at most eight screenshots. Each side must be from 320 to 3840 pixels, the long side at most twice the short side, with no alpha. A file that cannot be measured stays unchecked."
+      tr: "Play en az iki, en çok sekiz ekran görüntüsü ister. Her kenar 320 ile 3840 piksel olmalı, uzun kenar kısa kenarın en fazla iki katı olmalı ve alfa olmamalıdır. Ölçülemeyen dosya kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: store.android.present, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: store.android.screenshots, eq: "ok" }
+      fail:
+        all:
+          - { fact: store.android.screenshots, eq: "bad" }
+    check:
+      confidence: direct
+      note: "Phone, Wear, TV, and XR catalogs are not separated. The minimum of two and the 320 to 3840 range are what this check uses."
+

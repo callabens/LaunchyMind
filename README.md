@@ -4,7 +4,7 @@ LaunchyMind is a local-first, open-source pre-release readiness checker for mobi
 
 Every finding cites evidence (a file and line, or a live URL) and the rule's source link and last-verified date. The verdict is computed by a deterministic rule engine. The model in an agent session does not decide it.
 
-**Status: v0.1 development preview.** This is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy or KVKK finding.
+**Status: 0.2.0.** This is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy or KVKK finding. The npm release workflow is manual and has not been run.
 
 ## What works in this preview
 
@@ -19,7 +19,7 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 
 ## What this preview does not do
 
-- It does not publish to npm (`"private": true`).
+- It is not on npm yet. `.github/workflows/release.yml` publishes only when someone runs it by hand and the `NPM_TOKEN` secret is set.
 - It does not scan native-only apps, IPA, or AAB files. A folder that is not Flutter, React Native, or Expo exits `4`.
 - It does not read App Store Connect or Play Console. Questions that live only there stay **unchecked** until you answer them with `launchymind init` or `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
 - It does not fully scan required-reason API use or privacy manifests inside the Flutter engine, Pods, or SDK binaries. Those gaps are listed on the report and are not treated as a pass.
@@ -41,6 +41,7 @@ Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the 
 `--output report.json` writes the LaunchPack file and prints the terminal report. It does not also dump the JSON to the terminal. `--json` without `--output` still prints JSON only.
 
 ```bash
+npm run launchymind -- explain path/to/flutter-app --why-not-ready --offline
 npm run launchymind -- scan path/to/flutter-app --json
 npm run launchymind -- scan path/to/flutter-app --html report.html
 npm run launchymind -- scan path/to/flutter-app --offline

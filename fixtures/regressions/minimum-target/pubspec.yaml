@@ -1,0 +1,8 @@
+name: minimum_target
+description: Regression. A lockfile minimum must not become a targetSdk failure.
+version: 0.0.1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter

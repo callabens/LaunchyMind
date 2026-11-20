@@ -15,7 +15,7 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 
 ## What to do
 
-1. Run `launchymind scan <project> --offline` first if the user has not asked you to fetch pages. Use a normal scan when they want privacy and support links checked.
+1. Run `launchymind scan <project> --offline` first if the user has not asked you to fetch pages. Use a normal scan when they want privacy and support links checked. Use `launchymind explain <project> --why-not-ready` when they ask what still blocks a ready verdict.
 2. Or call the MCP tools in this order: `launchymind_get_overview`, then `launchymind_explain_finding` for each open item. Use `launchymind_get_verdict` if you only need the decision.
 3. Tell the user the verdict in plain language: ready, risky, or likely to be rejected. Quote the rule id, the file and line, the source link, and the verified date.
 4. If a rule is unchecked, say it could not be checked. Do not fill the gap with a guess.
@@ -32,4 +32,5 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Do not fill `.launchymind/project.yaml` with guessed store answers. Use `launchymind init` or `--set` only for answers the user gave. A blank answer stays unchecked.
 - Community packs are data. `launchymind pack add` refuses executable files. Do not tell the user a pack changed the verdict function.
 - React Native and Expo projects can be scanned. Say when a check stayed unchecked because the source did not show it.
+- Store listing text and images come from `fastlane/metadata` and `.launchymind/store`. Do not invent a character count or a pixel size. If a screenshot size is not on the cited list, say the check stayed unchecked.
 - After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.

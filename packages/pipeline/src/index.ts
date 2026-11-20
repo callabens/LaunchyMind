@@ -39,7 +39,7 @@ export interface RunOptions {
 
 export async function runScan(projectPath: string, options: RunOptions = {}): Promise<LaunchReport> {
   const pack = options.pack ?? await loadPack(options.packDir ?? findCorePackDir());
-  const scanned = await scanProject(projectPath, pack.directory);
+  const scanned = await scanProject(projectPath, pack.directory, options.now ?? new Date());
   if (scanned.profile.framework === "unknown") throw new NotFlutterProjectError(projectPath);
   const projectPacks = await loadProjectPacks(projectPath);
   for (const problem of projectPacks.problems) {
@@ -92,6 +92,8 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
   const records: LiveCheckRecord[] = [];
   const names = [scanned.profile.displayName, scanned.profile.name, scanned.profile.developerName].filter((item): item is string => Boolean(item));
   let next = evidence.length + 1;
+
+  await assignStoreUrls(facts, evidence, records, scanned.storeUrls, checker, offline);
 
   const privacy = await checkOne(checker, offline, scanned.liveTargets.privacy);
   records.push(record("privacy", scanned.liveTargets.privacy, privacy));
@@ -234,6 +236,47 @@ function pushLiveEvidence(evidence: Evidence[], facts: string[], checked: Checke
     detail: checked.detail,
     ...(checked.page ? { path: checked.page.url } : {}),
     ...(snippet ? { snippet } : {}),
+  });
+}
+
+async function assignStoreUrls(
+  facts: Record<string, FactValue>,
+  evidence: Evidence[],
+  records: LiveCheckRecord[],
+  urls: readonly string[],
+  checker: LiveChecker | null,
+  offline: boolean,
+): Promise<void> {
+  if (urls.length === 0) {
+    facts["store.urls.status"] = "not-applicable";
+    return;
+  }
+  if (offline || !checker) {
+    facts["store.urls.status"] = "unknown";
+    const first = urls[0] ?? "";
+    evidence.push({
+      id: "ev_store_urls",
+      facts: ["store.urls.status"],
+      kind: "url",
+      detail: "Store listing URLs were not fetched. Offline mode leaves them unchecked.",
+      ...(first ? { path: first } : {}),
+    });
+    return;
+  }
+  let broken = false;
+  for (const url of urls) {
+    const page = await checker.check(url);
+    records.push({ url, status: page.status, httpStatus: page.httpStatus, detail: `store url: ${page.error ?? page.status}` });
+    if (page.status !== "ok") broken = true;
+  }
+  facts["store.urls.status"] = broken ? "http-error" : "ok";
+  const first = urls[0] ?? "";
+  evidence.push({
+    id: "ev_store_urls",
+    facts: ["store.urls.status"],
+    kind: "live",
+    detail: broken ? "At least one store listing URL did not return a page." : "Every store listing URL returned a page.",
+    ...(first ? { path: first } : {}),
   });
 }
 

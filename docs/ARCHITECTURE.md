@@ -51,6 +51,10 @@ Those limits are visible so a ready verdict cannot be read as "we looked at ever
 
 `launchymind init` writes `.launchymind/project.yaml` from answers the user supplied. `packages/packs` installs data-only packs under `.launchymind/packs` and the scan appends their rules. A non-data file is refused and is not executed.
 
+`packages/store` reads `fastlane/metadata` and `.launchymind/store`. `launchymind explain --why-not-ready` prints the findings and limits that `blocksReady` derives from the same rules `decideVerdict` uses. It does not choose a different verdict.
+
+The docs site is VitePress under `docs-site`. CI builds it. Deploy and npm publish are separate manual workflows.
+
 ## Later seams
 
 Native projects, IPA and AAB files, and weekly source monitoring are named in `docs/ROADMAP.md` and are not implemented. `scan --pack` can still point at one pack directory instead of the core pack.

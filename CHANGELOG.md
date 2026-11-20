@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- The package metadata is ready to publish: exports, bin, engines, files, and `publishConfig.access`. `npm publish` is a manual workflow that needs `NPM_TOKEN` and was not run.
+- A VitePress site in `docs-site` covers install, CLI, MCP, the skill, the GitHub Action, rules, packs, and the approval flow, with a Turkish page. CI builds it. GitHub Pages deploy is manual.
+- `launchymind explain <path> --why-not-ready` lists the failures, unchecked rules, and limits that block READY.
+- `fixtures/regressions` keeps the sample-ad guard, the gated stub purchase, the Flutter minimum target SDK, and a missing App Store Connect support URL from becoming false failures again.
+- Store listing text and images are read from `fastlane/metadata` and `.launchymind/store`. Length, placeholder, platform-name, price, keyword, locale, URL, icon, and screenshot checks use the cited Apple and Play pages. A screenshot size that is not on Apple's list stays unchecked.
+
 ## 0.1.0-dev.5
 
 - Fix diffs are unified hunks. The privacy-manifest edit changes only the `NSPrivacyTracking` line and leaves the rest of the file byte for byte.

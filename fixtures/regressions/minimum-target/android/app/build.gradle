@@ -1,0 +1,6 @@
+android {
+    defaultConfig {
+        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion flutter.minSdkVersion
+    }
+}

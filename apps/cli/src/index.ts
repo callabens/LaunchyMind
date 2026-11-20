@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { exitCodeForVerdict, LAUNCHYMIND_VERSION, NotFlutterProjectError, parseFailOn } from "../../../packages/core/src/index.ts";
+import { blocksReady } from "../../../packages/verdict/src/index.ts";
 import { applyApprovedFix, applyApprovedFixes } from "../../../packages/fixes/src/index.ts";
 import { proposeFix } from "../../../packages/fixes/src/index.ts";
 import { initProject } from "../../../packages/init/src/index.ts";
@@ -47,6 +48,7 @@ function help(): string {
     "",
     "Commands:",
     "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
+    "  explain <path> --why-not-ready [--offline] [--json]",
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
     "  pack validate [directory]",
@@ -201,6 +203,28 @@ async function main(): Promise<void> {
     if (result.before && result.after) {
       console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
       console.log(`After: ${result.after.headline} (${result.after.verdict})`);
+    }
+    return;
+  }
+
+  if (command === "explain") {
+    if (!sub || !args.options.has("why-not-ready")) throw new Error("Usage: launchymind explain <path> --why-not-ready [--offline] [--json]");
+    const report = await runScan(resolve(sub), { offline: args.options.has("offline") });
+    const blockers = blocksReady(report.findings, report.limitations);
+    if (args.options.has("json")) {
+      console.log(JSON.stringify({ verdict: report.verdict, headline: report.verdictHeadline, blocksReady: blockers }, null, 2));
+      return;
+    }
+    console.log(`${report.verdictHeadline} (${report.verdict})`);
+    if (blockers.length === 0) {
+      console.log("Nothing blocks READY.");
+      return;
+    }
+    console.log("These items block READY:");
+    for (const item of blockers) {
+      const id = item.ruleId ? `${item.ruleId} — ` : "";
+      console.log(`- [${item.kind}] ${item.severity ?? "limit"} ${id}${item.title}`);
+      console.log(`  ${item.detail}`);
     }
     return;
   }

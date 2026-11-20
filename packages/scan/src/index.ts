@@ -10,6 +10,7 @@ import {
   type Limitation,
   type Observation,
 } from "../../core/src/index.ts";
+import { readStore } from "../../store/src/index.ts";
 
 const capabilitySchema = z.object({
   packages: z.array(z.string().min(1)).min(1),
@@ -88,6 +89,7 @@ export interface ScanResult {
   observations: Observation[];
   limitations: Limitation[];
   liveTargets: LiveTargets;
+  storeUrls: string[];
 }
 
 interface PackageHit {
@@ -113,7 +115,7 @@ class EvidenceBag {
   }
 }
 
-export async function scanProject(projectPath: string, packDir: string): Promise<ScanResult> {
+export async function scanProject(projectPath: string, packDir: string, now = new Date()): Promise<ScanResult> {
   const rootInfo = await stat(projectPath).catch(() => null);
   if (!rootInfo?.isDirectory()) throw new Error(`Project path is not a directory: ${projectPath}`);
   const signatures = await loadSignatures(packDir);
@@ -488,6 +490,10 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     });
   }
 
+  const store = await readStore(projectPath, now);
+  for (const [key, value] of Object.entries(store.facts)) facts[key] = value;
+  for (const item of store.evidence) bag.add(item);
+
   const appJsonName = await expoDisplayName(projectPath);
   const displayName = config?.appName ?? appJsonName ?? plist?.entries.get("CFBundleDisplayName")?.value ?? plist?.entries.get("CFBundleName")?.value ?? null;
   const name = stringField(pubspec, "name") ?? stringField(packageJson, "name");
@@ -533,6 +539,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
       accountDeletion: inAppUrls.accountDeletion[0] ?? config?.urls?.accountDeletion ?? null,
       developerWebsite: config?.urls?.developerWebsite ?? null,
     },
+    storeUrls: store.urls,
   };
 }
 

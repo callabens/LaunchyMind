@@ -518,3 +518,128 @@ cases:
       capability.ads: true
       google.distribution: "production"
       attestation.google.data_safety_ad_id: "unknown"
+
+  - id: ios-name-ok
+    rule: store.ios.name-length
+    expect: pass
+    facts: { store.ios.present: true, store.ios.name: "ok" }
+  - id: ios-name-over
+    rule: store.ios.name-length
+    expect: fail
+    facts: { store.ios.present: true, store.ios.name: "over" }
+  - id: ios-subtitle-over
+    rule: store.ios.subtitle-length
+    expect: fail
+    facts: { store.ios.subtitle: "over" }
+  - id: ios-description-ok
+    rule: store.ios.description-length
+    expect: pass
+    facts: { store.ios.present: true, store.ios.description: "ok" }
+  - id: ios-keywords-over
+    rule: store.ios.keywords-length
+    expect: fail
+    facts: { store.ios.present: true, store.ios.keywords: "over" }
+  - id: ios-promo-ok
+    rule: store.ios.promo-length
+    expect: pass
+    facts: { store.ios.promo: "ok" }
+  - id: ios-notes-over
+    rule: store.ios.release-notes-length
+    expect: fail
+    facts: { store.ios.release_notes: "over" }
+  - id: play-title-ok
+    rule: store.play.title-length
+    expect: pass
+    facts: { store.android.present: true, store.android.title: "ok" }
+  - id: play-short-over
+    rule: store.play.short-description-length
+    expect: fail
+    facts: { store.android.present: true, store.android.short_description: "over" }
+  - id: play-full-ok
+    rule: store.play.full-description-length
+    expect: pass
+    facts: { store.android.present: true, store.android.full_description: "ok" }
+  - id: placeholder-yes
+    rule: store.placeholder-text
+    expect: fail
+    facts: { store.ios.present: true, store.text.placeholder: "yes" }
+  - id: placeholder-no
+    rule: store.placeholder-text
+    expect: pass
+    facts: { store.android.present: true, store.text.placeholder: "no" }
+  - id: ios-other-platform
+    rule: store.ios.other-platform
+    expect: fail
+    facts: { store.ios.other_platform: "yes" }
+  - id: play-other-platform-clear
+    rule: store.play.other-platform
+    expect: pass
+    facts: { store.android.other_platform: "no" }
+  - id: future-promise
+    rule: store.future-promise
+    expect: fail
+    facts: { store.text.future_promise: "yes" }
+  - id: copyright-future
+    rule: store.copyright-year
+    expect: fail
+    facts: { store.copyright.year: "future" }
+  - id: copyright-ok
+    rule: store.copyright-year
+    expect: pass
+    facts: { store.copyright.year: "ok" }
+  - id: price-claim
+    rule: store.price-claims
+    expect: fail
+    facts: { store.ios.present: true, store.text.price: "yes" }
+  - id: keyword-clean
+    rule: store.keyword-stuffing
+    expect: pass
+    facts: { store.keywords.stuffing: "no" }
+  - id: locale-differ
+    rule: store.locale-consistency
+    expect: fail
+    facts: { store.locale.features: "differ" }
+  - id: locale-incomplete
+    rule: store.locale-consistency
+    expect: unchecked
+    facts: { store.locale.features: "incomplete" }
+  - id: store-url-offline
+    rule: store.urls-reachable
+    expect: unchecked
+    facts: { store.urls.status: "unknown" }
+  - id: store-url-broken
+    rule: store.urls-reachable
+    expect: fail
+    facts: { store.urls.status: "http-error" }
+  - id: ios-icon-ok
+    rule: store.ios.icon
+    expect: pass
+    facts: { store.ios.present: true, store.ios.icon: "ok" }
+  - id: ios-icon-unknown
+    rule: store.ios.icon
+    expect: unchecked
+    facts: { store.ios.present: true, store.ios.icon: "unknown" }
+  - id: ios-shots-bad
+    rule: store.ios.screenshots
+    expect: fail
+    facts: { store.ios.present: true, store.ios.screenshots: "bad" }
+  - id: ios-shots-unknown
+    rule: store.ios.screenshots
+    expect: unchecked
+    facts: { store.ios.present: true, store.ios.screenshots: "unknown" }
+  - id: play-icon-bad
+    rule: store.play.icon
+    expect: fail
+    facts: { store.android.present: true, store.android.icon: "bad" }
+  - id: play-feature-ok
+    rule: store.play.feature-graphic
+    expect: pass
+    facts: { store.android.present: true, store.android.feature_graphic: "ok" }
+  - id: play-shots-ok
+    rule: store.play.screenshots
+    expect: pass
+    facts: { store.android.present: true, store.android.screenshots: "ok" }
+  - id: play-shots-missing
+    rule: store.play.screenshots
+    expect: unchecked
+    facts: { store.android.present: true, store.android.screenshots: "missing" }

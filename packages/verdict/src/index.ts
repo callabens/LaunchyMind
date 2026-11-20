@@ -1,4 +1,4 @@
-import type { Finding, Limitation, Verdict } from "../../core/src/index.ts";
+import type { Finding, Limitation, Severity, Verdict } from "../../core/src/index.ts";
 
 export interface VerdictDecision {
   verdict: Verdict;
@@ -6,8 +6,44 @@ export interface VerdictDecision {
   because: string[];
 }
 
+export interface ReadyBlocker {
+  kind: "fail" | "unchecked" | "limitation";
+  ruleId: string | null;
+  severity: Severity | null;
+  title: string;
+  detail: string;
+}
+
+/** Findings and limits that keep decideVerdict from returning ready. Info failures are not in that set. */
+export function blocksReady(findings: readonly Finding[], limitations: readonly Limitation[] = []): ReadyBlocker[] {
+  const applicable = findings.filter((finding) => finding.status !== "not_applicable");
+  const blockers: ReadyBlocker[] = [];
+  for (const finding of applicable) {
+    if (finding.status === "fail" && finding.severity === "info") continue;
+    if (finding.status !== "fail" && finding.status !== "unchecked") continue;
+    blockers.push({
+      kind: finding.status,
+      ruleId: finding.ruleId,
+      severity: finding.severity,
+      title: finding.title,
+      detail: finding.summaryEn,
+    });
+  }
+  for (const limit of limitations) {
+    if (!limit.blocksReady) continue;
+    blockers.push({
+      kind: "limitation",
+      ruleId: null,
+      severity: null,
+      title: limit.id,
+      detail: limit.detail,
+    });
+  }
+  return blockers;
+}
+
 /**
- * The only verdict function in LaunchyMind.
+ * The only function that names a verdict.
  * Findings come from the rule engine. Nothing in this module accepts an override.
  */
 export function decideVerdict(findings: readonly Finding[], limitations: readonly Limitation[] = []): VerdictDecision {

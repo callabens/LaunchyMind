@@ -17,6 +17,8 @@ Phases follow the product plan. This preview finishes the foundation those early
 | 7d. v0.5 artifacts | IPA, APK, and AAB | `scan --artifact` reads those packages and flags drift against the source scan |
 | 7e. v0.6 SDK labels | Versioned SDK disclosures and draft nutrition labels | `packages/packs/sdk/sdks.yaml` records only pages that were opened. `launchymind labels` prints a draft. Unknown SDKs add no row |
 | 7f. v0.7 legal packs | KVKK, GDPR, COPPA, kids, Families, DSA, accessibility | Packs load from regions, kids, or an explicit packs flag. Unverified rules stay disabled |
+| 7g. v0.8 source watch | Hashes of cited pages | `launchymind sources check` reports a changed or broken source. A weekly workflow opens an issue. The rule text stays as it was |
+| 7h. v0.9 history | Local trend, dashboard, editor | History is off until project.yaml says so. The dashboard is one HTML file. The editor extension is packed in CI and not published |
 | 8. Community packs | Install and reject a bad pack | `pack add` installs data into `.launchymind/packs` and refuses executable files. See `docs/writing-a-pack.md` |
 | 9. More frameworks | React Native, Expo, native, compiled artifacts | React Native and Expo are detected and the shared platform rules run. Native projects and built artifacts are not scanned |
 

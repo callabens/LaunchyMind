@@ -31,6 +31,8 @@ import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
 import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
 import { decideVerdict } from "../../verdict/src/index.ts";
+import { saveHistoryIfEnabled } from "../../history/src/index.ts";
+import { readProjectSourceStatus } from "../../sources/src/index.ts";
 
 export interface RunOptions {
   offline?: boolean;
@@ -83,7 +85,8 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   const now = options.now ?? new Date();
   const evaluation = evaluatePack(merged, live.facts, live.evidence, now, options.staleDays ?? STALE_DAYS_DEFAULT);
   const decision = decideVerdict(evaluation.findings, scanned.limitations);
-  return {
+  const sourceWatch = { needsReverify: await readProjectSourceStatus(projectPath) };
+  const report: LaunchReport = {
     version: 1,
     product: PRODUCT_NAME,
     vendor: VENDOR,
@@ -103,7 +106,10 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
     observations: scanned.observations,
     facts: live.facts,
     live: live.records,
+    sourceWatch,
   };
+  await saveHistoryIfEnabled(projectPath, report);
+  return report;
 }
 
 export async function runArtifactOnly(artifactPath: string, options: RunOptions = {}): Promise<LaunchReport> {
@@ -119,6 +125,7 @@ export async function runArtifactOnly(artifactPath: string, options: RunOptions 
   const now = options.now ?? new Date();
   const evaluation = evaluatePack(pack, facts, artifact.evidence.map((item, index) => ({ ...item, id: `ev_artifact_${index}` })), now, options.staleDays ?? STALE_DAYS_DEFAULT);
   const decision = decideVerdict(evaluation.findings, []);
+  const sourceWatch = { needsReverify: [] as LaunchReport["sourceWatch"]["needsReverify"] };
   const flutter = facts["framework.flutter"] === true;
   return {
     version: 1,
@@ -159,6 +166,7 @@ export async function runArtifactOnly(artifactPath: string, options: RunOptions 
     observations: [{ id: "artifact-only", detail: "No project directory was scanned with this artifact, so drift was not compared." }],
     facts,
     live: [],
+    sourceWatch,
   };
 }
 

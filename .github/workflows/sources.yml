@@ -1,0 +1,51 @@
+name: Source watch
+on:
+  schedule:
+    - cron: "17 8 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --ignore-scripts
+      - id: check
+        run: |
+          set +e
+          node --experimental-strip-types apps/cli/src/index.ts sources check --json > "$RUNNER_TEMP/sources.json"
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -gt 2 ]; then exit "$code"; fi
+      - if: steps.check.outputs.code == '2'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess
+          report = json.loads(pathlib.Path(os.environ["RUNNER_TEMP"], "sources.json").read_text())
+          lines = [
+              "A cited source page changed or did not load. Rule text was not edited. Review the page before changing a rule.",
+              "",
+          ]
+          for item in report["results"]:
+              if item["status"] not in ("changed", "broken"):
+                  continue
+              lines.append(f"- {item['status']} {item['url']}")
+              lines.append(f"  rules: {', '.join(item['ruleIds'])}")
+              if item.get("error"):
+                  lines.append(f"  {item['error']}")
+              if item.get("excerpt"):
+                  lines.append("  ```")
+                  lines.append(str(item["excerpt"])[:1200])
+                  lines.append("  ```")
+          title = f"Source check: {report['changed']} changed, {report['broken']} broken"
+          subprocess.run(["gh", "issue", "create", "--title", title, "--body", "\n".join(lines)], check=True)
+          PY

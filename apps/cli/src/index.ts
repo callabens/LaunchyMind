@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdir, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { exitCodeForVerdict, LAUNCHYMIND_VERSION, NotFlutterProjectError, parseFailOn } from "../../../packages/core/src/index.ts";
 import { blocksReady } from "../../../packages/verdict/src/index.ts";
 import { applyApprovedFix, applyApprovedFixes } from "../../../packages/fixes/src/index.ts";
@@ -14,6 +14,8 @@ import { findCorePackDir } from "../../../packages/core/src/index.ts";
 import { addPack, listInstalledPacks, removePack } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
 import { renderHtml, renderJson, renderTerminal } from "../../../packages/report/src/index.ts";
+import { historyEnabled, readFixes, readHistory, recordFixIfEnabled, renderDashboard, renderHistory } from "../../../packages/history/src/index.ts";
+import { checkSources, defaultBaselinePath, listRuleSources, needsReverify, readBaseline, renderSourceReport, withNewHashes, writeBaseline, writeProjectSourceStatus } from "../../../packages/sources/src/index.ts";
 
 interface ParsedArgs {
   positionals: string[];
@@ -53,6 +55,9 @@ function help(): string {
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
     "  labels <path> [--json] [--lang en|tr] [--offline]",
+    "  sources check [--json] [--offline] [--record] [--record-status] [--project <path>]",
+    "  history <path>",
+    "  dashboard <path> [--out <file>]",
     "  explain <path> --why-not-ready [--offline] [--json]",
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
@@ -182,6 +187,12 @@ async function main(): Promise<void> {
         return;
       }
       console.log(result.reason);
+      if (yes && !dryRun) {
+        const appliedAt = new Date().toISOString();
+        for (const item of result.results) {
+          if (item.status === "APPLIED") await recordFixIfEnabled(resolve(sub), item.ruleId, appliedAt);
+        }
+      }
       if (result.before && result.after) {
         console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
         console.log(`After: ${result.after.headline} (${result.after.verdict})`);
@@ -205,10 +216,51 @@ async function main(): Promise<void> {
       return;
     }
     console.log(result.reason);
+    if (yes && !dryRun && result.status === "APPLIED") await recordFixIfEnabled(resolve(sub), rule, new Date().toISOString());
     if (result.before && result.after) {
       console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
       console.log(`After: ${result.after.headline} (${result.after.verdict})`);
     }
+    return;
+  }
+
+  if (command === "sources" && sub === "check") {
+    if (args.options.has("offline")) {
+      console.log("Source check was not run. Pass it without --offline to fetch the cited pages.");
+      return;
+    }
+    const project = resolve(args.options.get("project") ?? ".");
+    const baselinePath = defaultBaselinePath();
+    const baseline = await readBaseline(baselinePath);
+    const report = await checkSources({ sources: await listRuleSources(), baseline, fetchImpl: fetch, now: new Date() });
+    if (args.options.has("record")) await writeBaseline(baselinePath, withNewHashes(baseline, report, report.checkedAt.slice(0, 10)));
+    if (args.options.has("record-status")) await writeProjectSourceStatus(project, needsReverify(report), report.checkedAt);
+    if (args.options.has("json")) console.log(JSON.stringify({ ...report, results: report.results.map(({ samples: _samples, ...item }) => item) }, null, 2));
+    else console.log(renderSourceReport(report));
+    if (report.changed > 0 || report.broken > 0) process.exitCode = 2;
+    return;
+  }
+
+  if (command === "history") {
+    if (!sub) throw new Error("Usage: launchymind history <path>");
+    const project = resolve(sub);
+    if (!(await historyEnabled(project))) {
+      console.log("History is off. Set history: true in .launchymind/project.yaml. Nothing was written.");
+      return;
+    }
+    console.log(renderHistory(await readHistory(project)));
+    return;
+  }
+
+  if (command === "dashboard") {
+    if (!sub) throw new Error("Usage: launchymind dashboard <path> [--out <file>]");
+    const project = resolve(sub);
+    const out = args.options.get("out");
+    const target = out && out !== "true" ? resolve(out) : join(project, ".launchymind", "dashboard.html");
+    const html = renderDashboard(await readHistory(project), await readFixes(project));
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, html, "utf8");
+    console.log(target);
     return;
   }
 

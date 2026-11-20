@@ -83,6 +83,7 @@ export const projectSchema = z.object({
     distribution: z.enum(["internal-only", "production", "closed", "open"]).optional(),
     closedTest: z.boolean().optional(),
   }).strict().optional(),
+  history: z.boolean().optional(),
 }).strict();
 
 type Signatures = z.infer<typeof signaturesSchema>;

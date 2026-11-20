@@ -26,6 +26,7 @@ export default defineConfig({
           { text: "Approval flow", link: "/approval" },
           { text: "Store console", link: "/connect" },
           { text: "Labels and legal packs", link: "/labels" },
+          { text: "History and source watch", link: "/history" },
           { text: "Türkçe", link: "/tr" },
         ],
       },

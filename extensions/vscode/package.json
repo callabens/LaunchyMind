@@ -1,0 +1,42 @@
+{
+  "name": "launchymind",
+  "displayName": "LaunchyMind",
+  "publisher": "callabens",
+  "version": "0.5.0",
+  "private": true,
+  "description": "Run LaunchyMind and show findings in the Problems panel. Fixes still need an explicit yes.",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Linters"],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      { "command": "launchymind.scan", "title": "LaunchyMind: Scan" },
+      { "command": "launchymind.proposeFix", "title": "LaunchyMind: Propose Fix" },
+      { "command": "launchymind.applyFix", "title": "LaunchyMind: Apply Fix" }
+    ],
+    "configuration": {
+      "title": "LaunchyMind",
+      "properties": {
+        "launchymind.offline": {
+          "type": "boolean",
+          "default": false,
+          "description": "Scan without live page checks."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p tsconfig.json",
+    "package": "npm run compile && vsce package --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "3.6.0",
+    "typescript": "5.9.3"
+  }
+}

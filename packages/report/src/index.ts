@@ -22,6 +22,10 @@ export function renderTerminal(report: LaunchReport, lang: "en" | "tr" = "en"): 
     lines.push("", "Could not read:");
     for (const item of report.profile.unknowns) lines.push(`  - ${item}`);
   }
+  if (report.sourceWatch.needsReverify.length) {
+    lines.push("", "Needs re-verify (the source page changed; the rule was not edited):");
+    for (const item of report.sourceWatch.needsReverify) lines.push(`  - ${item.ruleId} ${item.url}`);
+  }
   if (report.limitations.length) {
     lines.push("", "Limits of this scan:");
     for (const item of report.limitations) lines.push(`  - ${item.detail}`);

@@ -122,7 +122,8 @@ export function sdkFacts(draft: LabelDraft, facts: Record<string, FactValue>): R
     if (facts["ios.privacy_manifest.present"] !== true || flag === "unknown") manifest = "unknown";
     else manifest = flag === "false" ? "yes" : "no";
   }
-  const collectsDeviceId = draft.apple.items.some((item) => item.type === "Device ID") || draft.play.items.some((item) => item.type === "Device or other IDs");
+  const deviceIdTypes = new Set(["Device ID", "Device or other IDs", "Device or other identifiers", "Device and Account identifiers"]);
+  const collectsDeviceId = [...draft.apple.items, ...draft.play.items].some((item) => deviceIdTypes.has(item.type));
   let answer: FactValue = "not-applicable";
   if (collectsDeviceId) {
     const stated = facts["attestation.google.data_safety_ad_id"];

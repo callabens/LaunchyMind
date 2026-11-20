@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.4.0";
+export const LAUNCHYMIND_VERSION = "0.5.0";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -183,6 +183,12 @@ export interface LiveCheckRecord {
   detail: string;
 }
 
+export interface SourceWatchItem {
+  ruleId: string;
+  url: string;
+  excerpt: string;
+}
+
 export interface LaunchReport {
   version: 1;
   product: typeof PRODUCT_NAME;
@@ -203,6 +209,7 @@ export interface LaunchReport {
   observations: Observation[];
   facts: Record<string, FactValue>;
   live: LiveCheckRecord[];
+  sourceWatch: { needsReverify: SourceWatchItem[] };
 }
 
 export const KNOWN_FACTS = [

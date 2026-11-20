@@ -36,4 +36,6 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Do not ask the user to paste an App Store Connect `.p8` or a Play service-account JSON into the chat or the repository. `launchymind connect` reads paths from environment variables. Data safety and the Xcode SDK are not returned by those APIs.
 - `launchymind scan <project> --artifact <file>` compares the built IPA, APK, or AAB with the source scan. A difference is drift, not a new verdict you invent.
 - `launchymind labels` prints a draft. Say it is a draft and not legal advice. Do not turn an unknown SDK into a data type. A mismatch finding comes from the rule engine.
+- `launchymind sources check` can say a cited page changed. Leave the rule text alone and say it needs a human to re-verify.
+- History and the dashboard exist only when `history: true`. Do not describe them as a store score.
 - After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.

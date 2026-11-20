@@ -36,15 +36,17 @@ async function app(directory: string, extra: string): Promise<void> {
 test("labels drafts only verified SDK rows and a tracking mismatch is a risk", async () => {
   const directory = await mkdtemp(join(tmpdir(), "launchymind-labels-"));
   try {
-    await app(directory, "  google_mobile_ads: ^5.0.0\n  unity_ads_plugin: ^0.3.0\n");
+    await app(directory, "  google_mobile_ads: ^5.0.0\n  applovin_max: ^12.0.0\n");
     await writeFile(join(directory, "ios/Runner/PrivacyInfo.xcprivacy"), "<plist><dict><key>NSPrivacyTracking</key><false/></dict></plist>\n", "utf8");
     const listed = await run(["labels", directory, "--json", "--offline"]);
     assert.equal(listed.code, 0, listed.stderr);
-    const draft = JSON.parse(listed.stdout) as { draft: boolean; apple: { items: Array<{ sdk: string; type: string }> }; unknownSdks: Array<{ id: string }> };
+    const draft = JSON.parse(listed.stdout) as { draft: boolean; apple: { items: Array<{ sdk: string; type: string }> }; play: { items: Array<{ sdk: string; type: string; source: string }> }; unknownSdks: Array<{ id: string }> };
     assert.equal(draft.draft, true);
     assert.ok(draft.apple.items.some((item) => item.sdk === "google-mobile-ads" && item.type === "Device ID"));
-    assert.equal(draft.apple.items.some((item) => item.sdk === "unity-ads"), false);
-    assert.ok(draft.unknownSdks.some((item) => item.id === "unity-ads"));
+    const playId = draft.play.items.find((item) => item.sdk === "google-mobile-ads" && item.type === "Device and Account identifiers");
+    assert.equal(playId?.source, "https://developers.google.com/admob/android/privacy/play-data-disclosure");
+    assert.equal(draft.apple.items.some((item) => item.sdk === "applovin"), false);
+    assert.ok(draft.unknownSdks.some((item) => item.id === "applovin"));
     const text = await run(["labels", directory, "--lang", "tr", "--offline"]);
     assert.match(text.stdout, /TASLAK/);
     const report = await runScan(directory, { offline: true, now, env: {} });

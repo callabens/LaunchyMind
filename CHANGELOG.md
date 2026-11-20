@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- Play Data safety rows for Google Mobile Ads now come from Google's Android disclosure for SDK 25.5.0. Unity Ads, LevelPlay, Firebase Analytics, Crashlytics, Cloud Messaging, Adjust, and AppsFlyer have draft rows only for data those opened pages state. AppLovin, StoreKit, and Play Billing stay unknown, with the page that was opened and the reason.
+- `launchymind sources check` fetches every rule source, compares a normalized hash, and prints a short excerpt when a page changed. It does not edit rule text. `--record` stores a hash only when the URL has none. A weekly workflow opens a GitHub issue for a human review. A saved status file flags those rules as needs re-verify.
+- `history: true` in project.yaml saves each scan summary. `launchymind history` prints the trend. `launchymind dashboard` writes one local HTML file with no network requests. An editor extension under `extensions/vscode` shows findings in Problems and uses the same yes-before-write fix flow. CI packs it and does not publish it.
+
 ## 0.4.0
 
 - A data-only SDK knowledge base drafts App Privacy and Play Data safety rows for vendor pages that were opened. Unknown SDKs add no row. `launchymind labels` and `launchymind_labels` print the draft in English or Turkish. A disagreement with the privacy manifest or with `google.data-safety-ad-id: false` is a risk finding.

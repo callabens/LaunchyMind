@@ -10,7 +10,9 @@ import { labelsForReport, renderLabels } from "../../../packages/labels/src/inde
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runArtifactOnly, runScan } from "../../../packages/pipeline/src/index.ts";
 import { readConnect, readConnectConfig } from "../../../packages/connect/src/index.ts";
+import { readRevenueCat, readRevenueCatConfig } from "../../../packages/connect/src/revenuecat.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
+import { scanProject } from "../../../packages/scan/src/index.ts";
 import { addPack, addPackByName, listInstalledPacks, loadRegistry, packIntegrity, removePack, searchRegistry } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
 import { renderHtml, renderJson, renderTerminal } from "../../../packages/report/src/index.ts";
@@ -54,6 +56,7 @@ function help(): string {
     "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
+    "  connect revenuecat [--project <path>] [--json] [--offline]",
     "  labels <path> [--json] [--lang en|tr] [--offline]",
     "  sources check [--json] [--offline] [--record] [--record-status] [--project <path>]",
     "  history <path>",
@@ -288,6 +291,15 @@ async function main(): Promise<void> {
     const draft = await labelsForReport(report);
     if (args.options.has("json")) console.log(JSON.stringify(draft, null, 2));
     else console.log(renderLabels(draft, lang));
+    return;
+  }
+
+  if (command === "connect" && sub === "revenuecat") {
+    const project = args.options.get("project");
+    const productIds = project && project !== "true" ? (await scanProject(resolve(project), findCorePackDir())).productIds : [];
+    const report = await readRevenueCat(readRevenueCatConfig(process.env), productIds, fetch, args.options.has("offline"));
+    if (args.options.has("json")) console.log(JSON.stringify({ status: report.status, products: report.products, entitlements: report.entitlements, offerings: report.offerings, missingInRevenueCat: report.missingInRevenueCat, lines: report.lines }, null, 2));
+    else for (const line of report.lines) console.log(line);
     return;
   }
 

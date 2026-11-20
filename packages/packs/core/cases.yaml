@@ -685,3 +685,64 @@ cases:
     rule: sdk.answer-label-mismatch
     expect: fail
     facts: { sdk.answer_mismatch: "yes" }
+
+  - id: restore-found
+    rule: apple.restore-purchases
+    expect: pass
+    facts: { platform.ios: true, capability.payments: true, payments.restore_control: true, attestation.payments.restore_control: "unknown" }
+  - id: restore-missing
+    rule: apple.restore-purchases
+    expect: fail
+    facts: { platform.ios: true, capability.payments: true, payments.restore_control: false, attestation.payments.restore_control: "unknown" }
+  - id: restore-attested
+    rule: apple.restore-purchases
+    expect: pass
+    facts: { platform.ios: true, capability.payments: true, payments.restore_control: false, attestation.payments.restore_control: "yes" }
+  - id: restore-unscanned
+    rule: apple.restore-purchases
+    expect: unchecked
+    facts: { platform.ios: true, capability.payments: true, payments.restore_control: "unknown", attestation.payments.restore_control: "unknown" }
+  - id: paywall-links-found
+    rule: apple.subscription-paywall-links
+    expect: pass
+    facts: { platform.ios: true, capability.payments: true, payments.subscriptions: true, payments.terms_link_found: true, urls.privacy.in_app: true, attestation.payments.paywall_links: "unknown" }
+  - id: paywall-links-no-terms
+    rule: apple.subscription-paywall-links
+    expect: fail
+    facts: { platform.ios: true, capability.payments: true, payments.subscriptions: true, payments.terms_link_found: false, urls.privacy.in_app: true, attestation.payments.paywall_links: "unknown" }
+  - id: paywall-links-unknown
+    rule: apple.subscription-paywall-links
+    expect: unchecked
+    facts: { platform.ios: true, capability.payments: true, payments.subscriptions: true, payments.terms_link_found: "unknown", urls.privacy.in_app: "unknown", attestation.payments.paywall_links: "unknown" }
+  - id: play-sub-terms-found
+    rule: google.subscription-offer-terms
+    expect: pass
+    facts: { platform.android: true, capability.payments: true, payments.subscriptions: true, payments.renewal_terms_found: true, attestation.apple.subscription_terms: "unknown" }
+  - id: play-sub-terms-missing
+    rule: google.subscription-offer-terms
+    expect: fail
+    facts: { platform.android: true, capability.payments: true, payments.subscriptions: true, payments.renewal_terms_found: false, attestation.apple.subscription_terms: "unknown" }
+  - id: rc-secret-present
+    rule: revenuecat.secret-key-in-app
+    expect: fail
+    facts: { sdk.revenuecat: true, revenuecat.secret_key: "present" }
+  - id: rc-secret-absent
+    rule: revenuecat.secret-key-in-app
+    expect: pass
+    facts: { sdk.revenuecat: true, revenuecat.secret_key: "absent" }
+  - id: rc-secret-unscanned
+    rule: revenuecat.secret-key-in-app
+    expect: unchecked
+    facts: { sdk.revenuecat: true, revenuecat.secret_key: "unknown" }
+  - id: rc-connect-error
+    rule: revenuecat.products-configured
+    expect: unchecked
+    facts: { sdk.revenuecat: true, connect.revenuecat: "unknown" }
+  - id: rc-connect-match
+    rule: revenuecat.products-configured
+    expect: pass
+    facts: { sdk.revenuecat: true, connect.revenuecat: "match" }
+  - id: rc-connect-mismatch
+    rule: revenuecat.products-configured
+    expect: fail
+    facts: { sdk.revenuecat: true, connect.revenuecat: "mismatch" }

@@ -1,0 +1,9 @@
+name: rc_bad
+description: RevenueCat fixture (bad).
+version: 1.0.0+1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  purchases_flutter: ^8.0.0

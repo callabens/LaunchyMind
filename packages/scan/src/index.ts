@@ -12,6 +12,7 @@ import {
 } from "../../core/src/index.ts";
 import { draftLabels, loadSdkBase, sdkFacts } from "../../labels/src/index.ts";
 import { detectNative, substituteCatalog, versionCatalog } from "./native.ts";
+import { paymentSignals, type SourceText } from "./payments.ts";
 import { readStore } from "../../store/src/index.ts";
 
 const capabilitySchema = z.object({
@@ -78,6 +79,8 @@ export const projectSchema = z.object({
     "google.data-safety-ad-id": z.boolean().optional(),
     "coppa.notice": z.boolean().optional(),
     "eu.dsa-trader": z.boolean().optional(),
+    "payments.restore-control": z.boolean().optional(),
+    "payments.paywall-links": z.boolean().optional(),
   }).strict().optional(),
   google: z.object({
     account: z.enum(["organization", "personal-before-2023-11-13", "personal-after-2023-11-13"]).optional(),
@@ -106,6 +109,8 @@ export interface ScanResult {
   liveTargets: LiveTargets;
   storeUrls: string[];
   legalPackIds: string[];
+  /** Product IDs written as string literals in purchase calls. Used only by the optional RevenueCat comparison. */
+  productIds: string[];
 }
 
 interface PackageHit {
@@ -196,12 +201,14 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   let umpRequested = false;
   let sampleUnguarded = false;
   const dartTexts: string[] = [];
+  const sourceTexts: SourceText[] = [];
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
   for (const file of [...dartFiles, ...scriptFiles, ...nativeCode]) {
     const text = await readText(file, 200_000);
     if (text === null) continue;
     const display = rel(projectPath, file);
+    sourceTexts.push({ path: display, text });
     for (const match of text.matchAll(/import\s+['"]package:([A-Za-z0-9_]+)\//g)) {
       const name = match[1];
       if (!name) continue;
@@ -471,6 +478,15 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   else if (!codeScanned) facts["payments.subscription_terms_found"] = "unknown";
   else facts["payments.subscription_terms_found"] = subscription && price;
 
+  const payments = paymentSignals(sourceTexts);
+  applyPaymentSignals(facts, bag, payments, {
+    codeScanned,
+    payments: facts["capability.payments"],
+    subscription,
+    price,
+    revenueCat: knownPackages.has("revenuecat") || knownPackages.has("purchases_flutter") || knownPackages.has("react-native-purchases"),
+  });
+
   if (facts["attestation.apple.att_not_required"] === "yes") facts["tracking.att_required"] = "no";
   else if (facts["capability.ads"] === true || facts["capability.tracking"] === true) facts["tracking.att_required"] = "yes";
   else if (facts["capability.ads"] === "unknown" || facts["capability.tracking"] === "unknown") facts["tracking.att_required"] = "unknown";
@@ -624,6 +640,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     },
     storeUrls: store.urls,
     legalPackIds: [...enabledLegalPacks(config)],
+    productIds: payments.productIds,
   };
 }
 
@@ -1135,6 +1152,44 @@ function classifyUrl(context: string, signatures: Signatures): "privacy" | "supp
   return null;
 }
 
+function applyPaymentSignals(
+  facts: Record<string, FactValue>,
+  bag: EvidenceBag,
+  signals: ReturnType<typeof paymentSignals>,
+  context: { codeScanned: boolean; payments: FactValue | undefined; subscription: boolean; price: boolean; revenueCat: boolean },
+): void {
+  const ev = (fact: string, detail: string, item: { path: string; line: number; snippet: string }) =>
+    bag.add(fileEv([fact], detail, item.path, item.line, item.snippet));
+  facts["sdk.revenuecat"] = context.revenueCat;
+  if (context.revenueCat) {
+    bag.add({ facts: ["sdk.revenuecat"], kind: "dependency", detail: "A RevenueCat SDK package (purchases_flutter, react-native-purchases, purchases-ios, RevenueCat pod, com.revenuecat.purchases, or the Unity package) is a dependency.", path: "dependencies" });
+  }
+  if (context.payments !== true) {
+    const value = context.payments === false ? "not-applicable" : "unknown";
+    for (const fact of ["payments.subscriptions", "payments.restore_control", "payments.renewal_terms_found", "payments.terms_link_found"]) facts[fact] = value;
+  } else if (!context.codeScanned) {
+    for (const fact of ["payments.subscriptions", "payments.restore_control", "payments.renewal_terms_found", "payments.terms_link_found"]) facts[fact] = "unknown";
+  } else {
+    facts["payments.subscriptions"] = context.subscription || signals.renewal !== null;
+    facts["payments.restore_control"] = signals.restore !== null;
+    facts["payments.renewal_terms_found"] = context.price && signals.renewal !== null && signals.period !== null;
+    facts["payments.terms_link_found"] = signals.termsLink !== null;
+    if (signals.restore) ev("payments.restore_control", "A restore-purchases call or label is in the source.", signals.restore);
+    else bag.add({ facts: ["payments.restore_control"], kind: "absence", detail: "Source files were scanned and no restorePurchases call or restore-purchases label was found.", path: "source" });
+    if (signals.renewal) ev("payments.renewal_terms_found", "Auto-renew wording is in the source.", signals.renewal);
+    if (signals.period) ev("payments.renewal_terms_found", "A billing period word is in the source.", signals.period);
+    if (signals.termsLink) ev("payments.terms_link_found", "Terms of Use or EULA wording is in the source.", signals.termsLink);
+    else bag.add({ facts: ["payments.terms_link_found"], kind: "absence", detail: "Source files were scanned and no Terms of Use, Terms of Service, or EULA wording was found.", path: "source" });
+  }
+  if (!context.revenueCat) facts["revenuecat.secret_key"] = "not-applicable";
+  else if (!context.codeScanned) facts["revenuecat.secret_key"] = "unknown";
+  else facts["revenuecat.secret_key"] = signals.secretKey ? "present" : "absent";
+  if (context.revenueCat && signals.secretKey) {
+    bag.add({ facts: ["revenuecat.secret_key"], kind: "file", detail: "A string literal starts with sk_, the prefix RevenueCat uses for secret API keys. The value is not shown.", path: signals.secretKey.path, line: signals.secretKey.line, snippet: signals.secretKey.snippet });
+  }
+  facts["connect.revenuecat"] = "off";
+}
+
 function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config: ProjectConfig | null): void {
   const yesNo = (value: boolean | undefined): FactValue => value === undefined ? "unknown" : value ? "yes" : "no";
   facts["audience.kids"] = yesNo(config?.audience?.kids);
@@ -1152,6 +1207,8 @@ function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config:
   facts["attestation.google.data_safety_ad_id"] = yesNo(config?.attestations?.["google.data-safety-ad-id"]);
   facts["attestation.coppa.notice"] = yesNo(config?.attestations?.["coppa.notice"]);
   facts["attestation.eu.dsa_trader"] = yesNo(config?.attestations?.["eu.dsa-trader"]);
+  facts["attestation.payments.restore_control"] = yesNo(config?.attestations?.["payments.restore-control"]);
+  facts["attestation.payments.paywall_links"] = yesNo(config?.attestations?.["payments.paywall-links"]);
   const regions = new Set(config?.regions ?? []);
   facts["region.tr"] = regions.has("TR") ? "yes" : "no";
   facts["region.eu"] = regions.has("EU") || regions.has("EEA") ? "yes" : "no";

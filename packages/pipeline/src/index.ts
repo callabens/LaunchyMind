@@ -29,6 +29,7 @@ import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.t
 import { join } from "node:path";
 import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
 import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
+import { readRevenueCat, readRevenueCatConfig } from "../../connect/src/revenuecat.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
 import { decideVerdict } from "../../verdict/src/index.ts";
 import { saveHistoryIfEnabled } from "../../history/src/index.ts";
@@ -75,6 +76,12 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   const connect = await readConnect(readConnectConfig(options.env ?? process.env), options.fetchImpl ?? fetch, offline);
   Object.assign(scanned.facts, connect.facts);
   scanned.evidence.push(...connect.evidence.map((item, index) => ({ ...item, id: `ev_connect_${index}` })));
+  if (scanned.facts["sdk.revenuecat"] === true) {
+    const revenueCat = await readRevenueCat(readRevenueCatConfig(options.env ?? process.env), scanned.productIds, options.fetchImpl ?? fetch, offline);
+    Object.assign(scanned.facts, revenueCat.facts);
+    scanned.evidence.push(...revenueCat.evidence.map((item, index) => ({ ...item, id: `ev_revenuecat_${index}` })));
+    revenueCat.lines.forEach((line, index) => scanned.observations.push({ id: `connect.revenuecat.${index}`, detail: line }));
+  }
   if (connect.facts["connect.apple"] !== "off" || connect.facts["connect.google"] !== "off") {
     connect.manual.forEach((line, index) => {
       scanned.observations.push({ id: `connect.manual.${index}`, detail: line });

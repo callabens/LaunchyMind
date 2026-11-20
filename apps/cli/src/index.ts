@@ -7,7 +7,8 @@ import { applyApprovedFix, applyApprovedFixes } from "../../../packages/fixes/sr
 import { proposeFix } from "../../../packages/fixes/src/index.ts";
 import { initProject } from "../../../packages/init/src/index.ts";
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
-import { runScan } from "../../../packages/pipeline/src/index.ts";
+import { runArtifactOnly, runScan } from "../../../packages/pipeline/src/index.ts";
+import { readConnect, readConnectConfig } from "../../../packages/connect/src/index.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
 import { addPack, listInstalledPacks, removePack } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
@@ -47,7 +48,9 @@ function help(): string {
     `LaunchyMind by callabens  ${LAUNCHYMIND_VERSION}`,
     "",
     "Commands:",
-    "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
+    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
+    "  scan --artifact <ipa|apk|aab> [--offline]",
+    "  connect [--project <path>]",
     "  explain <path> --why-not-ready [--offline] [--json]",
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
@@ -207,6 +210,12 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "connect") {
+    const report = await readConnect(readConnectConfig(process.env), fetch, args.options.has("offline"));
+    for (const line of report.lines) console.log(line);
+    return;
+  }
+
   if (command === "explain") {
     if (!sub || !args.options.has("why-not-ready")) throw new Error("Usage: launchymind explain <path> --why-not-ready [--offline] [--json]");
     const report = await runScan(resolve(sub), { offline: args.options.has("offline") });
@@ -230,6 +239,14 @@ async function main(): Promise<void> {
   }
 
   if (command === "scan") {
+    const artifact = args.options.get("artifact");
+    const artifactPath = artifact && artifact !== "true" ? resolve(artifact) : undefined;
+    if (!sub && artifactPath) {
+      const report = await runArtifactOnly(artifactPath, { offline: args.options.has("offline") });
+      console.log(renderTerminal(report, "en"));
+      process.exitCode = exitCodeForVerdict(report.verdict, parseFailOn(args.options.get("fail-on")));
+      return;
+    }
     if (!sub) throw new Error("Usage: launchymind scan <path>");
     const lang = args.options.get("lang") === "tr" ? "tr" : "en";
     if (args.options.has("lang") && lang === "en" && args.options.get("lang") !== "en") {
@@ -239,6 +256,7 @@ async function main(): Promise<void> {
     const report = await runScan(resolve(sub), {
       offline: args.options.has("offline"),
       ...(pack && pack !== "true" ? { packDir: resolve(pack) } : {}),
+      ...(artifactPath ? { artifactPath } : {}),
     });
     const html = args.options.get("html");
     const output = args.options.get("output");

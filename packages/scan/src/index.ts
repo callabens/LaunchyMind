@@ -490,7 +490,13 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     });
   }
 
-  const store = await readStore(projectPath, now);
+  const family = await detectDeviceFamily(projectPath, plistPath);
+  facts["ios.device_family"] = ios ? family : "not-applicable";
+  facts["connect.apple"] = "off";
+  facts["connect.google"] = "off";
+  facts["artifact.present"] = false;
+  facts["artifact.drift"] = "not-applicable";
+  const store = await readStore(projectPath, now, family);
   for (const [key, value] of Object.entries(store.facts)) facts[key] = value;
   for (const item of store.evidence) bag.add(item);
 
@@ -626,6 +632,31 @@ async function expoDisplayName(root: string): Promise<string | null> {
   if (!parsed || typeof parsed !== "object" || !("expo" in parsed)) return null;
   const expo = (parsed as { expo?: unknown }).expo;
   return expo && typeof expo === "object" && "name" in expo && typeof expo.name === "string" ? expo.name : null;
+}
+
+export async function detectDeviceFamily(root: string, plistPath: string | null): Promise<"iphone" | "ipad" | "universal" | "unknown"> {
+  const signals = new Set<"iphone" | "ipad">();
+  const plistText = plistPath ? await readText(plistPath, 1_000_000) : null;
+  const families = plistText?.match(/<key>\s*UIDeviceFamily\s*<\/key>\s*<array>([\s\S]*?)<\/array>/i)?.[1] ?? "";
+  if (families.includes(">1<")) signals.add("iphone");
+  if (families.includes(">2<")) signals.add("ipad");
+  const projects = await collectFiles(join(root, "ios"), 20, (name) => name === "project.pbxproj", new Set(["Pods", "build"]));
+  for (const project of projects) {
+    const text = await readText(project, 2_000_000);
+    const match = text?.match(/TARGETED_DEVICE_FAMILY\s*=\s*"?([12](?:\s*,\s*[12])?)"?/);
+    const value = match?.[1]?.replace(/\s/g, "") ?? "";
+    if (value.includes("1")) signals.add("iphone");
+    if (value.includes("2")) signals.add("ipad");
+  }
+  if (signals.size === 0) {
+    const appJson = await readText(join(root, "app.json"), 1_000_000);
+    if (appJson?.includes("\"supportsTablet\": true") || appJson?.includes("\"supportsTablet\":true")) return "universal";
+    if (appJson?.includes("\"supportsTablet\": false") || appJson?.includes("\"supportsTablet\":false")) return "iphone";
+  }
+  if (signals.has("iphone") && signals.has("ipad")) return "universal";
+  if (signals.has("ipad")) return "ipad";
+  if (signals.has("iphone")) return "iphone";
+  return "unknown";
 }
 
 async function findIosPlist(root: string): Promise<string | null> {

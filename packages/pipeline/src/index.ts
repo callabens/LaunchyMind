@@ -1,5 +1,6 @@
 import {
   DISCLAIMERS,
+  emptyFacts,
   findCorePackDir,
   LAUNCHYMIND_VERSION,
   NotFlutterProjectError,
@@ -25,6 +26,8 @@ import {
 } from "../../live/src/index.ts";
 import { loadProjectPacks } from "../../packs/src/index.ts";
 import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.ts";
+import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
+import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
 import { decideVerdict } from "../../verdict/src/index.ts";
 
@@ -35,12 +38,16 @@ export interface RunOptions {
   liveChecker?: LiveChecker;
   packDir?: string;
   pack?: LoadedPack;
+  artifactPath?: string;
+  fetchImpl?: typeof fetch;
+  env?: Record<string, string | undefined>;
 }
 
 export async function runScan(projectPath: string, options: RunOptions = {}): Promise<LaunchReport> {
   const pack = options.pack ?? await loadPack(options.packDir ?? findCorePackDir());
   const scanned = await scanProject(projectPath, pack.directory, options.now ?? new Date());
-  if (scanned.profile.framework === "unknown") throw new NotFlutterProjectError(projectPath);
+  if (scanned.profile.framework === "unknown" && !options.artifactPath) throw new NotFlutterProjectError(projectPath);
+  if (options.artifactPath) applyArtifact(scanned, await readArtifact(options.artifactPath));
   const projectPacks = await loadProjectPacks(projectPath);
   for (const problem of projectPacks.problems) {
     scanned.limitations.push({ id: "project-pack", detail: problem, blocksReady: true });
@@ -53,6 +60,14 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   }
   const merged = mergePacks(pack, projectPacks.packs, scanned.limitations);
   const offline = options.offline === true;
+  const connect = await readConnect(readConnectConfig(options.env ?? process.env), options.fetchImpl ?? fetch, offline);
+  Object.assign(scanned.facts, connect.facts);
+  scanned.evidence.push(...connect.evidence.map((item, index) => ({ ...item, id: `ev_connect_${index}` })));
+  if (connect.facts["connect.apple"] !== "off" || connect.facts["connect.google"] !== "off") {
+    connect.manual.forEach((line, index) => {
+      scanned.observations.push({ id: `connect.manual.${index}`, detail: line });
+    });
+  }
   const checker = offline ? null : options.liveChecker ?? createNetworkChecker();
   const live = await applyLive(scanned, checker, offline);
   const now = options.now ?? new Date();
@@ -67,12 +82,7 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
     projectPath,
     offline,
     profile: scanned.profile,
-    pack: {
-      id: pack.meta.id,
-      name: pack.meta.name,
-      version: pack.meta.version,
-      verifiedAt: pack.meta.verifiedAt,
-    },
+    pack: { id: pack.meta.id, name: pack.meta.name, version: pack.meta.version, verifiedAt: pack.meta.verifiedAt },
     verdict: decision.verdict,
     verdictHeadline: decision.headline,
     verdictBecause: decision.because,
@@ -83,6 +93,62 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
     observations: scanned.observations,
     facts: live.facts,
     live: live.records,
+  };
+}
+
+export async function runArtifactOnly(artifactPath: string, options: RunOptions = {}): Promise<LaunchReport> {
+  const pack = options.pack ?? await loadPack(options.packDir ?? findCorePackDir());
+  const artifact = await readArtifact(artifactPath);
+  const facts = emptyFacts();
+  Object.assign(facts, artifact.facts);
+  facts["artifact.present"] = true;
+  facts["artifact.drift"] = "not-applicable";
+  facts["connect.apple"] = "off";
+  facts["connect.google"] = "off";
+  facts["ios.device_family"] = facts["platform.ios"] === true ? "unknown" : "not-applicable";
+  const now = options.now ?? new Date();
+  const evaluation = evaluatePack(pack, facts, artifact.evidence.map((item, index) => ({ ...item, id: `ev_artifact_${index}` })), now, options.staleDays ?? STALE_DAYS_DEFAULT);
+  const decision = decideVerdict(evaluation.findings, []);
+  const flutter = facts["framework.flutter"] === true;
+  return {
+    version: 1,
+    product: PRODUCT_NAME,
+    vendor: VENDOR,
+    toolVersion: LAUNCHYMIND_VERSION,
+    generatedAt: now.toISOString(),
+    projectPath: artifactPath,
+    offline: options.offline === true,
+    profile: {
+      framework: flutter ? "flutter" : "unknown",
+      name: null,
+      version: null,
+      displayName: null,
+      developerName: null,
+      platforms: { ios: facts["platform.ios"] === true, android: facts["platform.android"] === true },
+      dependencies: [],
+      capabilities: [],
+      permissions: { ios: [], android: [] },
+      urls: { privacy: [], support: [], accountDeletion: [], developerWebsite: [] },
+      metadata: {
+        applicationId: null,
+        targetSdk: typeof facts["android.target_sdk"] === "number" ? facts["android.target_sdk"] : null,
+        minSdk: null,
+        compileSdk: null,
+        iosDeploymentTargets: [],
+      },
+      unknowns: ["This report is from a built artifact. Source files were not scanned."],
+    },
+    pack: { id: pack.meta.id, name: pack.meta.name, version: pack.meta.version, verifiedAt: pack.meta.verifiedAt },
+    verdict: decision.verdict,
+    verdictHeadline: decision.headline,
+    verdictBecause: decision.because,
+    disclaimers: [...DISCLAIMERS],
+    findings: evaluation.findings,
+    withheld: evaluation.withheld,
+    limitations: [],
+    observations: [{ id: "artifact-only", detail: "No project directory was scanned with this artifact, so drift was not compared." }],
+    facts,
+    live: [],
   };
 }
 
@@ -278,6 +344,48 @@ async function assignStoreUrls(
     detail: broken ? "At least one store listing URL did not return a page." : "Every store listing URL returned a page.",
     ...(first ? { path: first } : {}),
   });
+}
+
+function applyArtifact(scanned: ScanResult, artifact: ArtifactRead): void {
+  scanned.facts["artifact.present"] = true;
+  const diffs: string[] = [];
+  let compared = 0;
+  if (typeof scanned.facts["android.target_sdk"] === "number" && artifact.targetSdk !== null) {
+    compared += 1;
+    if (scanned.facts["android.target_sdk"] !== artifact.targetSdk) diffs.push(`targetSdk source ${scanned.facts["android.target_sdk"]} artifact ${artifact.targetSdk}`);
+  }
+  const sourceAd = scanned.facts["android.ad_id"];
+  if (artifact.adId !== null && (sourceAd === "declared" || sourceAd === "missing" || sourceAd === "removed" || sourceAd === "merged-by-sdk")) {
+    compared += 1;
+    const sourceHas = sourceAd === "declared" || sourceAd === "merged-by-sdk";
+    if (sourceHas !== artifact.adId) diffs.push(`AD_ID source ${sourceAd} artifact ${artifact.adId ? "declared" : "absent"}`);
+  }
+  const sourceTracking = scanned.facts["ios.privacy_manifest.tracking"];
+  if ((sourceTracking === "true" || sourceTracking === "false") && artifact.tracking) {
+    compared += 1;
+    if (sourceTracking !== artifact.tracking) diffs.push(`NSPrivacyTracking source ${sourceTracking} artifact ${artifact.tracking}`);
+  }
+  if (typeof scanned.facts["ios.usage.camera"] === "boolean" && artifact.cameraUsage !== null) {
+    compared += 1;
+    if (scanned.facts["ios.usage.camera"] !== artifact.cameraUsage) diffs.push(`camera usage string source ${scanned.facts["ios.usage.camera"]} artifact ${artifact.cameraUsage}`);
+  }
+  scanned.facts["artifact.drift"] = compared === 0 ? "unknown" : diffs.length > 0 ? "yes" : "no";
+  for (const [key, value] of Object.entries(artifact.facts)) {
+    if (key === "artifact.present") continue;
+    if (scanned.facts[key] === "unknown") scanned.facts[key] = value;
+  }
+  artifact.evidence.forEach((item, index) => {
+    scanned.evidence.push({ ...item, id: `ev_artifact_${index}` });
+  });
+  if (diffs.length > 0) {
+    scanned.evidence.push({
+      id: "ev_artifact_drift",
+      facts: ["artifact.drift"],
+      kind: "scan",
+      detail: diffs.join("; "),
+      path: artifact.kind,
+    });
+  }
 }
 
 function mergePacks(core: LoadedPack, extras: readonly LoadedPack[], limitations: Limitation[]): LoadedPack {

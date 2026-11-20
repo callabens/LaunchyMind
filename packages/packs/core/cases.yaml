@@ -643,3 +643,16 @@ cases:
     rule: store.play.screenshots
     expect: unchecked
     facts: { store.android.present: true, store.android.screenshots: "missing" }
+
+  - id: artifact-matches
+    rule: artifact.drift
+    expect: pass
+    facts: { artifact.present: true, artifact.drift: "no" }
+  - id: artifact-differs
+    rule: artifact.drift
+    expect: fail
+    facts: { artifact.present: true, artifact.drift: "yes" }
+  - id: artifact-unknown
+    rule: artifact.drift
+    expect: unchecked
+    facts: { artifact.present: true, artifact.drift: "unknown" }

@@ -27,6 +27,10 @@ const FEATURES: Array<[string, string]> = [
 ];
 
 const REQUIRED_IPHONE = new Set(["1179x2556", "2556x1179", "1206x2622", "2622x1206"]);
+const REQUIRED_IPAD = new Set(["2064x2752", "2752x2064", "2048x2732", "2732x2048"]);
+const PLAY_ICON_MAX_BYTES = 1024 * 1024;
+
+export type DeviceFamily = "iphone" | "ipad" | "universal" | "unknown";
 const APPLE_SCREENSHOTS = new Set<string>([
   ...REQUIRED_IPHONE,
   "1398x2034", "2034x1398", "2007x2853", "2853x2007",
@@ -41,7 +45,7 @@ const APPLE_SCREENSHOTS = new Set<string>([
   "1536x2008", "1536x2048", "2048x1496", "2048x1536", "768x1004", "768x1024", "1024x748", "1024x768",
 ]);
 
-export async function readStore(root: string, now = new Date()): Promise<StoreRead> {
+export async function readStore(root: string, now = new Date(), deviceFamily: DeviceFamily = "unknown"): Promise<StoreRead> {
   const facts = blankStoreFacts();
   const evidence: Array<Omit<Evidence, "id">> = [];
   const ios = await readTree(root, [
@@ -85,9 +89,9 @@ export async function readStore(root: string, now = new Date()): Promise<StoreRe
   const playIcon = await firstImage(root, android.files, ["icon.png"]);
   const feature = await firstImage(root, android.files, ["feature-graphic.png", "featuregraphic.png"]);
   facts["store.ios.icon"] = iosPresent ? await iconFact(iosIcon, 1024, 1024, false) : "not-applicable";
-  facts["store.android.icon"] = androidPresent ? await iconFact(playIcon, 512, 512, true) : "not-applicable";
+  facts["store.android.icon"] = androidPresent ? await iconFact(playIcon, 512, 512, true, PLAY_ICON_MAX_BYTES) : "not-applicable";
   facts["store.android.feature_graphic"] = androidPresent ? await iconFact(feature, 1024, 500, false) : "not-applicable";
-  facts["store.ios.screenshots"] = iosPresent ? await appleShots(imageFiles(root, ios.files, ["screenshots", "iphone"])) : "not-applicable";
+  facts["store.ios.screenshots"] = iosPresent ? await appleShots(imageFiles(root, ios.files, ["screenshots", "iphone", "ipad"]), deviceFamily) : "not-applicable";
   facts["store.android.screenshots"] = androidPresent ? await playShots(imageFiles(root, android.files, ["screenshots", "phonescreenshots"])) : "not-applicable";
 
   const urls = uniqueUrls([...ios.files, ...android.files]);
@@ -265,16 +269,19 @@ async function firstImage(root: string, files: TextFile[], names: string[]): Pro
   return found ? join(root, found.path) : null;
 }
 
-async function iconFact(path: string | null, width: number, height: number, wantAlpha: boolean): Promise<FactValue> {
+async function iconFact(path: string | null, width: number, height: number, wantAlpha: boolean, maxBytes?: number): Promise<FactValue> {
   if (!path) return "missing";
-  const image = await readImage(path);
+  const bytes = await readFile(path).catch(() => null);
+  if (!bytes) return "unknown";
+  const image = readImageBytes(bytes);
   if (!image) return "unknown";
+  if (maxBytes !== undefined && bytes.length > maxBytes) return "bad";
   if (image.width !== width || image.height !== height) return "bad";
   if (image.alpha !== wantAlpha) return "bad";
   return "ok";
 }
 
-async function appleShots(paths: string[]): Promise<FactValue> {
+async function appleShots(paths: string[], family: DeviceFamily): Promise<FactValue> {
   if (paths.length === 0) return "missing";
   const images = [];
   for (const path of paths) {
@@ -290,7 +297,11 @@ async function appleShots(paths: string[]): Promise<FactValue> {
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
   if ([...counts.values()].some((count) => count > 10)) return "bad";
-  return images.some((image) => REQUIRED_IPHONE.has(`${image.width}x${image.height}`)) ? "ok" : "bad";
+  const keys = images.map((image) => `${image.width}x${image.height}`);
+  if (family === "ipad") return keys.some((key) => REQUIRED_IPAD.has(key)) ? "ok" : "bad";
+  if (family === "iphone" || family === "universal") return keys.some((key) => REQUIRED_IPHONE.has(key)) ? "ok" : "bad";
+  if (keys.some((key) => REQUIRED_IPHONE.has(key))) return "ok";
+  return "unknown";
 }
 
 async function playShots(paths: string[]): Promise<FactValue> {
@@ -325,7 +336,10 @@ interface ImageInfo { width: number; height: number; alpha: boolean }
 
 async function readImage(path: string): Promise<ImageInfo | null> {
   const bytes = await readFile(path).catch(() => null);
-  if (!bytes) return null;
+  return bytes ? readImageBytes(bytes) : null;
+}
+
+function readImageBytes(bytes: Buffer): ImageInfo | null {
   if (bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50) return readPng(bytes);
   if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) return readJpeg(bytes);
   return null;

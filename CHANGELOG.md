@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- iPad-only apps are detected from `TARGETED_DEVICE_FAMILY`, `UIDeviceFamily`, or Expo `supportsTablet`. Their screenshots are checked against the 13-inch iPad sizes. If the device family cannot be read, an iPad-sized set stays unchecked.
+- The Play icon's 1024 KB file-size cap is measured.
+- A past copyright year stays unflagged. Apple's field is the year the rights were obtained, and the help page's example is 2014.
+- `launchymind connect` can read App Store Connect and Google Play with keys supplied by environment variables. Tests mock the network. Data safety, the closed-test clock, and the Xcode SDK stay manual because those APIs do not expose them.
+- `launchymind scan --artifact` reads an IPA, APK, or AAB and compares targetSdk, AD_ID, the privacy-manifest tracking flag, and the camera usage string with the source scan.
+
 ## 0.2.0
 
 - The package metadata is ready to publish: exports, bin, engines, files, and `publishConfig.access`. `npm publish` is a manual workflow that needs `NPM_TOKEN` and was not run.

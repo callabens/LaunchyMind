@@ -130,7 +130,7 @@ test("npm pack dry run lists the publish files and omits tests", async () => {
   const entries = JSON.parse(packed.stdout.slice(jsonStart)) as Array<{ filename: string; files: Array<{ path: string }> }>;
   const entry = entries[0];
   assert.ok(entry);
-  assert.match(entry.filename, /launchymind-0\.2\.0\.tgz/);
+  assert.match(entry.filename, /launchymind-0\.3\.0\.tgz/);
   const paths = entry.files.map((file) => file.path);
   assert.ok(paths.some((path) => path.endsWith("dist/apps/cli/src/index.js")));
   assert.ok(paths.some((path) => path.endsWith("packages/packs/core/rules.yaml")));

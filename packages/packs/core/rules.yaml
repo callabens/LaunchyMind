@@ -1860,7 +1860,7 @@ rules:
           - { fact: store.copyright.year, eq: "future" }
     check:
       confidence: direct
-      note: "A past year passes. No copyright line stays unchecked. This does not decide who owns the rights."
+      note: "Apple's example is the year the rights were obtained, such as 2014, so a past year is not a mismatch. Only a year after the scan year fails. No copyright line stays unchecked. This does not decide who owns the rights."
 
   - id: store.price-claims
     title: Listing text does not add a price the page already shows
@@ -2019,7 +2019,7 @@ rules:
       note: "Reads .launchymind/store/ios/icon.png or fastlane metadata icon.png. The no-alpha part matches Apple's ITMS-90717 upload error. An unknown image stays unchecked."
 
   - id: store.ios.screenshots
-    title: iPhone screenshots match a required App Store size
+    title: Screenshots match the required size for the targeted device
     severity: blocker
     platforms: [ios]
     enabled: true
@@ -2033,8 +2033,8 @@ rules:
       section: "iPhone with Dynamic Island (medium display)"
       publisher: Apple
     summary:
-      en: "App Store Connect requires at least one screenshot for iPhone with Dynamic Island (medium display), and screenshots cannot include an alpha channel. Up to 10 are allowed per size. A size that is not on the specification list stays unchecked."
-      tr: "App Store Connect, Dynamic Island'lı iPhone orta ekran için en az bir ekran görüntüsü ister ve görüntülerde alfa kanalı olamaz. Boyut başına en fazla 10. Şartname listesinde olmayan boyut kontrol edilemedi kalır."
+      en: "App Store Connect requires an iPhone Dynamic Island screenshot unless the project targets iPad only, in which case a 13-inch iPad size is required. Screenshots cannot include an alpha channel. Up to 10 are allowed per size. A size that is not on the specification list, or a set whose device family was not read, stays unchecked."
+      tr: "App Store Connect, proje yalnızca iPad hedeflemiyorsa Dynamic Island'lı iPhone görüntüsü ister; yalnızca iPad ise 13 inç iPad boyutu gerekir. Alfa kanalı olamaz. Boyut başına en fazla 10. Şartname dışı boyut veya okunamayan cihaz ailesi kontrol edilemedi kalır."
     appliesWhen:
       all:
         - { fact: store.ios.present, eq: true }
@@ -2047,7 +2047,7 @@ rules:
           - { fact: store.ios.screenshots, eq: "bad" }
     check:
       confidence: direct
-      note: "Required pixels checked on 2026-11-20: 1179x2556, 2556x1179, 1206x2622, and 2622x1206. iPad-only catalogs are not detected. Missing files stay unchecked."
+      note: "iPhone sizes checked on 2026-11-20: 1179x2556, 2556x1179, 1206x2622, 2622x1206. iPad-only, from TARGETED_DEVICE_FAMILY or UIDeviceFamily, uses 2064x2752, 2752x2064, 2048x2732, or 2732x2048. If the family was not read, an iPad-only set stays unchecked instead of failing. Missing files stay unchecked."
 
   - id: store.play.icon
     title: Play icon is a 512 by 512 PNG
@@ -2064,8 +2064,8 @@ rules:
       section: App icon
       publisher: Google Play
     summary:
-      en: "Play requires a 512 by 512 32-bit PNG icon with alpha, at most 1024 KB. The byte cap is not measured. A file that cannot be read stays unchecked."
-      tr: "Play, alfa kanallı 512'ye 512 32 bit PNG ikon ister; en fazla 1024 KB. Bayt sınırı ölçülmez. Okunamayan dosya kontrol edilemedi kalır."
+      en: "Play requires a 512 by 512 32-bit PNG icon with alpha, and the file must be at most 1024 KB. A file that cannot be read stays unchecked."
+      tr: "Play, alfa kanallı 512'ye 512 32 bit PNG ikon ister ve dosya en fazla 1024 KB olmalıdır. Okunamayan dosya kontrol edilemedi kalır."
     appliesWhen:
       all:
         - { fact: store.android.present, eq: true }
@@ -2078,7 +2078,7 @@ rules:
           - { fact: store.android.icon, eq: "bad" }
     check:
       confidence: direct
-      note: "Alpha is required for the Play icon, unlike the App Store icon. Missing and unreadable icons stay unchecked."
+      note: "Alpha is required for the Play icon, unlike the App Store icon. The 1024 KB cap is the file size on disk. Missing and unreadable icons stay unchecked."
 
   - id: store.play.feature-graphic
     title: Play feature graphic is 1024 by 500 without alpha
@@ -2141,4 +2141,36 @@ rules:
     check:
       confidence: direct
       note: "Phone, Wear, TV, and XR catalogs are not separated. The minimum of two and the 320 to 3840 range are what this check uses."
+
+  - id: artifact.drift
+    title: Built artifact matches the values read from source
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: product-rule
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: artifact
+      publisher: LaunchyMind
+    summary:
+      en: "When an IPA, APK, or AAB is scanned next to the project, targetSdk, the AD_ID permission, the app privacy-manifest tracking flag, and the camera usage string are compared. A difference is a risk. A value the artifact did not contain stays unchecked."
+      tr: "IPA, APK veya AAB proje yanında tarandığında targetSdk, AD_ID izni, privacy manifest izleme bayrağı ve kamera kullanım metni karşılaştırılır. Fark bir risktir. Artifaktta olmayan değer kontrol edilemedi kalır."
+    appliesWhen:
+      all:
+        - { fact: artifact.present, eq: true }
+        - { fact: artifact.drift, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: artifact.drift, eq: "no" }
+      fail:
+        all:
+          - { fact: artifact.drift, eq: "yes" }
+    check:
+      confidence: direct
+      note: "The provisioning profile signature is not verified. AAB manifests are read from aapt protobuf string fields. An attribute stored only as a resource id stays unread."
 

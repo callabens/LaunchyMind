@@ -24,6 +24,7 @@ export default defineConfig({
           { text: "Rules and sources", link: "/rules" },
           { text: "Writing a pack", link: "/writing-a-pack" },
           { text: "Approval flow", link: "/approval" },
+          { text: "Store console", link: "/connect" },
           { text: "Türkçe", link: "/tr" },
         ],
       },

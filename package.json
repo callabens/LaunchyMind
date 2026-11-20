@@ -1,6 +1,6 @@
 {
   "name": "@callabens/launchymind",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Local-first pre-release readiness checker for mobile apps. LaunchyMind by callabens.",
   "type": "module",
   "engines": {

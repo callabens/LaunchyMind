@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.2.0";
+export const LAUNCHYMIND_VERSION = "0.3.0";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -238,6 +238,7 @@ export const KNOWN_FACTS = [
   "ios.usage.contacts",
   "ios.usage.tracking",
   "ios.deployment_target",
+  "ios.device_family",
   "ios.privacy_manifest.present",
   "ios.privacy_manifest.incomplete_reasons",
   "android.target_sdk",
@@ -318,6 +319,10 @@ export const KNOWN_FACTS = [
   "store.android.feature_graphic",
   "store.android.screenshots",
   "store.urls.status",
+  "connect.apple",
+  "connect.google",
+  "artifact.present",
+  "artifact.drift",
 ] as const;
 
 export type KnownFact = (typeof KNOWN_FACTS)[number];

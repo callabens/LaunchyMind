@@ -26,4 +26,6 @@ launchymind init path/to/app --set attestations.apple.xcode-sdk=true
 
 `--offline` skips network checks. A missing fact stays **unchecked**. Unchecked blocks a ready verdict. A blank answer is never filled in for you.
 
-Exit codes: `0` under the `--fail-on` line (the default is `reject`, so risky is `0`), `2` when `--fail-on risky` and the verdict is risky, `3` for reject, `4` when the folder is not Flutter, React Native, or Expo, `1` for other errors.
+Exit codes: `0` under the `--fail-on` line (the default is `reject`, so risky is `0`), `2` when `--fail-on risky` and the verdict is risky, `3` for reject, `4` when the folder is not a supported project, `1` for other errors.
+
+Supported projects are Flutter, React Native, Expo, native iOS, native Android, and Unity. See the capability matrix in the README. This release is `1.0.0-rc.1`, not `1.0.0`.

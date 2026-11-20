@@ -1,0 +1,7 @@
+[versions]
+targetSdk = "28"
+minSdk = "24"
+compileSdk = "35"
+
+[libraries]
+ads = { module = "com.google.android.gms:play-services-ads", version = "23.0.0" }

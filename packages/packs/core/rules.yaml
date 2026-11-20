@@ -2,7 +2,7 @@
 # appliesWhen is what the engine uses. platforms is for readers.
 rules:
   - id: product.flutter-project
-    title: This preview scans Flutter, React Native, and Expo
+    title: The project is a kind this checker can read
     severity: risk
     platforms: [any]
     enabled: true
@@ -17,8 +17,8 @@ rules:
       section: scanner
       publisher: LaunchyMind
     summary:
-      en: "This preview reads Flutter, React Native, and Expo projects. A folder that is none of those is not given a store verdict. Checks that the scanner cannot see stay unchecked."
-      tr: "Bu önizleme Flutter, React Native ve Expo projelerini okur. Bunların hiçbiri olmayan klasör için mağaza kararı üretilmez. Görülemeyen kontroller kontrol edilemedi kalır."
+      en: "LaunchyMind reads Flutter, React Native, Expo, native iOS, native Android, and Unity projects. A folder that is none of those is not given a store verdict. A fact the files do not show stays unchecked."
+      tr: "LaunchyMind Flutter, React Native, Expo, yerel iOS, yerel Android ve Unity projelerini okur. Bunların hiçbiri olmayan klasör için mağaza kararı üretilmez. Dosyaların göstermediği olgu kontrol edilemedi kalır."
     appliesWhen:
       all:
         - { fact: framework.flutter, neq: "unused" }
@@ -28,14 +28,20 @@ rules:
           - { fact: framework.flutter, eq: true }
           - { fact: framework.react_native, eq: true }
           - { fact: framework.expo, eq: true }
+          - { fact: framework.ios, eq: true }
+          - { fact: framework.android, eq: true }
+          - { fact: framework.unity, eq: true }
       fail:
         all:
           - { fact: framework.flutter, eq: false }
           - { fact: framework.react_native, eq: false }
           - { fact: framework.expo, eq: false }
+          - { fact: framework.ios, eq: false }
+          - { fact: framework.android, eq: false }
+          - { fact: framework.unity, eq: false }
     check:
       confidence: direct
-      note: "Flutter is a pubspec SDK dependency. React Native is a react-native dependency. Expo is an expo dependency or an app.json expo field. Native-only folders are not scanned."
+      note: "Flutter is a pubspec SDK dependency. React Native is a react-native dependency. Expo is an expo dependency or an app.json expo field. Native iOS is an Xcode project. Native Android is an app Gradle file. Unity is ProjectSettings/ProjectSettings.asset. Anything those files do not show stays unchecked."
 
   - id: product.audience-answers
     title: Audience questions the code cannot answer

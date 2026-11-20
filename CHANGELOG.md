@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-rc.1
+
+This is a release candidate, not 1.0.0. The owner publishes 1.0.0.
+
+- Native iOS, native Android, and Unity projects are scanned with the same rule engine. Files that do not show a fact leave that check unchecked.
+- `registry/index.json` lists data-only packs by name, pinned commit, and integrity hash. `pack search` and `pack add <name>` use it. Packs are still not executed.
+- LaunchPack schema version stays 1. Snapshot tests cover fixture verdicts. The docs describe the semver policy.
+
 ## 0.5.0
 
 - Play Data safety rows for Google Mobile Ads now come from Google's Android disclosure for SDK 25.5.0. Unity Ads, LevelPlay, Firebase Analytics, Crashlytics, Cloud Messaging, Adjust, and AppsFlyer have draft rows only for data those opened pages state. AppLovin, StoreKit, and Play Billing stay unknown, with the page that was opened and the reason.

@@ -38,4 +38,6 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - `launchymind labels` prints a draft. Say it is a draft and not legal advice. Do not turn an unknown SDK into a data type. A mismatch finding comes from the rule engine.
 - `launchymind sources check` can say a cited page changed. Leave the rule text alone and say it needs a human to re-verify.
 - History and the dashboard exist only when `history: true`. Do not describe them as a store score.
+- Native iOS, Android, and Unity can be scanned. If a file was not read, say the check is unchecked. Do not treat that as a pass.
+- `pack add <name>` installs a data pack from the registry only when the commit and integrity hash match. Do not run code from a pack.
 - After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.

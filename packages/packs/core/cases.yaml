@@ -6,7 +6,19 @@ cases:
   - id: not-flutter
     rule: product.flutter-project
     expect: fail
-    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false }
+    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false, framework.ios: false, framework.android: false, framework.unity: false }
+  - id: native-ios-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false, framework.ios: true }
+  - id: native-android-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false, framework.android: true }
+  - id: unity-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false, framework.unity: true }
   - id: react-native-detected
     rule: product.flutter-project
     expect: pass

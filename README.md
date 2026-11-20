@@ -1,10 +1,30 @@
 # LaunchyMind by callabens
 
-LaunchyMind is a local-first, open-source pre-release readiness checker for mobile apps. It reads a Flutter project, selects the store and legal rules that fit what the app actually does, and reports a verdict of **ready**, **risky**, or **likely to be rejected**.
+LaunchyMind is a local-first, open-source pre-release readiness checker for mobile apps. It reads a project, selects the store and legal rules that fit what the files show, and reports a verdict of **ready**, **risky**, or **likely to be rejected**.
 
 Every finding cites evidence (a file and line, or a live URL) and the rule's source link and last-verified date. The verdict is computed by a deterministic rule engine. The model in an agent session does not decide it.
 
-**Status: 0.2.0.** This is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy or KVKK finding. The npm release workflow is manual and has not been run.
+**Status: 1.0.0-rc.1.** This is a release candidate, not 1.0.0, until the owner publishes it. It is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy or KVKK finding. The npm release workflow is manual and has not been run.
+
+## Capability matrix
+
+| Area | Level |
+|---|---|
+| Verdict from the rule engine | Supported |
+| Flutter source scan | Supported |
+| React Native and Expo | Partial. Config plugins are not executed. Unseen facts stay unchecked. |
+| Native iOS | Partial. Xcode project, Info.plist, entitlements, privacy manifest, Swift Package pins, and Podfile.lock. The project is not built. |
+| Native Android | Partial. Gradle, version catalogs, and source manifests including a release overlay. The Gradle merged manifest is not built. |
+| Unity | Partial. Project settings, package manifest, plugin manifests, and a generated export when it is present. C# is not compiled. |
+| Store listing text and images on disk | Supported for the checks that cite a published size or length. |
+| App Store Connect and Play Console | Partial. Read-only when you set keys. The Data safety form is not read. |
+| IPA, APK, and AAB | Partial. Drift against the source scan. Some binary fields stay unread. |
+| SDK privacy drafts | Partial. A row exists only when a vendor page was opened. Unknown SDKs add no row. |
+| Legal packs | Partial. GDPR and accessibility rules stay disabled. Enabled rules check project answers, not a legal conclusion. |
+| Source watch | Partial. Hashes are stored. A weekly workflow opens an issue. Rules are not edited. |
+| History and local dashboard | Supported when `history: true`. |
+| Editor extension | Partial. Packed in CI. Not published to a marketplace. |
+| Community packs | Supported as data only, from a path, a git URL, or the registry index. |
 
 ## What works in this preview
 
@@ -20,11 +40,11 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 ## What this preview does not do
 
 - It is not on npm yet. `.github/workflows/release.yml` publishes only when someone runs it by hand and the `NPM_TOKEN` secret is set.
-- It does not scan native-only apps, IPA, or AAB files. A folder that is not Flutter, React Native, or Expo exits `4`.
+- A folder that is not Flutter, React Native, Expo, native iOS, native Android, or Unity exits `4`. The message starts with "Not a Flutter project".
 - It does not read App Store Connect or Play Console. Questions that live only there stay **unchecked** until you answer them with `launchymind init` or `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
 - It does not fully scan required-reason API use or privacy manifests inside the Flutter engine, Pods, or SDK binaries. Those gaps are listed on the report and are not treated as a pass.
 - It does not invent privacy-policy text, account-deletion screens, ad-seller lines, or store-console answers.
-- It does not watch upstream sources on a schedule.
+- Source watch opens an issue when a cited page changes. It does not rewrite the rule.
 - It does not claim a privacy-page keyword match is a complete policy review.
 
 ## Install and run
@@ -36,7 +56,7 @@ npm install
 npm run launchymind -- scan path/to/flutter-app
 ```
 
-Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the verdict is reject, `4` when the folder is not a Flutter, React Native, or Expo project, `1` for other usage errors. `--fail-on` defaults to `reject`, so a risky report does not fail CI unless you pass `--fail-on risky` (exit `2`) or `--fail-on none` (always `0` after a successful scan).
+Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the verdict is reject, `4` when the folder is not a supported project, `1` for other usage errors. `--fail-on` defaults to `reject`, so a risky report does not fail CI unless you pass `--fail-on risky` (exit `2`) or `--fail-on none` (always `0` after a successful scan).
 
 `--output report.json` writes the LaunchPack file and prints the terminal report. It does not also dump the JSON to the terminal. `--json` without `--output` still prints JSON only.
 
@@ -47,6 +67,7 @@ npm run launchymind -- labels path/to/flutter-app --lang tr --offline
 npm run launchymind -- sources check
 npm run launchymind -- history path/to/flutter-app
 npm run launchymind -- dashboard path/to/flutter-app
+npm run launchymind -- pack search notes
 npm run launchymind -- scan path/to/flutter-app --artifact app.apk
 npm run launchymind -- scan path/to/flutter-app --json
 npm run launchymind -- scan path/to/flutter-app --html report.html

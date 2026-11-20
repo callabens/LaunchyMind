@@ -3,7 +3,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.5.0";
+export const LAUNCHYMIND_VERSION = "1.0.0-rc.1";
+export const LAUNCHPACK_SCHEMA_VERSION = 1;
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -50,7 +51,7 @@ export interface Limitation {
 }
 
 export interface AppProfile {
-  framework: "flutter" | "react-native" | "expo" | "unknown";
+  framework: "flutter" | "react-native" | "expo" | "ios" | "android" | "unity" | "native" | "unknown";
   name: string | null;
   version: string | null;
   displayName: string | null;
@@ -216,6 +217,9 @@ export const KNOWN_FACTS = [
   "framework.flutter",
   "framework.react_native",
   "framework.expo",
+  "framework.ios",
+  "framework.android",
+  "framework.unity",
   "platform.ios",
   "platform.android",
   "capability.camera",
@@ -496,7 +500,7 @@ export function exitCodeForVerdict(verdict: Verdict, failOn: FailOn = "reject"):
 export class NotFlutterProjectError extends Error {
   readonly exitCode = 4;
   constructor(projectPath: string) {
-    super(`Not a Flutter project: ${projectPath}. This version scans Flutter (a pubspec.yaml Flutter SDK dependency), React Native (a react-native dependency), and Expo (an expo dependency or an app.json expo field).`);
+    super(`Not a Flutter project: ${projectPath}. Nothing here matches Flutter, React Native, Expo, a native iOS or Android app, or a Unity project. The scan stopped before a verdict.`);
     this.name = "NotFlutterProjectError";
   }
 }

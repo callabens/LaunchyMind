@@ -1,8 +1,12 @@
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { cp, mkdir, readdir, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { basename, extname, isAbsolute, join, relative, resolve } from "node:path";
+import { basename, dirname, extname, isAbsolute, join, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
+import { z } from "zod";
 import { packMetaSchema } from "../../core/src/index.ts";
 import { loadPack, type LoadedPack } from "../../rules/src/index.ts";
 
@@ -58,6 +62,78 @@ export async function loadProjectPacks(projectPath: string): Promise<{ packs: Lo
   return { packs, problems };
 }
 
+const registryEntrySchema = z.object({
+  name: z.string().regex(/^[a-z0-9][a-z0-9-]*$/),
+  description: z.string().min(10),
+  repository: z.string().min(1),
+  path: z.string().regex(/^registry\/packs\/[a-z0-9-]+$/),
+  commit: z.string().regex(/^[0-9a-f]{40}$/),
+  integrity: z.string().regex(/^sha256:[0-9a-f]{64}$/),
+}).strict();
+
+const registrySchema = z.object({
+  schema: z.literal(1),
+  packs: z.array(registryEntrySchema),
+}).strict();
+
+export type RegistryFile = z.infer<typeof registrySchema>;
+export type RegistryEntry = z.infer<typeof registryEntrySchema>;
+
+export function findRegistryPath(start = dirname(fileURLToPath(import.meta.url))): string {
+  let dir = start;
+  for (let hop = 0; hop < 8; hop += 1) {
+    const candidate = join(dir, "registry", "index.json");
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error("The pack registry was not found at registry/index.json.");
+}
+
+export async function loadRegistry(path = findRegistryPath()): Promise<RegistryFile> {
+  const parsed = registrySchema.safeParse(JSON.parse(await readFile(path, "utf8")));
+  if (!parsed.success) {
+    throw new Error(`The pack registry is not valid: ${parsed.error.issues.map((issue) => issue.message).join("; ")}`);
+  }
+  return parsed.data;
+}
+
+export function searchRegistry(index: RegistryFile, query: string): RegistryEntry[] {
+  const needle = query.trim().toLowerCase();
+  return index.packs.filter((pack) => pack.name.includes(needle) || pack.description.toLowerCase().includes(needle));
+}
+
+export async function packIntegrity(directory: string): Promise<string> {
+  const files = (await walkFiles(directory)).filter((file) => isDataFile(basename(file))).sort((a, b) => relative(directory, a).localeCompare(relative(directory, b)));
+  const hash = createHash("sha256");
+  for (const file of files) {
+    hash.update(relative(directory, file).replaceAll("\\", "/"));
+    hash.update("\0");
+    hash.update(await readFile(file));
+    hash.update("\0");
+  }
+  return `sha256:${hash.digest("hex")}`;
+}
+
+export async function addPackByName(projectPath: string, name: string, registryPath = findRegistryPath()): Promise<InstalledPack> {
+  const index = await loadRegistry(registryPath);
+  const entry = index.packs.find((pack) => pack.name === name);
+  if (!entry) throw new Error(`No pack named ${name} is in the registry. Try launchymind pack search.`);
+  const repoRoot = dirname(dirname(registryPath));
+  const material = await materializeCommit(entry, repoRoot);
+  try {
+    const actual = await packIntegrity(material.directory);
+    if (actual !== entry.integrity) {
+      throw new Error(`The files for ${name} at ${entry.commit} do not match the registry integrity hash. Nothing was installed.`);
+    }
+    return await addPack(projectPath, material.directory);
+  } finally {
+    if (material.worktree) spawnSync("git", ["-C", material.worktree, "worktree", "remove", "--force", material.checkout ?? ""], { encoding: "utf8" });
+    if (material.cleanup) await rm(material.cleanup, { recursive: true, force: true });
+  }
+}
+
 export async function addPack(projectPath: string, source: string): Promise<InstalledPack> {
   const material = await materialize(source);
   try {
@@ -107,6 +183,37 @@ async function materialize(source: string): Promise<{ directory: string; cleanup
   const info = await stat(directory).catch(() => null);
   if (!info?.isDirectory()) throw new Error(`Pack source is not a directory or a git URL: ${source}`);
   return { directory, cleanup: null };
+}
+
+async function materializeCommit(entry: RegistryEntry, repoRoot: string): Promise<{ directory: string; cleanup: string | null; worktree: string | null; checkout: string | null }> {
+  if (entry.path.split("/").includes("..")) throw new Error(`Refusing registry path ${entry.path}.`);
+  const local = spawnSync("git", ["-C", repoRoot, "cat-file", "-t", entry.commit], { encoding: "utf8" });
+  const parent = join(tmpdir(), `launchymind-registry-${Date.now()}`);
+  await mkdir(parent, { recursive: true });
+  const checkout = join(parent, "tree");
+  if (local.status === 0 && local.stdout.trim() === "commit") {
+    const added = spawnSync("git", ["-C", repoRoot, "worktree", "add", "--detach", checkout, entry.commit], { encoding: "utf8" });
+    if (added.status !== 0) {
+      await rm(parent, { recursive: true, force: true });
+      throw new Error(`Could not read commit ${entry.commit}. ${added.stderr.trim()}`.trim());
+    }
+    return { directory: join(checkout, entry.path), cleanup: parent, worktree: repoRoot, checkout };
+  }
+  const cloned = spawnSync("git", ["-c", "core.hooksPath=/dev/null", "clone", "--no-tags", "--", entry.repository, checkout], {
+    encoding: "utf8",
+    timeout: 30_000,
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+  });
+  if (cloned.status !== 0) {
+    await rm(parent, { recursive: true, force: true });
+    throw new Error(`Could not clone ${entry.repository}. ${cloned.stderr.trim()}`.trim());
+  }
+  const checked = spawnSync("git", ["-C", checkout, "checkout", "--detach", entry.commit], { encoding: "utf8" });
+  if (checked.status !== 0) {
+    await rm(parent, { recursive: true, force: true });
+    throw new Error(`Commit ${entry.commit} is not in ${entry.repository}. Nothing was installed.`);
+  }
+  return { directory: join(checkout, entry.path), cleanup: parent, worktree: null, checkout: null };
 }
 
 function isGitUrl(source: string): boolean {

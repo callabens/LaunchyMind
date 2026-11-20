@@ -11,7 +11,7 @@ import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runArtifactOnly, runScan } from "../../../packages/pipeline/src/index.ts";
 import { readConnect, readConnectConfig } from "../../../packages/connect/src/index.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
-import { addPack, listInstalledPacks, removePack } from "../../../packages/packs/src/index.ts";
+import { addPack, addPackByName, listInstalledPacks, loadRegistry, packIntegrity, removePack, searchRegistry } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
 import { renderHtml, renderJson, renderTerminal } from "../../../packages/report/src/index.ts";
 import { historyEnabled, readFixes, readHistory, recordFixIfEnabled, renderDashboard, renderHistory } from "../../../packages/history/src/index.ts";
@@ -62,7 +62,9 @@ function help(): string {
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
     "  pack validate [directory]",
-    "  pack add <path-or-git-url> [--project <path>]",
+    "  pack search <query>",
+    "  pack add <name-or-path-or-git-url> [--project <path>]",
+    "  pack integrity <directory>",
     "  pack list [--project <path>]",
     "  pack remove <id> [--project <path>]",
     "  fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]",
@@ -129,6 +131,20 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "pack" && sub === "search") {
+    if (!extra) throw new Error("Usage: launchymind pack search <query>");
+    const found = searchRegistry(await loadRegistry(), extra);
+    if (found.length === 0) console.log(`No registry pack matches ${extra}.`);
+    for (const pack of found) console.log(`${pack.name}  ${pack.commit.slice(0, 12)}  ${pack.description}`);
+    return;
+  }
+
+  if (command === "pack" && sub === "integrity") {
+    if (!extra) throw new Error("Usage: launchymind pack integrity <directory>");
+    console.log(await packIntegrity(resolve(extra)));
+    return;
+  }
+
   if (command === "pack" && (sub === "add" || sub === "list" || sub === "remove")) {
     const project = resolve(args.options.get("project") ?? ".");
     if (sub === "list") {
@@ -138,8 +154,9 @@ async function main(): Promise<void> {
       return;
     }
     if (sub === "add") {
-      if (!extra) throw new Error("Usage: launchymind pack add <path-or-git-url> [--project <path>]");
-      const installed = await addPack(project, extra);
+      if (!extra) throw new Error("Usage: launchymind pack add <name-or-path-or-git-url> [--project <path>]");
+      const named = /^[a-z0-9][a-z0-9-]*$/.test(extra);
+      const installed = named ? await addPackByName(project, extra) : await addPack(project, extra);
       console.log(`Installed ${installed.id} ${installed.version} into ${installed.directory}`);
       return;
     }

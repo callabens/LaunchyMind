@@ -11,6 +11,7 @@ import {
   type Observation,
 } from "../../core/src/index.ts";
 import { draftLabels, loadSdkBase, sdkFacts } from "../../labels/src/index.ts";
+import { detectNative, substituteCatalog, versionCatalog } from "./native.ts";
 import { readStore } from "../../store/src/index.ts";
 
 const capabilitySchema = z.object({
@@ -155,13 +156,26 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   const expo = await detectExpo(projectPath, npmPackages);
   const reactNative = expo || npmPackages.some((item) => item.name === "react-native");
   const flutter = isFlutter(pubspec, lock);
+  const native = await detectNative(projectPath);
+  const unity = native.unity;
+  const nativeIos = native.hasPbx && !flutter && !reactNative && !unity;
+  const nativeAndroid = native.hasAppGradle && !flutter && !reactNative && !unity;
   facts["framework.flutter"] = flutter;
   facts["framework.react_native"] = reactNative;
   facts["framework.expo"] = expo;
-  if (!flutter && !reactNative) unknowns.push("This folder does not look like a Flutter, React Native, or Expo project.");
+  facts["framework.ios"] = nativeIos;
+  facts["framework.android"] = nativeAndroid;
+  facts["framework.unity"] = unity;
+  for (const item of native.packages) {
+    if (!packages.some((existing) => existing.name === item.name)) packages.push(item);
+  }
+  const supported = flutter || reactNative || unity || nativeIos || nativeAndroid;
+  if (!supported) unknowns.push("This folder is not a Flutter, React Native, Expo, native iOS, native Android, or Unity project.");
 
-  const ios = await isDir(join(projectPath, "ios"));
-  const android = await isDir(join(projectPath, "android"));
+  const iosFolder = await isDir(join(projectPath, "ios"));
+  const androidFolder = await isDir(join(projectPath, "android"));
+  const ios = iosFolder || native.hasPbx || native.unityIos;
+  const android = androidFolder || native.hasAppGradle || native.unityAndroid;
   facts["platform.ios"] = ios;
   facts["platform.android"] = android;
 
@@ -170,7 +184,11 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   const scriptFiles = reactNative && !flutter
     ? await collectFiles(projectPath, 200, (name) => /\.(js|jsx|ts|tsx|mjs|cjs)$/.test(name), new Set(["node_modules", "ios", "android", "Pods", "build", "dist", "coverage", "web"]))
     : [];
-  const codeScanned = dartScanned || scriptFiles.length > 0 || (reactNative && !flutter);
+  const nativeCode = nativeIos || nativeAndroid || unity
+    ? await collectFiles(projectPath, 200, (name) => /\.(swift|m|mm|kt|java|cs)$/.test(name), new Set(["Pods", "build", "node_modules", "Library", "Temp", ".git", "DerivedData", "dist"]))
+    : [];
+  const codeScanned = dartScanned || scriptFiles.length > 0 || nativeCode.length > 0 || (reactNative && !flutter);
+  const codeCapped = nativeCode.length >= 200 || dartFiles.length >= 200 || scriptFiles.length >= 200;
   const imported = new Set<string>();
   let deletion = false;
   let subscription = false;
@@ -180,7 +198,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   const dartTexts: string[] = [];
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
-  for (const file of [...dartFiles, ...scriptFiles]) {
+  for (const file of [...dartFiles, ...scriptFiles, ...nativeCode]) {
     const text = await readText(file, 200_000);
     if (text === null) continue;
     const display = rel(projectPath, file);
@@ -201,7 +219,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     if (signatures.subscriptionNeedles.some((needle) => lower.includes(needle.toLowerCase()))) subscription = true;
     if (signatures.priceNeedles.some((needle) => lower.includes(needle.toLowerCase()))) price = true;
     if (/requestconsentinfoupdate|consentinformation|usermessagingplatform/i.test(text)) umpRequested = true;
-    if (file.endsWith(".dart")) dartTexts.push(text);
+    if (/\.(dart|swift|m|mm|kt|java|cs)$/.test(file)) dartTexts.push(text);
     if (unguardedSampleIds(text).length > 0) {
       sampleUnguarded = true;
       bag.add(fileEv(["ads.sample_unit_in_shipped_config"], "Google's sample AdMob publisher id is reachable in a release build.", display, lineOfNeedle(text, GOOGLE_SAMPLE_AD_PUBLISHER), GOOGLE_SAMPLE_AD_PUBLISHER));
@@ -278,7 +296,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   facts["ads.google"] = signatures.googleAds.some((name) => knownPackages.has(name));
 
   const packageKnown = Boolean(packageJson && typeof packageJson === "object");
-  if (!pubspecKnown && !packageKnown) {
+  if (!pubspecKnown && !packageKnown && !native.dependencyManifest) {
     for (const id of Object.keys(signatures.capabilities)) facts[`capability.${id}`] = "unknown";
     facts["capability.listed_sdk"] = "unknown";
     facts["capability.third_party_login"] = "unknown";
@@ -309,7 +327,8 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   assignUsage(facts, bag, ios, plist, plistRel, signatures);
   await assignDeploymentTarget(facts, bag, projectPath, ios, unknowns);
   await assignPrivacyManifests(facts, bag, projectPath, ios);
-  const entitlements = ios ? await collectFiles(join(projectPath, "ios"), 20, (name) => name.endsWith(".entitlements"), new Set(["Pods", ".symlinks", "build"])) : [];
+  const entitlementRoot = iosFolder ? join(projectPath, "ios") : projectPath;
+  const entitlements = ios ? await collectFiles(entitlementRoot, 20, (name) => name.endsWith(".entitlements"), new Set(["Pods", ".symlinks", "build", "node_modules", "Library", "Temp", ".git"])) : [];
   for (const file of entitlements) {
     const text = await readText(file, 200_000);
     if (text?.includes("com.apple.developer.applesignin")) {
@@ -322,10 +341,11 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     }
   }
 
-  const manifestText = android ? await readText(join(projectPath, "android", "app", "src", "main", "AndroidManifest.xml"), 1_000_000) : null;
+  const manifestRead = android ? await readManifestInputs(projectPath) : { text: null, path: null };
+  const manifestText = manifestRead.text;
   const androidPermissions = manifestText ? readAndroidPermissions(manifestText) : [];
   const applicationId = manifestText ? readXmlAttr(manifestText, "package") : null;
-  if (android && manifestText === null) unknowns.push("android/app/src/main/AndroidManifest.xml was missing or could not be read.");
+  if (android && manifestText === null) unknowns.push("No source AndroidManifest.xml was found. The Gradle merged manifest was not built, so permissions stay unknown.");
   if (manifestText?.includes("uses-permission") && androidPermissions.length === 0) {
     unknowns.push("AndroidManifest.xml mentions uses-permission but no android:name values were read.");
   }
@@ -337,13 +357,13 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
       observations.push({
         id: `android.permission.${id}`,
         detail: `${permission} is in the Android manifest, and no mapped Dart package was found. iOS purpose-string rules are not applied from an Android permission alone.`,
-        path: "android/app/src/main/AndroidManifest.xml",
+        path: manifestRead.path ?? "AndroidManifest.xml",
       });
     }
   }
 
   const gradle = await readGradle(projectPath);
-  if (android && !gradle.found) unknowns.push("android/app/build.gradle was missing or could not be read.");
+  if (android && !gradle.found && native.androidTargetSdk === null) unknowns.push("No app Gradle file was found, so targetSdk stays unknown.");
   const flutterSdk = readFlutterSdkPin(lockText, await readText(join(projectPath, ".fvmrc"), 20_000), await readText(join(projectPath, ".fvm/fvm_config.json"), 20_000));
   const sdkDefaults = await flutterSdkDefaults(packDir, flutterSdk);
   const useFlutterTarget = gradle.targetSdk === null && gradle.usesFlutterTarget && sdkDefaults !== null;
@@ -366,6 +386,10 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     ));
   }
   if (gradle.conflict) unknowns.push("Gradle targetSdk values disagree. The target API was left unknown instead of picking one.");
+  if (facts["android.target_sdk"] === "unknown" && native.androidTargetSdk !== null && android) {
+    facts["android.target_sdk"] = native.androidTargetSdk;
+    bag.add(fileEv(["android.target_sdk"], `AndroidTargetSdkVersion ${native.androidTargetSdk} is in Unity project settings. It is not a Gradle value, so the Play target rule stays unchecked.`, "ProjectSettings/ProjectSettings.asset", null, String(native.androidTargetSdk)));
+  }
 
   const sampleInPlist = plist ? [...plist.entries.values()].some((entry) => entry.value.includes(GOOGLE_SAMPLE_AD_PUBLISHER)) : false;
   const sampleInManifest = manifestText?.includes(GOOGLE_SAMPLE_AD_PUBLISHER) ?? false;
@@ -385,7 +409,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     facts["ads.sample_unit_in_shipped_config"] = "not-applicable";
     facts["ads.ump_requested"] = "not-applicable";
   }
-  const stubState = !dartScanned ? "unknown" : stubPurchaseState(dartTexts, facts["capability.payments"] === true);
+  const stubState = !codeScanned ? "unknown" : stubPurchaseState(dartTexts, facts["capability.payments"] === true);
   facts["payments.stub_ui"] = stubState;
   if (stubState === "reachable") {
     bag.add({
@@ -486,7 +510,7 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
     });
     limitations.push({
       id: "merged-manifest-not-scanned",
-      detail: "Only the source AndroidManifest is read. Permissions merged from libraries at build time are not visible here.",
+      detail: "Source manifests were read, including a release overlay when that file exists. The manifest Gradle merges at build time was not opened, so a library permission can stay unseen.",
       blocksReady: false,
     });
   }
@@ -502,6 +526,34 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
       id: "javascript-surface-scan",
       detail: "JavaScript and TypeScript are scanned for imports and selected phrases. They are not executed, and Expo config plugins are not run. Facts the source does not show stay unknown.",
       blocksReady: false,
+    });
+  }
+  if (nativeIos) {
+    limitations.push({
+      id: "native-ios-not-built",
+      detail: "Native iOS is read from the Xcode project, Info.plist, entitlements, privacy manifest, Package.resolved, and Podfile.lock. The project was not built.",
+      blocksReady: false,
+    });
+  }
+  if (nativeAndroid) {
+    limitations.push({
+      id: "native-android-not-built",
+      detail: "Native Android is read from Gradle, version catalogs, and source manifests. The project was not built.",
+      blocksReady: false,
+    });
+  }
+  if (unity) {
+    limitations.push({
+      id: "unity-not-compiled",
+      detail: "Unity project settings, the package manifest, plugin manifests, and a generated Xcode or Gradle export (when present) were read. C# was not compiled.",
+      blocksReady: false,
+    });
+  }
+  if (codeCapped) {
+    limitations.push({
+      id: "source-scan-capped",
+      detail: "The source scan stopped after 200 files. Files past that cap were not read, so a phrase that only appears later stays unchecked.",
+      blocksReady: true,
     });
   }
 
@@ -526,11 +578,11 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   for (const item of store.evidence) bag.add(item);
 
   const appJsonName = await expoDisplayName(projectPath);
-  const displayName = config?.appName ?? appJsonName ?? plist?.entries.get("CFBundleDisplayName")?.value ?? plist?.entries.get("CFBundleName")?.value ?? null;
-  const name = stringField(pubspec, "name") ?? stringField(packageJson, "name");
-  const version = stringField(pubspec, "version") ?? stringField(packageJson, "version");
+  const displayName = config?.appName ?? appJsonName ?? plist?.entries.get("CFBundleDisplayName")?.value ?? plist?.entries.get("CFBundleName")?.value ?? native.productName ?? null;
+  const name = stringField(pubspec, "name") ?? stringField(packageJson, "name") ?? native.productName;
+  const version = stringField(pubspec, "version") ?? stringField(packageJson, "version") ?? native.bundleVersion;
   const profile: AppProfile = {
-    framework: flutter ? "flutter" : expo ? "expo" : reactNative ? "react-native" : "unknown",
+    framework: flutter ? "flutter" : expo ? "expo" : reactNative ? "react-native" : unity ? "unity" : nativeIos && nativeAndroid ? "native" : nativeIos ? "ios" : nativeAndroid ? "android" : "unknown",
     name,
     version,
     displayName: displayName ?? name,
@@ -704,7 +756,13 @@ export async function detectDeviceFamily(root: string, plistPath: string | null)
 async function findIosPlist(root: string): Promise<string | null> {
   const runner = join(root, "ios", "Runner", "Info.plist");
   if (await isFile(runner)) return runner;
-  const found = await collectFiles(join(root, "ios"), 40, (name) => name === "Info.plist", new Set(["Pods", ".symlinks", "build", "node_modules"]));
+  if (await isDir(join(root, "ios"))) {
+    const found = await collectFiles(join(root, "ios"), 40, (name) => name === "Info.plist", new Set(["Pods", ".symlinks", "build", "node_modules"]));
+    if (found[0]) return found[0];
+  }
+  const plugin = join(root, "Assets", "Plugins", "iOS", "Info.plist");
+  if (await isFile(plugin)) return plugin;
+  const found = await collectFiles(root, 20, (name) => name === "Info.plist", new Set(["Pods", ".symlinks", "build", "node_modules", "Library", "Temp", ".git"]));
   return found[0] ?? null;
 }
 
@@ -819,8 +877,11 @@ async function assignDeploymentTarget(facts: Record<string, FactValue>, bag: Evi
       if (!Number.isNaN(value)) found.push(value);
     }
   }
-  const pbx = await readText(join(root, "ios", "Runner.xcodeproj", "project.pbxproj"), 2_000_000);
-  if (pbx) {
+  const pbxFiles = [join(root, "ios", "Runner.xcodeproj", "project.pbxproj")];
+  const others = await collectFiles(root, 15, (name) => name === "project.pbxproj", new Set(["Pods", ".symlinks", "build", "node_modules", "Library", "Temp", ".git"]));
+  for (const file of [...pbxFiles, ...others]) {
+    const pbx = await readText(file, 2_000_000);
+    if (!pbx) continue;
     for (const match of pbx.matchAll(/IPHONEOS_DEPLOYMENT_TARGET\s*=\s*(\d+(?:\.\d+)?)\s*;/g)) {
       const value = Number(match[1]);
       if (!Number.isNaN(value)) found.push(value);
@@ -850,7 +911,7 @@ async function assignPrivacyManifests(facts: Record<string, FactValue>, bag: Evi
     facts["ios.privacy_manifest.tracking_consistent"] = "not-applicable";
     return;
   }
-  const files = await collectFiles(join(root, "ios"), 30, (name) => name === "PrivacyInfo.xcprivacy", new Set(["Pods", ".symlinks", "build"]));
+  const files = await privacyManifestFiles(root);
   if (files.length === 0) {
     facts["ios.privacy_manifest.present"] = false;
     facts["ios.privacy_manifest.incomplete_reasons"] = "unknown";
@@ -859,7 +920,7 @@ async function assignPrivacyManifests(facts: Record<string, FactValue>, bag: Evi
     bag.add({
       facts: ["ios.privacy_manifest.present"],
       kind: "absence",
-      detail: "No PrivacyInfo.xcprivacy was found under ios/, excluding Pods.",
+      detail: "No PrivacyInfo.xcprivacy was found in the iOS project, excluding Pods and build folders.",
       path: "ios",
     });
     return;
@@ -911,6 +972,34 @@ function readTrackingManifest(text: string): { tracking: "true" | "false" | "unk
   return { tracking, consistent, snippet };
 }
 
+async function privacyManifestFiles(root: string): Promise<string[]> {
+  const skips = new Set(["Pods", ".symlinks", "build", "node_modules", "Library", "Temp", ".git"]);
+  const fromIos = await isDir(join(root, "ios"))
+    ? await collectFiles(join(root, "ios"), 30, (name) => name === "PrivacyInfo.xcprivacy", skips)
+    : [];
+  const plugin = join(root, "Assets", "Plugins", "iOS", "PrivacyInfo.xcprivacy");
+  const extra = (await isFile(plugin)) ? [plugin] : [];
+  if (fromIos.length > 0 || extra.length > 0) return [...fromIos, ...extra];
+  if (await isDir(join(root, "ios"))) return [];
+  return collectFiles(root, 20, (name) => name === "PrivacyInfo.xcprivacy", skips);
+}
+
+async function readManifestInputs(root: string): Promise<{ text: string | null; path: string | null }> {
+  const mains = [
+    "android/app/src/main/AndroidManifest.xml",
+    "app/src/main/AndroidManifest.xml",
+    "Assets/Plugins/Android/AndroidManifest.xml",
+  ];
+  for (const relativePath of mains) {
+    const main = await readText(join(root, relativePath), 1_000_000);
+    if (main === null) continue;
+    const releasePath = relativePath.replace("/main/", "/release/");
+    const release = releasePath === relativePath ? null : await readText(join(root, releasePath), 1_000_000);
+    return { text: release ? `${main}\n${release}` : main, path: relativePath };
+  }
+  return { text: null, path: null };
+}
+
 function manifestReasonsIncomplete(text: string): boolean {
   if (!text.includes("<key>NSPrivacyAccessedAPIType</key>")) return false;
   const parts = text.split("<key>NSPrivacyAccessedAPIType</key>").slice(1);
@@ -937,11 +1026,12 @@ interface GradleRead {
 }
 
 async function readGradle(root: string): Promise<GradleRead> {
-  const paths = ["android/app/build.gradle", "android/app/build.gradle.kts"];
+  const versions = await versionCatalog(root);
+  const paths = ["android/app/build.gradle", "android/app/build.gradle.kts", "app/build.gradle", "app/build.gradle.kts"];
   for (const relativePath of paths) {
     const text = await readText(join(root, relativePath), 1_000_000);
     if (text === null) continue;
-    const stripped = text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    const stripped = substituteCatalog(text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""), versions);
     const usesFlutterTarget = /flutter\.targetSdkVersion\b/.test(stripped) || /flutter\.targetSdk\b/.test(stripped);
     const usesFlutterMin = /flutter\.minSdkVersion\b/.test(stripped);
     const targets = numbers(stripped, [/targetSdk(?:Version)?\s*=\s*(\d+)/g, /targetSdkVersion\s+(\d+)/g]);

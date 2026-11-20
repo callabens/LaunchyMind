@@ -7,7 +7,9 @@ launchymind init <path> [--set key=value]
 launchymind fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]
 launchymind fix <path> --all [--yes] [--dry-run] [--allow-dirty] [--offline]
 launchymind pack validate [directory]
-launchymind pack add <path-or-git-url> [--project path]
+launchymind pack search <query>
+launchymind pack add <name-or-path-or-git-url> [--project path]
+launchymind pack integrity <directory>
 launchymind pack list [--project path]
 launchymind pack remove <id> [--project path]
 launchymind rules

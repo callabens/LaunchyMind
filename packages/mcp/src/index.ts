@@ -1,3 +1,4 @@
+import { LOCALES } from "../../i18n/src/index.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { resolve } from "node:path";
@@ -63,12 +64,12 @@ export function createLaunchyMindServer(defaultRoot: string, allowApply = false)
 
   server.registerTool("launchymind_labels", {
     description: "Draft App Privacy and Play Data safety rows from verified SDK disclosure pages. The result is a draft, not a verdict and not legal advice. Unknown SDKs add no row.",
-    inputSchema: { projectPath, offline, lang: z.enum(["en", "tr"]).optional() },
+    inputSchema: { projectPath, offline, lang: z.enum(LOCALES).optional() },
     annotations: readOnly,
   }, async (input) => {
     const report = await scan(defaultRoot, input.projectPath, input.offline);
     const draft = await labelsForReport(report);
-    return text({ ...draft, text: renderLabels(draft, input.lang === "tr" ? "tr" : "en") });
+    return text({ ...draft, text: renderLabels(draft, input.lang ?? "en") });
   });
 
   server.registerTool("launchymind_propose_fix", {

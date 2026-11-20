@@ -1,3 +1,4 @@
+import { DEFAULT_LOCALE, isRtl, translator, type Locale } from "../../i18n/src/index.ts";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -94,12 +95,13 @@ export async function readFixes(projectPath: string): Promise<RecordedFix[]> {
   });
 }
 
-export function renderHistory(entries: readonly HistoryEntry[]): string {
-  if (entries.length === 0) return "No saved scans. History is written only when project.yaml sets history: true.";
-  const lines = ["Saved scans, oldest first."];
-  for (const entry of entries) lines.push(`${entry.generatedAt}  ${entry.verdict}  blockers ${entry.blockers.length}`);
+export function renderHistory(entries: readonly HistoryEntry[], lang: Locale = DEFAULT_LOCALE): string {
+  const t = translator(lang);
+  if (entries.length === 0) return t("history.none");
+  const lines = [t("history.header")];
+  for (const entry of entries) lines.push(`${entry.generatedAt}  ${entry.verdict}  ${t("history.blockers")} ${entry.blockers.length}`);
   const verdicts = entries.map((entry) => entry.verdict).join(" -> ");
-  lines.push(`Trend: ${verdicts}`);
+  lines.push(`${t("history.trend")}: ${verdicts}`);
   return lines.join("\n");
 }
 
@@ -115,41 +117,43 @@ export function clearedBlockers(entries: readonly HistoryEntry[]): string[] {
   return [...seen].sort();
 }
 
-export function renderDashboard(entries: readonly HistoryEntry[], fixes: readonly RecordedFix[]): string {
+export function renderDashboard(entries: readonly HistoryEntry[], fixes: readonly RecordedFix[], lang: Locale = DEFAULT_LOCALE): string {
+  const t = translator(lang);
   const latest = entries[entries.length - 1];
   const points = entries.map((entry) => `${entry.generatedAt.slice(0, 16)} ${entry.verdict} (${entry.blockers.length})`).join(" · ");
   const open = latest ? latest.blockers.map((item) => `<li><code>${esc(item.ruleId ?? item.title)}</code> ${esc(item.title)}</li>`).join("") : "";
   const cleared = clearedBlockers(entries).map((id) => `<li><code>${esc(id)}</code></li>`).join("");
   const applied = fixes.map((item) => `<li><code>${esc(item.ruleId)}</code> ${esc(item.appliedAt)}</li>`).join("");
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${esc(lang)}" dir="${isRtl(lang) ? "rtl" : "ltr"}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'">
-<title>LaunchyMind history</title>
+<title>${esc(t("dash.title"))}</title>
 <style>
   body { margin: 0; font: 16px/1.5 Georgia, serif; background: #f7f4ee; color: #1c1915; }
   main { max-width: 820px; margin: 0 auto; padding: 32px 20px 64px; }
   h1 { font-size: 2rem; margin: 0 0 8px; }
   .note { color: #4a453d; }
   ul { padding-left: 1.2rem; }
-  code { font: 13px ui-monospace, monospace; }
+  code { font: 13px ui-monospace, monospace; unicode-bidi: isolate; }
+  [dir="rtl"] ul { padding-left: 0; padding-right: 1.2rem; }
 </style>
 </head>
 <body>
 <main>
   <h1>LaunchyMind</h1>
-  <p class="note">Local history. This page does not load a script, a font, or a tracker.</p>
-  <h2>Verdict over time</h2>
-  <p>${entries.length === 0 ? "No saved scans." : esc(points)}</p>
-  <h2>Open blockers</h2>
-  <ul>${open || "<li>None in the latest saved scan.</li>"}</ul>
-  <h2>Blockers that cleared</h2>
-  <ul>${cleared || "<li>None.</li>"}</ul>
-  <h2>Fixes applied</h2>
-  <p class="note">These are fixes LaunchyMind wrote after an explicit yes, and only while history is on.</p>
-  <ul>${applied || "<li>None recorded.</li>"}</ul>
+  <p class="note">${esc(t("dash.note"))}</p>
+  <h2>${esc(t("dash.over_time"))}</h2>
+  <p dir="ltr">${entries.length === 0 ? esc(t("dash.no_scans")) : esc(points)}</p>
+  <h2>${esc(t("dash.open"))}</h2>
+  <ul>${open || `<li>${esc(t("dash.open_none"))}</li>`}</ul>
+  <h2>${esc(t("dash.cleared"))}</h2>
+  <ul>${cleared || `<li>${esc(t("html.none"))}</li>`}</ul>
+  <h2>${esc(t("dash.fixes"))}</h2>
+  <p class="note">${esc(t("dash.fixes_note"))}</p>
+  <ul>${applied || `<li>${esc(t("dash.fixes_none"))}</li>`}</ul>
 </main>
 </body>
 </html>

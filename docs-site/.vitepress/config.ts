@@ -11,6 +11,9 @@ export default defineConfig({
       { text: "CLI", link: "/cli" },
       { text: "Rules", link: "/rules" },
       { text: "Türkçe", link: "/tr" },
+      { text: "Deutsch", link: "/de" },
+      { text: "Español", link: "/es" },
+      { text: "日本語", link: "/ja" },
     ],
     sidebar: [
       {
@@ -32,6 +35,9 @@ export default defineConfig({
           { text: "Pack registry", link: "/registry" },
           { text: "API and schema", link: "/stability" },
           { text: "Türkçe", link: "/tr" },
+          { text: "Deutsch", link: "/de" },
+          { text: "Español", link: "/es" },
+          { text: "日本語", link: "/ja" },
         ],
       },
     ],

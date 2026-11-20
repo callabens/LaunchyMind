@@ -27,3 +27,9 @@ launchymind init uygulama-yolu --set attestations.apple.xcode-sdk=true
 `explain --why-not-ready`, READY kararını engelleyen başarısız kuralları, kontrol edilemeyen kuralları ve sınırları listeler.
 
 Düzeltme yazmak için `--yes` veya terminalde ayrı bir onay gerekir. MCP tarafında `approved: true` ve `propose` aracının verdiği `fixId` birlikte gerekir. Anahtarlar sizde kalır; depoya yazılmaz.
+
+## Dil
+
+`--lang tr` Türkçeyi seçer. `--lang` yoksa `LC_ALL`, `LC_MESSAGES` ve `LANG` içinden ilk tanımlı olan karar verir; hiçbiri yoksa VS Code görüntüleme dili, o da yoksa İngilizce kullanılır. Desteklenenler: en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar, ru.
+
+Kural kaynakları özgün dillerinde alıntılanır. App Store Connect, Play Console, App Privacy ve Data safety gibi mağaza terimleri mağazaların yazdığı gibi kalır.

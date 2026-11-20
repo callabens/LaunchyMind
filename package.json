@@ -24,7 +24,7 @@
   },
   "scripts": {
     "launchymind": "node --experimental-strip-types apps/cli/src/index.ts",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "node --experimental-strip-types --import ./tests/setup.ts --test tests/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.build.json",
     "lint": "node --experimental-strip-types scripts/lint.ts",

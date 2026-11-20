@@ -1,33 +1,69 @@
-import type { Finding, LaunchReport } from "../../core/src/index.ts";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { parse } from "yaml";
+import { DISCLAIMERS, type Finding, type LaunchReport } from "../../core/src/index.ts";
+import { DEFAULT_LOCALE, findI18nDir, isRtl, pickText, translator, type Locale, type Translate } from "../../i18n/src/index.ts";
 
-export function renderTerminal(report: LaunchReport, lang: "en" | "tr" = "en"): string {
+type RuleTexts = Record<string, { summary?: string; next?: string }>;
+const overlays = new Map<Locale, RuleTexts>();
+
+/** Optional per-locale rule explanations in packages/packs/i18n/rules/<locale>.yaml. */
+export function ruleOverlay(locale: Locale): RuleTexts {
+  const cached = overlays.get(locale);
+  if (cached) return cached;
+  const path = join(findI18nDir(), "rules", `${locale}.yaml`);
+  const loaded = existsSync(path) ? (parse(readFileSync(path, "utf8")) as RuleTexts | null) ?? {} : {};
+  overlays.set(locale, loaded);
+  return loaded;
+}
+
+export function localizedFinding(finding: Finding, locale: Locale): { summary: string; next: string | null; fallback: boolean } {
+  const overlay = ruleOverlay(locale)[finding.ruleId] ?? {};
+  const summary = pickText({ en: finding.summaryEn, tr: finding.summaryTr, [locale]: locale === "tr" ? finding.summaryTr : overlay.summary }, locale);
+  const next = pickText({ en: finding.nextEn, tr: finding.nextTr, [locale]: locale === "tr" ? finding.nextTr : overlay.next }, locale);
+  return { summary: summary?.text ?? finding.summaryEn, next: next?.text ?? null, fallback: Boolean(summary?.fallback || next?.fallback) };
+}
+
+export function verdictLabel(report: Pick<LaunchReport, "verdict" | "verdictHeadline">, t: Translate): string {
+  if (report.verdictHeadline === "NOT READY") return t("verdict.not_ready");
+  return t(`verdict.${report.verdict}`);
+}
+
+function disclaimer(item: string, t: Translate): string {
+  const keys = ["disclaimer.store", "disclaimer.legal", "disclaimer.ready"];
+  const index = (DISCLAIMERS as readonly string[]).indexOf(item);
+  return index >= 0 && keys[index] ? t(keys[index]) : item;
+}
+
+export function renderTerminal(report: LaunchReport, lang: Locale = DEFAULT_LOCALE): string {
+  const t = translator(lang);
   const lines: string[] = [
-    `${report.product} by ${report.vendor}  ${report.toolVersion}`,
-    `Project: ${report.profile.displayName ?? report.profile.name ?? report.projectPath}`,
-    `Framework: ${report.profile.framework}  iOS: ${yes(report.profile.platforms.ios)}  Android: ${yes(report.profile.platforms.android)}`,
-    `Pack: ${report.pack.id} ${report.pack.version}`,
-    `Mode: ${report.offline ? "offline" : "live checks enabled"}`,
+    `${t("report.by", { product: report.product, vendor: report.vendor })}  ${report.toolVersion}`,
+    `${t("report.project")}: ${report.profile.displayName ?? report.profile.name ?? report.projectPath}`,
+    `${t("report.framework")}: ${report.profile.framework}  iOS: ${yes(report.profile.platforms.ios, t)}  Android: ${yes(report.profile.platforms.android, t)}`,
+    `${t("report.pack")}: ${report.pack.id} ${report.pack.version}`,
+    `${t("report.mode")}: ${report.offline ? t("report.mode.offline") : t("report.mode.live")}`,
     "",
-    `Verdict: ${report.verdictHeadline}`,
-    ...report.disclaimers.map((item) => `  ${item}`),
+    `${t("report.verdict")}: ${verdictLabel(report, t)}`,
+    ...report.disclaimers.map((item) => `  ${disclaimer(item, t)}`),
     "",
   ];
   const open = report.findings.filter((finding) => finding.status === "fail" || finding.status === "unchecked").sort(byImportance);
-  if (open.length === 0) lines.push("No failed or unchecked rules.");
-  for (const finding of open) lines.push(...formatFinding(finding, lang), "");
+  if (open.length === 0) lines.push(t("report.no_open"));
+  for (const finding of open) lines.push(...formatFinding(finding, lang, t), "");
   const passed = report.findings.filter((finding) => finding.status === "pass").length;
   const skipped = report.findings.filter((finding) => finding.status === "not_applicable").length;
-  lines.push(`Passed: ${passed}  Not applicable: ${skipped}  Withheld rules: ${report.withheld.length}`);
+  lines.push(t("report.totals", { passed, na: skipped, withheld: report.withheld.length }));
   if (report.profile.unknowns.length) {
-    lines.push("", "Could not read:");
+    lines.push("", t("report.could_not_read"));
     for (const item of report.profile.unknowns) lines.push(`  - ${item}`);
   }
   if (report.sourceWatch.needsReverify.length) {
-    lines.push("", "Needs re-verify (the source page changed; the rule was not edited):");
+    lines.push("", t("report.needs_reverify"));
     for (const item of report.sourceWatch.needsReverify) lines.push(`  - ${item.ruleId} ${item.url}`);
   }
   if (report.limitations.length) {
-    lines.push("", "Limits of this scan:");
+    lines.push("", t("report.limits"));
     for (const item of report.limitations) lines.push(`  - ${item.detail}`);
   }
   return lines.join("\n").trimEnd();
@@ -37,12 +73,13 @@ export function renderJson(report: LaunchReport): string {
   return JSON.stringify(report, null, 2);
 }
 
-export function renderHtml(report: LaunchReport): string {
+export function renderHtml(report: LaunchReport, lang: Locale = DEFAULT_LOCALE): string {
+  const t = translator(lang);
   const verdictClass = report.verdict === "ready" ? "ready" : report.verdict === "risky" ? "risky" : "reject";
   const findings = report.findings
     .filter((finding) => finding.status !== "not_applicable")
     .sort(byImportance)
-    .map((finding) => findingHtml(finding))
+    .map((finding) => findingHtml(finding, lang, t))
     .join("\n");
   const caps = report.profile.capabilities
     .filter((item) => item.present === true)
@@ -52,11 +89,11 @@ export function renderHtml(report: LaunchReport): string {
   const withheld = report.withheld.map((item) => `<li><code>${esc(item.ruleId)}</code> — ${esc(item.reason)} <a href="${esc(item.sourceUrl)}">${esc(item.sourceSection)}</a></li>`).join("");
   const unknowns = report.profile.unknowns.map((item) => `<li>${esc(item)}</li>`).join("");
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${esc(lang)}" dir="${isRtl(lang) ? "rtl" : "ltr"}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(report.product)} report — ${esc(report.verdictHeadline)}</title>
+<title>${esc(t("html.title", { product: report.product }))} — ${esc(verdictLabel(report, t))}</title>
 <style>
   :root { color-scheme: light; --ink: #1c1915; --paper: #f7f4ee; --line: #d9d2c5; --ready: #1f6b45; --risky: #8a5a12; --reject: #8d2b2b; }
   * { box-sizing: border-box; }
@@ -73,66 +110,72 @@ export function renderHtml(report: LaunchReport): string {
   pre { white-space: pre-wrap; background: #fff; border: 1px solid var(--line); padding: 8px 10px; }
   a { color: inherit; }
   ul { padding-left: 1.2rem; }
+  [dir="rtl"] ul { padding-left: 0; padding-right: 1.2rem; }
+  [dir="rtl"] code, [dir="rtl"] pre, .source { unicode-bidi: isolate; }
+  .fallback { color: #6b655b; font-style: italic; }
 </style>
 </head>
 <body>
 <main>
-  <p class="meta">${esc(report.product)} by ${esc(report.vendor)} · ${esc(report.toolVersion)} · pack ${esc(report.pack.version)}</p>
-  <h1>${esc(report.profile.displayName ?? report.profile.name ?? "Untitled app")}</h1>
-  <p class="meta">${esc(report.profile.framework)} · iOS ${esc(yes(report.profile.platforms.ios))} · Android ${esc(yes(report.profile.platforms.android))} · ${report.offline ? "offline" : "live checks on"}</p>
-  <p class="verdict ${verdictClass}">${esc(report.verdictHeadline)}</p>
-  ${report.disclaimers.map((item) => `<p class="disclaimer">${esc(item)}</p>`).join("\n  ")}
-  <h2>Why</h2>
-  <ul>${report.verdictBecause.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
-  <h2>Capabilities found</h2>
-  ${caps ? `<ul>${caps}</ul>` : "<p>No mapped capabilities were found.</p>"}
-  <h2>Findings</h2>
-  ${findings || "<p>No applicable findings.</p>"}
-  <h2>Limits of this scan</h2>
+  <p class="meta">${esc(t("report.by", { product: report.product, vendor: report.vendor }))} · ${esc(report.toolVersion)} · ${esc(t("report.pack"))} ${esc(report.pack.version)}</p>
+  <h1>${esc(report.profile.displayName ?? report.profile.name ?? t("html.untitled"))}</h1>
+  <p class="meta">${esc(report.profile.framework)} · iOS ${esc(yes(report.profile.platforms.ios, t))} · Android ${esc(yes(report.profile.platforms.android, t))} · ${esc(report.offline ? t("report.mode.offline") : t("report.mode.live"))}</p>
+  <p class="verdict ${verdictClass}">${esc(verdictLabel(report, t))}</p>
+  ${report.disclaimers.map((item) => `<p class="disclaimer">${esc(disclaimer(item, t))}</p>`).join("\n  ")}
+  <h2>${esc(t("html.why"))}</h2>
+  <ul>${report.verdictBecause.map((item) => `<li dir="auto">${esc(item)}</li>`).join("")}</ul>
+  <h2>${esc(t("html.capabilities"))}</h2>
+  ${caps ? `<ul>${caps}</ul>` : `<p>${esc(t("html.no_capabilities"))}</p>`}
+  <h2>${esc(t("html.findings"))}</h2>
+  <p class="meta">${esc(t("html.quote_note"))}</p>
+  ${findings || `<p>${esc(t("html.no_findings"))}</p>`}
+  <h2>${esc(t("report.limits").replace(/:$/, ""))}</h2>
   <ul>${limits}</ul>
-  ${unknowns ? `<h2>Could not read</h2><ul>${unknowns}</ul>` : ""}
-  <h2>Rules withheld pending verification</h2>
-  ${withheld ? `<ul>${withheld}</ul>` : "<p>None.</p>"}
-  <p class="meta">Generated ${esc(report.generatedAt)}. This file does not load remote scripts or styles.</p>
+  ${unknowns ? `<h2>${esc(t("report.could_not_read").replace(/:$/, ""))}</h2><ul>${unknowns}</ul>` : ""}
+  <h2>${esc(t("html.withheld"))}</h2>
+  ${withheld ? `<ul>${withheld}</ul>` : `<p>${esc(t("html.none"))}</p>`}
+  <p class="meta">${esc(t("html.generated", { date: report.generatedAt }))}</p>
 </main>
 </body>
 </html>
 `;
 }
 
-function findingHtml(finding: Finding): string {
+function findingHtml(finding: Finding, lang: Locale, t: Translate): string {
+  const text = localizedFinding(finding, lang);
   const evidence = finding.evidence.length
-    ? `<ul>${finding.evidence.map((item) => `<li>${esc(item.path ?? item.kind)}${item.line ? `:${item.line}` : ""} — ${esc(item.detail)}</li>`).join("")}</ul>`
-    : "<p>No file or link evidence was attached.</p>";
+    ? `<ul>${finding.evidence.map((item) => `<li dir="auto"><bdi>${esc(item.path ?? item.kind)}${item.line ? `:${item.line}` : ""}</bdi> — ${esc(item.detail)}</li>`).join("")}</ul>`
+    : `<p>${esc(t("finding.evidence_none"))}</p>`;
+  const textLang = text.fallback ? ` lang="en" dir="ltr"` : "";
   return `<article>
-  <p class="tag ${esc(finding.status)}">${esc(finding.status)} · ${esc(finding.severity)} · ${esc(finding.ruleId)}${finding.stale ? " · stale" : ""}</p>
+  <p class="tag ${esc(finding.status)}">${esc(t(`status.${finding.status}`))} · ${esc(t(`severity.${finding.severity}`))} · <bdi>${esc(finding.ruleId)}</bdi>${finding.stale ? ` · ${esc(t("finding.stale"))}` : ""}</p>
   <h3>${esc(finding.title)}</h3>
-  <p>${esc(finding.summaryEn)}</p>
-  ${finding.nextEn ? `<p>Next: ${esc(finding.nextEn)}</p>` : ""}
-  <p>${esc(finding.summaryTr)}</p>
-  <p>Source: <a href="${esc(finding.sourceUrl)}">${esc(finding.sourcePublisher)} ${esc(finding.sourceSection)}</a>${finding.verifiedAt ? ` · verified ${esc(finding.verifiedAt)}` : ""}</p>
-  <p>${esc(finding.checkNote)}</p>
+  <p${textLang}>${esc(text.summary)}</p>
+  ${text.next ? `<p${textLang}>${esc(t("finding.next"))}: ${esc(text.next)}</p>` : ""}
+  ${text.fallback ? `<p class="fallback">${esc(t("finding.english_only"))}</p>` : ""}
+  <p>${esc(t("finding.source"))}: <a class="source" lang="en" dir="ltr" href="${esc(finding.sourceUrl)}">${esc(finding.sourcePublisher)} ${esc(finding.sourceSection)}</a>${finding.verifiedAt ? ` · ${esc(t("finding.verified"))} ${esc(finding.verifiedAt)}` : ""}</p>
+  <p lang="en" dir="ltr">${esc(finding.checkNote)}</p>
   ${evidence}
 </article>`;
 }
 
-function formatFinding(finding: Finding, lang: "en" | "tr"): string[] {
-  const summary = lang === "tr" ? finding.summaryTr : finding.summaryEn;
-  const next = lang === "tr" ? finding.nextTr : finding.nextEn;
+function formatFinding(finding: Finding, lang: Locale, t: Translate): string[] {
+  const text = localizedFinding(finding, lang);
   const lines = [
-    `${finding.status.toUpperCase()}  ${finding.severity.toUpperCase()}  ${finding.title}`,
-    `  ${summary}`,
-    ...(next ? [`  Next: ${next}`] : []),
-    `  Rule: ${finding.ruleId}`,
-    `  Source: ${finding.sourcePublisher} ${finding.sourceSection}`,
+    `${t(`status.${finding.status}`)}  ${t(`severity.${finding.severity}`)}  ${finding.title}`,
+    `  ${text.summary}`,
+    ...(text.next ? [`  ${t("finding.next")}: ${text.next}`] : []),
+    ...(text.fallback ? [`  (${t("finding.english_only")})`] : []),
+    `  ${t("finding.rule")}: ${finding.ruleId}`,
+    `  ${t("finding.source")}: ${finding.sourcePublisher} ${finding.sourceSection}`,
     `  ${finding.sourceUrl}`,
-    `  Verified: ${finding.verifiedAt ?? "not verified"}${finding.stale ? " (stale)" : ""}`,
-    `  Check: ${finding.checkNote}`,
+    `  ${t("finding.verified")}: ${finding.verifiedAt ?? t("finding.not_verified")}${finding.stale ? ` (${t("finding.stale")})` : ""}`,
+    `  ${t("finding.check")}: ${finding.checkNote}`,
   ];
-  if (finding.evidence.length === 0) lines.push("  Evidence: none attached");
+  if (finding.evidence.length === 0) lines.push(`  ${t("finding.evidence")}: ${t("finding.evidence_none")}`);
   for (const item of finding.evidence) {
     const where = item.path ? `${item.path}${item.line ? `:${item.line}` : ""}` : item.kind;
-    lines.push(`  Evidence: ${where} — ${item.detail}`);
+    lines.push(`  ${t("finding.evidence")}: ${where} — ${item.detail}`);
   }
   return lines;
 }
@@ -143,8 +186,8 @@ function byImportance(left: Finding, right: Finding): number {
   return statusRank[left.status] - statusRank[right.status] || severityRank[left.severity] - severityRank[right.severity];
 }
 
-function yes(value: boolean): string {
-  return value ? "yes" : "no";
+function yes(value: boolean, t: Translate): string {
+  return value ? t("word.yes") : t("word.no");
 }
 
 function esc(value: string): string {

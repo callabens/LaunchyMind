@@ -26,7 +26,12 @@ function cliArgs(project: string, extra: string[]): { command: string; args: str
 function run(project: string, extra: string[]): Promise<{ code: number; stdout: string; stderr: string }> {
   const spec = cliArgs(project, extra);
   return new Promise((resolve, reject) => {
-    const child = spawn(spec.command, spec.args, { cwd: project });
+    // The VS Code display language decides the CLI language here, ahead of LANG.
+    const env: NodeJS.ProcessEnv = { ...process.env, VSCODE_NLS_CONFIG: JSON.stringify({ locale: vscode.env.language }) };
+    delete env.LC_ALL;
+    delete env.LC_MESSAGES;
+    delete env.LANG;
+    const child = spawn(spec.command, spec.args, { cwd: project, env });
     let stdout = "";
     let stderr = "";
     child.stdout.setEncoding("utf8");

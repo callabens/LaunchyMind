@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-dev.5
+
+- Fix diffs are unified hunks. The privacy-manifest edit changes only the `NSPrivacyTracking` line and leaves the rest of the file byte for byte.
+- `launchymind fix <path> --all` lists every writable fix and asks once per fix. `--yes` approves all of them. MCP `launchymind_propose_fixes` and `launchymind_apply_fixes` use the same approval rule.
+- `launchymind init` writes `.launchymind/project.yaml` from store-console answers you supply. A blank answer stays unchecked.
+- `path_provider` is covered only when `path_provider_foundation` is at least 2.3.2 and older than 2.6.0. Version 2.6.0 deleted `PrivacyInfo.xcprivacy`. Otherwise the listed-SDK finding stays unchecked and says why.
+- `launchymind pack add`, `pack list`, and `pack remove` install data-only packs. A file that is not yaml, json, markdown, or license text is refused.
+- React Native and Expo projects are scanned. Platform rules use Info.plist, the Android manifest, and the privacy manifest. Checks the source does not answer stay unchecked.
+
 ## 0.1.0-dev.4
 
 - `launchymind fix <path> --rule <id> --yes` writes a deterministic edit, prints a diff, and scans again. `--dry-run` writes nothing. A dirty git tree and paths outside the project are refused.
@@ -12,7 +21,7 @@
 - A Google sample ad id behind `kReleaseMode ? real : sample`, `!kReleaseMode`, or `kDebugMode` (ternary or if/else) is not a failure.
 - Stub purchase copy guarded by a const false flag is an observation. Reachable stub copy still fails.
 - HTML findings use plain titles. An inferred support URL is listed once.
-- Listed SDK manifests: a versioned table of plugins that ship PrivacyInfo.xcprivacy. path_provider is not in it.
+- Listed SDK manifests: a versioned table of plugins that ship PrivacyInfo.xcprivacy. path_provider was left out until the foundation package range was checked.
 - Android ads check the AD_ID permission, including a google_mobile_ads merge, and a Data safety advertising-ID answer.
 - Game Center and Play Games (`games_services`) are capabilities.
 

@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.1.0-dev.4";
+export const LAUNCHYMIND_VERSION = "0.1.0-dev.5";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 
@@ -50,7 +50,7 @@ export interface Limitation {
 }
 
 export interface AppProfile {
-  framework: "flutter" | "unknown";
+  framework: "flutter" | "react-native" | "expo" | "unknown";
   name: string | null;
   version: string | null;
   displayName: string | null;
@@ -207,6 +207,8 @@ export interface LaunchReport {
 
 export const KNOWN_FACTS = [
   "framework.flutter",
+  "framework.react_native",
+  "framework.expo",
   "platform.ios",
   "platform.android",
   "capability.camera",
@@ -442,7 +444,7 @@ export function exitCodeForVerdict(verdict: Verdict, failOn: FailOn = "reject"):
 export class NotFlutterProjectError extends Error {
   readonly exitCode = 4;
   constructor(projectPath: string) {
-    super(`Not a Flutter project: ${projectPath}. This version only scans a directory whose pubspec.yaml depends on the Flutter SDK.`);
+    super(`Not a Flutter project: ${projectPath}. This version scans Flutter (a pubspec.yaml Flutter SDK dependency), React Native (a react-native dependency), and Expo (an expo dependency or an app.json expo field).`);
     this.name = "NotFlutterProjectError";
   }
 }

@@ -37,17 +37,18 @@ test("dry-run writes nothing and apply updates the tracking manifest", async () 
     const preview = await run(["fix", dry, "--rule", "apple.privacy-manifest-tracking", "--dry-run", "--offline"]);
     assert.equal(preview.code, 0, preview.stderr);
     assert.match(preview.stdout, /NSPrivacyTracking/);
+    assert.match(preview.stdout, /@@ -/);
+    const changed = preview.stdout.split("\n").filter((line) => (line.startsWith("+") || line.startsWith("-")) && !line.startsWith("+++") && !line.startsWith("---"));
+    assert.deepEqual(changed, ["-  <false/>", "+  <true/>"]);
     assert.match(preview.stdout, /Dry run/);
     assert.equal(await readFile(manifest, "utf8"), before);
 
     const applied = await run(["fix", dry, "--rule", "apple.privacy-manifest-tracking", "--yes", "--offline"]);
     assert.equal(applied.code, 0, applied.stderr);
     const after = await readFile(manifest, "utf8");
-    assert.match(after, /<key>NSPrivacyTracking<\/key>\s*<true\/>/);
-    assert.match(after, /NSPrivacyCollectedDataTypeAdvertisingData/);
+    assert.equal(after, before.replace("<false/>", "<true/>"));
     assert.match(applied.stdout, /Before:/);
     assert.match(applied.stdout, /After:/);
-    assert.notEqual(before, after);
   } finally {
     await rm(dry, { recursive: true, force: true });
   }

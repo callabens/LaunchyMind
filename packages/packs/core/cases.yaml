@@ -6,7 +6,15 @@ cases:
   - id: not-flutter
     rule: product.flutter-project
     expect: fail
-    facts: { framework.flutter: false }
+    facts: { framework.flutter: false, framework.react_native: false, framework.expo: false }
+  - id: react-native-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: false, framework.react_native: true, framework.expo: false }
+  - id: expo-detected
+    rule: product.flutter-project
+    expect: pass
+    facts: { framework.flutter: false, framework.react_native: true, framework.expo: true }
 
   - id: audience-answered
     rule: product.audience-answers

@@ -6,7 +6,7 @@ LaunchyMind follows the same shape as ProjectMind: a deterministic core, local f
 
 `runScan` in `packages/pipeline` is the only path the CLI and the MCP server use.
 
-1. **Scan** (`packages/scan`) reads a Flutter project and returns a typed profile, a fact map, evidence records, observations, and scan limits.
+1. **Scan** (`packages/scan`) reads a Flutter, React Native, or Expo project and returns a typed profile, a fact map, evidence records, observations, and scan limits. A folder that is none of those throws before a verdict.
 2. **Live** (`packages/live`) fetches privacy, support, account-deletion, and `app-ads.txt` URLs when a checker is enabled. Offline mode records `skipped` and does not call the checker.
 3. **Rules** (`packages/rules`) load YAML, validate it, and evaluate each enabled rule against the facts.
 4. **Verdict** (`packages/verdict`) maps findings to ready, risky, or reject. This module exports one decision function and accepts no override.
@@ -45,10 +45,12 @@ Those limits are visible so a ready verdict cannot be read as "we looked at ever
 
 ## Agent surface
 
-`packages/mcp` registers the six tools from the product plan. `launchymind_get_verdict` returns the engine result and its input schema has no verdict field. `launchymind_apply_fix` writes a deterministic edit only when the operator set `LAUNCHYMIND_ALLOW_APPLY=1`, `approved` is true, and `fixId` matches `launchymind_propose_fix`. It refuses paths outside the project and a dirty git tree unless `allowDirty` is true.
+`packages/mcp` registers the read tools plus propose and apply, including the batch pair. `launchymind_get_verdict` returns the engine result and its input schema has no verdict field. `launchymind_apply_fix` and `launchymind_apply_fixes` write a deterministic edit only when the operator set `LAUNCHYMIND_ALLOW_APPLY=1`, `approved` is true, and each `fixId` matches propose. They refuse paths outside the project and a dirty git tree unless `allowDirty` is true. Diffs are unified hunks.
 
-`packages/fixes` only returns text drafts. Privacy drafts start with a lawyer warning.
+`packages/fixes` returns drafts for rules that need a human. Privacy drafts start with a lawyer warning. The tracking edit changes only the `NSPrivacyTracking` boolean.
+
+`launchymind init` writes `.launchymind/project.yaml` from answers the user supplied. `packages/packs` installs data-only packs under `.launchymind/packs` and the scan appends their rules. A non-data file is refused and is not executed.
 
 ## Later seams
 
-GitHub Action, community pack install, React Native, and approved file writes are named in `docs/ROADMAP.md`. They are not implemented. The pack loader can already validate another directory, and `scan --pack` can point at one, which is the seam those later phases should use.
+Native projects, IPA and AAB files, and weekly source monitoring are named in `docs/ROADMAP.md` and are not implemented. `scan --pack` can still point at one pack directory instead of the core pack.

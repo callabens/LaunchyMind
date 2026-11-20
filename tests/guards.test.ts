@@ -76,7 +76,10 @@ test("synthetic tracking-mismatch fixture matches the round-2 pattern", async ()
     await writeFile(join(directory, "lib/main.dart"), "void main() {}\n", "utf8");
     await writeFile(join(directory, "ios/Runner/Info.plist"), "<plist><dict></dict></plist>\n", "utf8");
     const pathReport = await runScan(directory, { offline: true, now: new Date("2026-11-19T00:00:00Z") });
-    assert.equal(pathReport.findings.find((item) => item.ruleId === "apple.listed-sdk-manifest")?.status, "unchecked");
+    const listed = pathReport.findings.find((item) => item.ruleId === "apple.listed-sdk-manifest");
+    assert.equal(listed?.status, "unchecked");
+    assert.match(listed?.checkNote ?? "", /2\.6\.0/);
+    assert.match(listed?.evidence.map((item) => item.detail).join("\n") ?? "", /path_provider_foundation/);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

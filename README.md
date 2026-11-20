@@ -9,21 +9,22 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 ## What works in this preview
 
 - Flutter source scan: `pubspec.yaml`, `pubspec.lock`, Dart imports under `lib/`, `Info.plist`, entitlements, `PrivacyInfo.xcprivacy`, `AndroidManifest.xml`, and the app module `build.gradle` / `build.gradle.kts`.
+- A first pass for React Native and Expo: `package.json`, `app.json`, JavaScript and TypeScript outside `node_modules`, and the same iOS and Android files. Checks the source does not answer stay unchecked.
 - A typed app profile: dependencies, capabilities, permissions, URLs, SDK levels, and the places those facts came from.
 - A data-only core rule pack (`packages/packs/core`) with JSON Schema and YAML. Enabled rules were checked against the cited public pages on **2026-11-19**. Anything not re-checked is withheld and cannot change the verdict.
 - Live checks for privacy, support, and account-deletion URLs, plus `app-ads.txt` on a declared developer site. `--offline` skips the network.
 - CLI output for the terminal, a LaunchPack JSON file, and a single HTML file with no remote scripts or styles.
-- An MCP stdio server with read-only tools plus a fix draft tool. Applying a fix does not write files.
+- An MCP stdio server. `launchymind_apply_fix` and `launchymind_apply_fixes` write only after approval.
 - One agent skill, `skills/launchymind-preflight`, that tells an agent when to run the checker and what it must not claim.
 
 ## What this preview does not do
 
 - It does not publish to npm (`"private": true`).
-- It does not scan React Native, Expo, native iOS, native Android, IPA, or AAB files. A non-Flutter folder is reported as risky because the Flutter check fails, not as a verdict for that other stack.
-- It does not read App Store Connect or Play Console. Questions that live only there (Xcode 26, age-rating answers, the Data safety form, closed testing, account type) stay **unchecked** until you answer them in `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
+- It does not scan native-only apps, IPA, or AAB files. A folder that is not Flutter, React Native, or Expo exits `4`.
+- It does not read App Store Connect or Play Console. Questions that live only there stay **unchecked** until you answer them with `launchymind init` or `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
 - It does not fully scan required-reason API use or privacy manifests inside the Flutter engine, Pods, or SDK binaries. Those gaps are listed on the report and are not treated as a pass.
-- Approved deterministic edits can be written with `launchymind fix <path> --rule <id> --yes`. Legal text, account-deletion screens, and ad-seller files stay drafts. See below.
-- It does not ship a GitHub Action, a community pack installer, or weekly source monitoring. `launchymind pack validate` can check a pack directory that uses the same format. `scan` reads the core pack unless you pass `--pack`.
+- It does not invent privacy-policy text, account-deletion screens, ad-seller lines, or store-console answers.
+- It does not watch upstream sources on a schedule.
 - It does not claim a privacy-page keyword match is a complete policy review.
 
 ## Install and run
@@ -35,7 +36,7 @@ npm install
 npm run launchymind -- scan path/to/flutter-app
 ```
 
-Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the verdict is reject, `4` when the folder is not a Flutter project, `1` for other usage errors. `--fail-on` defaults to `reject`, so a risky report does not fail CI unless you pass `--fail-on risky` (exit `2`) or `--fail-on none` (always `0` after a successful scan).
+Exit codes: `0` when the scan is at or above the `--fail-on` line, `3` when the verdict is reject, `4` when the folder is not a Flutter, React Native, or Expo project, `1` for other usage errors. `--fail-on` defaults to `reject`, so a risky report does not fail CI unless you pass `--fail-on risky` (exit `2`) or `--fail-on none` (always `0` after a successful scan).
 
 `--output report.json` writes the LaunchPack file and prints the terminal report. It does not also dump the JSON to the terminal. `--json` without `--output` still prints JSON only.
 
@@ -46,6 +47,8 @@ npm run launchymind -- scan path/to/flutter-app --offline
 npm run launchymind -- scan path/to/flutter-app --lang tr
 npm run launchymind -- rules
 npm run launchymind -- pack validate
+npm run launchymind -- init path/to/app --set attestations.apple.xcode-sdk=true
+npm run launchymind -- pack add ./my-pack --project path/to/app
 npm run launchymind -- mcp
 ```
 
@@ -107,7 +110,9 @@ The server speaks stdio and uses the same scan as the CLI.
 | `launchymind_explain_finding` | One rule, its source, and its evidence |
 | `launchymind_get_verdict` | The engine verdict. It has no field that sets a verdict |
 | `launchymind_propose_fix` | A diff and a `fixId`. Writes nothing |
+| `launchymind_propose_fixes` | Every writable fix, each with a diff and a `fixId`. Writes nothing |
 | `launchymind_apply_fix` | Writes only when `LAUNCHYMIND_ALLOW_APPLY=1`, `approved` is true, and `fixId` is exactly the id from propose. Refuses a dirty git tree unless `allowDirty` is true |
+| `launchymind_apply_fixes` | Same approval rule for each item in `fixes`. One fix id does not approve the others |
 
 ```json
 {
@@ -136,17 +141,19 @@ That runs lint, typecheck, tests, and the build. Tests cover the rule cases and 
 
 ## Approved fixes
 
-`launchymind fix <path> --rule <id>` prints a unified diff. It writes only with `--yes`, or after you answer `y` in a terminal. `--dry-run` prints the diff and does not write. A git checkout with uncommitted changes is refused unless you pass `--allow-dirty`. Paths outside the project are refused. After a write, LaunchyMind scans again and prints the verdict before and after.
+`launchymind fix <path> --rule <id>` prints a unified diff with a few lines of context. It writes only with `--yes`, or after you answer `y` in a terminal. `--all` lists every writable fix and asks once per fix, or writes them all with `--yes`. `--dry-run` prints the diffs and does not write. A git checkout with uncommitted changes is refused unless you pass `--allow-dirty`. Paths outside the project are refused. The bytes outside a changed line are left as they were. After a write, LaunchyMind scans again and prints the verdict before and after.
 
 The edits it will write are mechanical:
 
-- set `NSPrivacyTracking` to true when collected data is already marked for tracking, and add missing device-id or advertising-data entries
+- set `NSPrivacyTracking` from false to true when collected data is already marked for tracking. It does not invent collected-data types or tracking domains
 - add a placeholder Info.plist usage description when the key is missing
 - add the Android `AD_ID` permission, or drop `tools:node="remove"` from it
 
 Privacy-policy text, account-deletion screens, and `app-ads.txt` seller lines are propose-only.
 
-The MCP tool uses the same edits. Start it with `LAUNCHYMIND_ALLOW_APPLY=1`. `launchymind_apply_fix` then requires `approved: true` and the `fixId` string returned by `launchymind_propose_fix`.
+The MCP tools use the same edits. Start the server with `LAUNCHYMIND_ALLOW_APPLY=1`. `launchymind_apply_fix` requires `approved: true` and the `fixId` from `launchymind_propose_fix`. `launchymind_apply_fixes` requires that pair on each item.
+
+`launchymind init <path>` asks the store-console questions the scanner cannot see, with the official page for each one. Press enter to skip a question. In CI, pass only the answers you have, for example `--set attestations.google.data-safety-ad-id=true`. A key you do not set stays unchecked.
 
 ## GitHub Action
 

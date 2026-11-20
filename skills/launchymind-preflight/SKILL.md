@@ -27,5 +27,9 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Do not say Apple or Google will approve the app. The report already says they make the final decision.
 - Do not change a verdict. There is no tool for that. If you disagree, say why and leave the engine result as it is.
 - Do not write project files unless the user approves that exact fix. Call `launchymind_propose_fix`, show the diff, then call `launchymind_apply_fix` only with `approved: true` and the returned `fixId`. The server must be started with `LAUNCHYMIND_ALLOW_APPLY=1`. Legal text, account-deletion screens, and seller ids stay propose-only.
-- The CLI form is `launchymind fix <path> --rule <id> --yes` after the user has seen the diff. Without `--yes` it does not write. `--dry-run` writes nothing. A dirty git tree is refused unless `--allow-dirty` is set.
+- The CLI form is `launchymind fix <path> --rule <id> --yes` after the user has seen the diff. `launchymind fix <path> --all` shows every writable diff and asks once per fix; `--yes` approves all of them. Without `--yes` it does not write. `--dry-run` writes nothing. A dirty git tree is refused unless `--allow-dirty` is set.
+- `launchymind_propose_fixes` and `launchymind_apply_fixes` are the batch form. Approve each item with its own `fixId`. Do not treat one approval as a yes for the rest.
+- Do not fill `.launchymind/project.yaml` with guessed store answers. Use `launchymind init` or `--set` only for answers the user gave. A blank answer stays unchecked.
+- Community packs are data. `launchymind pack add` refuses executable files. Do not tell the user a pack changed the verdict function.
+- React Native and Expo projects can be scanned. Say when a check stayed unchecked because the source did not show it.
 - After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.

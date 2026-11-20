@@ -20,46 +20,57 @@ ignoredPackages:
 capabilities:
   camera:
     packages: [camera, camerawesome, camera_android]
+    npm: [react-native-vision-camera, expo-camera]
     iosUsage: [NSCameraUsageDescription]
     androidPermissions: [android.permission.CAMERA]
   photos:
     packages: [image_picker, photo_manager, image_cropper]
+    npm: [expo-image-picker, react-native-image-picker]
     iosUsage: [NSPhotoLibraryUsageDescription, NSPhotoLibraryAddUsageDescription]
     androidPermissions: [android.permission.READ_MEDIA_IMAGES, android.permission.READ_EXTERNAL_STORAGE]
   location:
     packages: [geolocator, location, geocoding]
+    npm: [expo-location, "@react-native-community/geolocation"]
     iosUsage: [NSLocationWhenInUseUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription]
     androidPermissions: [android.permission.ACCESS_FINE_LOCATION, android.permission.ACCESS_COARSE_LOCATION]
   microphone:
     packages: [record, speech_to_text, flutter_sound]
+    npm: [expo-av]
     iosUsage: [NSMicrophoneUsageDescription]
     androidPermissions: [android.permission.RECORD_AUDIO]
   contacts:
     packages: [flutter_contacts, contacts_service, fast_contacts]
+    npm: [expo-contacts, react-native-contacts]
     iosUsage: [NSContactsUsageDescription]
     androidPermissions: [android.permission.READ_CONTACTS]
   notifications:
     packages: [firebase_messaging, flutter_local_notifications, onesignal_flutter]
+    npm: [expo-notifications, "@react-native-firebase/messaging"]
     iosUsage: []
     androidPermissions: [android.permission.POST_NOTIFICATIONS]
   ads:
     packages: [google_mobile_ads, unity_ads_plugin, applovin_max, ironsource_mediation]
+    npm: [react-native-google-mobile-ads]
     iosUsage: []
     androidPermissions: []
   tracking:
     packages: [app_tracking_transparency, facebook_app_events, appsflyer_sdk, adjust_sdk]
+    npm: [react-native-tracking-transparency, react-native-fbsdk-next, react-native-appsflyer]
     iosUsage: [NSUserTrackingUsageDescription]
     androidPermissions: []
   accounts:
     packages: [firebase_auth, supabase_flutter, appwrite, auth0_flutter, amplify_auth_cognito]
+    npm: ["@react-native-firebase/auth"]
     iosUsage: []
     androidPermissions: []
   payments:
     packages: [in_app_purchase, purchases_flutter, flutter_inapp_purchase]
+    npm: [react-native-iap, react-native-purchases]
     iosUsage: []
     androidPermissions: [com.android.vending.BILLING]
   analytics:
     packages: [firebase_analytics, firebase_crashlytics, mixpanel_flutter, amplitude_flutter, sentry_flutter, posthog_flutter]
+    npm: ["@react-native-firebase/analytics", "@sentry/react-native"]
     iosUsage: []
     androidPermissions: []
   game_center:
@@ -98,10 +109,15 @@ thirdPartyLogin:
   - google_sign_in
   - flutter_facebook_auth
   - sign_in_with_apple
+  - "@react-native-google-signin/google-signin"
+  - react-native-fbsdk-next
+  - expo-apple-authentication
 appleSignIn:
   - sign_in_with_apple
+  - expo-apple-authentication
 googleAds:
   - google_mobile_ads
+  - react-native-google-mobile-ads
 deletionNeedles:
   - deleteaccount
   - deleteuser

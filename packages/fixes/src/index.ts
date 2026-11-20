@@ -1,7 +1,7 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { createInterface } from "node:readline/promises";
-import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { stdin, stdout } from "node:process";
 import { LAWYER_WARNING, type FactValue, type LaunchReport, type Verdict } from "../../core/src/index.ts";
 import { runScan } from "../../pipeline/src/index.ts";
@@ -70,11 +70,6 @@ const USAGE_KEYS: Record<string, { key: string; sentence: string }> = {
     sentence: "Replace this placeholder with the specific reason this app asks to track before you submit.",
   },
 };
-
-const COLLECTED_TYPES = [
-  "NSPrivacyCollectedDataTypeDeviceID",
-  "NSPrivacyCollectedDataTypeAdvertisingData",
-];
 
 export function resolveProjectFile(root: string, relativePath: string): string {
   if (!relativePath || isAbsolute(relativePath) || relativePath.split(/[\\/]/).includes("..")) {
@@ -170,6 +165,139 @@ export async function applyApprovedFix(options: {
   };
 }
 
+export interface BatchApplyResult {
+  status: "APPLIED" | "DRY_RUN" | "BLOCKED" | "REFUSED" | "PARTIAL";
+  writesFiles: boolean;
+  reason: string;
+  results: ApplyResult[];
+  before: { verdict: Verdict; headline: string } | null;
+  after: { verdict: Verdict; headline: string } | null;
+}
+
+export async function listWritableFixes(report: LaunchReport): Promise<FixProposal[]> {
+  const open = report.findings.filter((finding) => finding.status === "fail" || finding.status === "unchecked");
+  const proposals: FixProposal[] = [];
+  for (const finding of open) {
+    const proposal = await proposeFix(report, finding.ruleId);
+    if (proposal.canApply && proposal.fixId) proposals.push(proposal);
+  }
+  return proposals.sort((a, b) => a.ruleId.localeCompare(b.ruleId));
+}
+
+export async function applyApprovedFixes(options: {
+  projectPath: string;
+  approvals?: ReadonlyArray<{ ruleId: string; fixId: string | null; approved: boolean }>;
+  approveAll?: boolean;
+  dryRun: boolean;
+  allowDirty: boolean;
+  offline?: boolean;
+  confirm?: boolean;
+  requireOperator?: boolean;
+  operatorEnabled?: boolean;
+  requireFixId?: boolean;
+}): Promise<BatchApplyResult> {
+  const projectPath = resolve(options.projectPath);
+  const before = await runScan(projectPath, { offline: options.offline === true });
+  const proposals = await listWritableFixes(before);
+  const snapshot = { verdict: before.verdict, headline: before.verdictHeadline };
+  const results: ApplyResult[] = proposals.map((proposal) => ({
+    status: "BLOCKED",
+    writesFiles: false,
+    reason: "Not approved.",
+    ruleId: proposal.ruleId,
+    fixId: proposal.fixId,
+    diff: proposal.diff,
+    before: snapshot,
+    after: null,
+  }));
+  if (options.requireOperator && options.operatorEnabled !== true) {
+    return { status: "BLOCKED", writesFiles: false, reason: "apply_fix is off. Start the MCP server with LAUNCHYMIND_ALLOW_APPLY=1. No file was changed.", results, before: snapshot, after: null };
+  }
+  if (proposals.length === 0) {
+    return { status: "REFUSED", writesFiles: false, reason: "No writable fix is open. No file was changed.", results, before: snapshot, after: null };
+  }
+  if (options.dryRun) {
+    return {
+      status: "DRY_RUN",
+      writesFiles: false,
+      reason: "Dry run. The diffs are above and no file was changed.",
+      results: results.map((result) => ({ ...result, status: "DRY_RUN", reason: "Dry run. No file was changed." })),
+      before: snapshot,
+      after: null,
+    };
+  }
+  const chosen = new Set<string>();
+  if (options.approveAll) {
+    for (const proposal of proposals) if (proposal.fixId) chosen.add(proposal.fixId);
+  } else if (options.confirm) {
+    if (!stdin.isTTY) {
+      return { status: "BLOCKED", writesFiles: false, reason: "Refusing to write without --yes when there is no interactive terminal. No file was changed.", results, before: snapshot, after: null };
+    }
+    const rl = createInterface({ input: stdin, output: stdout });
+    try {
+      for (const proposal of proposals) {
+        stdout.write(`\n${proposal.ruleId}\n${proposal.diff}`);
+        const answer = (await rl.question(`Apply ${proposal.ruleId}? [y/N] `)).trim().toLowerCase();
+        if ((answer === "y" || answer === "yes") && proposal.fixId) chosen.add(proposal.fixId);
+      }
+    } finally {
+      rl.close();
+    }
+  } else {
+    for (const approval of options.approvals ?? []) {
+      const proposal = proposals.find((item) => item.ruleId === approval.ruleId);
+      const index = results.findIndex((item) => item.ruleId === approval.ruleId);
+      if (!proposal?.fixId) continue;
+      const mismatch = (options.requireFixId && approval.fixId !== proposal.fixId) || (approval.fixId != null && approval.fixId !== proposal.fixId);
+      if (mismatch) {
+        if (index >= 0) results[index] = { ...results[index]!, status: "REFUSED", reason: "The fix id does not match the plan from propose_fix. No file was changed." };
+        continue;
+      }
+      if (approval.approved) chosen.add(proposal.fixId);
+    }
+  }
+  if (chosen.size === 0) {
+    const refused = results.some((item) => item.status === "REFUSED");
+    return {
+      status: refused ? "REFUSED" : "BLOCKED",
+      writesFiles: false,
+      reason: refused ? "The fix id does not match the plan from propose_fix. No file was changed." : "No fix was approved. No file was changed.",
+      results,
+      before: snapshot,
+      after: null,
+    };
+  }
+  const dirty = gitDirty(projectPath);
+  if (dirty === true && !options.allowDirty) {
+    return { status: "REFUSED", writesFiles: false, reason: "The git tree has uncommitted changes. Re-run with --allow-dirty to write anyway. No file was changed.", results, before: snapshot, after: null };
+  }
+  let wrote = 0;
+  for (const proposal of proposals) {
+    const index = results.findIndex((item) => item.ruleId === proposal.ruleId);
+    if (!proposal.fixId || !chosen.has(proposal.fixId)) continue;
+    const plan = await planFix(projectPath, await runScan(projectPath, { offline: options.offline === true }), proposal.ruleId);
+    if (plan.fixId !== proposal.fixId || plan.edits.length === 0) {
+      if (index >= 0) results[index] = { ...results[index]!, status: "REFUSED", writesFiles: false, reason: "The fix no longer matches the file. It was not written.", diff: plan.diff, fixId: plan.fixId };
+      continue;
+    }
+    await applyEdits(projectPath, plan.edits);
+    wrote += 1;
+    if (index >= 0) results[index] = { ...results[index]!, status: "APPLIED", writesFiles: true, reason: `Wrote ${plan.edits.length} file(s).`, diff: plan.diff };
+  }
+  const after = await runScan(projectPath, { offline: options.offline === true });
+  const afterSnapshot = { verdict: after.verdict, headline: after.verdictHeadline };
+  for (const result of results) result.after = afterSnapshot;
+  const skipped = proposals.length - wrote;
+  return {
+    status: skipped > 0 ? "PARTIAL" : "APPLIED",
+    writesFiles: wrote > 0,
+    reason: `Wrote ${wrote} fix(es).${skipped > 0 ? ` Skipped ${skipped}.` : ""} Verdict ${before.verdictHeadline} -> ${after.verdictHeadline}.`,
+    results,
+    before: snapshot,
+    after: afterSnapshot,
+  };
+}
+
 export async function applyEdits(root: string, edits: readonly FileEdit[]): Promise<void> {
   for (const edit of edits) {
     const target = resolveProjectFile(root, edit.path);
@@ -235,45 +363,19 @@ async function editsFor(projectPath: string, report: LaunchReport, ruleId: strin
 }
 
 async function privacyManifestEdits(projectPath: string, report: LaunchReport): Promise<FileEdit[]> {
-  const path = "ios/Runner/PrivacyInfo.xcprivacy";
-  const absolute = resolve(projectPath, path);
-  const before = await readFile(absolute, "utf8").catch(() => "");
+  if (!adsOrTracking(report.facts) && report.facts["ios.privacy_manifest.tracking"] !== "false") return [];
+  const path = await findProjectRelative(projectPath, "ios/Runner/PrivacyInfo.xcprivacy", "PrivacyInfo.xcprivacy", "ios");
+  if (!path) return [];
+  const before = await readFile(resolve(projectPath, path), "utf8").catch(() => "");
   if (!before) return [];
-  let after = before.replace(/(<key>\s*NSPrivacyTracking\s*<\/key>\s*)<false\s*\/>/, "$1<true/>");
-  if (adsOrTracking(report.facts)) after = ensureCollectedTypes(after);
+  const after = before.replace(/(<key>\s*NSPrivacyTracking\s*<\/key>\s*)<false\s*\/>/, "$1<true/>");
   if (after === before) return [];
   return [{ path, before, after }];
 }
 
-function ensureCollectedTypes(xml: string): string {
-  let next = xml;
-  for (const type of COLLECTED_TYPES) {
-    if (next.includes(`<string>${type}</string>`)) continue;
-    const dict = [
-      "    <dict>",
-      "      <key>NSPrivacyCollectedDataType</key>",
-      `      <string>${type}</string>`,
-      "      <key>NSPrivacyCollectedDataTypeLinked</key>",
-      "      <false/>",
-      "      <key>NSPrivacyCollectedDataTypeTracking</key>",
-      "      <true/>",
-      "      <key>NSPrivacyCollectedDataTypePurposes</key>",
-      "      <array>",
-      "        <string>NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising</string>",
-      "      </array>",
-      "    </dict>",
-    ].join("\n");
-    if (/<key>\s*NSPrivacyCollectedDataTypes\s*<\/key>\s*<array>/.test(next)) {
-      next = next.replace(/(<key>\s*NSPrivacyCollectedDataTypes\s*<\/key>\s*<array>)/, `$1\n${dict}`);
-    } else {
-      next = next.replace(/<\/dict>\s*<\/plist>\s*$/, `  <key>NSPrivacyCollectedDataTypes</key>\n  <array>\n${dict}\n  </array>\n</dict>\n</plist>\n`);
-    }
-  }
-  return next;
-}
-
 async function usageEdits(projectPath: string, key: string, sentence: string): Promise<FileEdit[]> {
-  const path = "ios/Runner/Info.plist";
+  const path = await findProjectRelative(projectPath, "ios/Runner/Info.plist", "Info.plist", "ios");
+  if (!path) return [];
   const before = await readFile(resolve(projectPath, path), "utf8").catch(() => "");
   if (!before || new RegExp(`<key>\\s*${key}\\s*</key>\\s*<string>[^<]+</string>`).test(before)) return [];
   const insertion = `  <key>${key}</key>\n  <string>${escapeXml(sentence)}</string>\n`;
@@ -309,17 +411,127 @@ function textDraft(ruleId: string): string {
   return "";
 }
 
-export function unifiedDiff(path: string, before: string, after: string): string {
-  const oldLines = before === "" ? [] : before.replace(/\n$/, "").split("\n");
-  const newLines = after.replace(/\n$/, "").split("\n");
-  const body = [
-    `--- a/${path}`,
-    `+++ b/${path}`,
-    "@@",
-    ...oldLines.map((line) => `-${line}`),
-    ...newLines.map((line) => `+${line}`),
-  ];
+export function unifiedDiff(path: string, before: string, after: string, context = 3): string {
+  const oldLines = splitKeep(before);
+  const newLines = splitKeep(after);
+  const ops = diffLines(oldLines, newLines);
+  const hunks = hunksFrom(ops, context);
+  if (hunks.length === 0) return "";
+  const body = [`--- a/${path}`, `+++ b/${path}`];
+  for (const hunk of hunks) {
+    body.push(`@@ -${hunk.oldStart},${hunk.oldCount} +${hunk.newStart},${hunk.newCount} @@`);
+    body.push(...hunk.lines);
+  }
   return `${body.join("\n")}\n`;
+}
+
+function splitKeep(text: string): string[] {
+  if (text === "") return [];
+  const lines = text.split("\n");
+  if (text.endsWith("\n")) lines.pop();
+  return lines;
+}
+
+function diffLines(before: string[], after: string[]): Array<{ op: " " | "-" | "+"; line: string }> {
+  const n = before.length;
+  const m = after.length;
+  const dp: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i -= 1) {
+    const row = dp[i];
+    const next = dp[i + 1];
+    if (!row || !next) continue;
+    for (let j = m - 1; j >= 0; j -= 1) {
+      row[j] = before[i] === after[j] ? (next[j + 1] ?? 0) + 1 : Math.max(next[j] ?? 0, row[j + 1] ?? 0);
+    }
+  }
+  const ops: Array<{ op: " " | "-" | "+"; line: string }> = [];
+  let i = 0;
+  let j = 0;
+  while (i < n && j < m) {
+    const row = dp[i];
+    const down = dp[i + 1];
+    if (before[i] === after[j]) {
+      ops.push({ op: " ", line: before[i] ?? "" });
+      i += 1;
+      j += 1;
+    } else if ((down?.[j] ?? 0) >= (row?.[j + 1] ?? 0)) {
+      ops.push({ op: "-", line: before[i] ?? "" });
+      i += 1;
+    } else {
+      ops.push({ op: "+", line: after[j] ?? "" });
+      j += 1;
+    }
+  }
+  while (i < n) {
+    ops.push({ op: "-", line: before[i] ?? "" });
+    i += 1;
+  }
+  while (j < m) {
+    ops.push({ op: "+", line: after[j] ?? "" });
+    j += 1;
+  }
+  return ops;
+}
+
+function hunksFrom(ops: Array<{ op: " " | "-" | "+"; line: string }>, context: number): Array<{ oldStart: number; oldCount: number; newStart: number; newCount: number; lines: string[] }> {
+  const changed: number[] = [];
+  ops.forEach((op, index) => {
+    if (op.op !== " ") changed.push(index);
+  });
+  if (changed.length === 0) return [];
+  const groups: number[][] = [];
+  for (const index of changed) {
+    const current = groups[groups.length - 1];
+    if (!current || index - (current[current.length - 1] ?? index) > context * 2) groups.push([index]);
+    else current.push(index);
+  }
+  return groups.map((group) => {
+    const start = Math.max(0, (group[0] ?? 0) - context);
+    const end = Math.min(ops.length, (group[group.length - 1] ?? 0) + context + 1);
+    const slice = ops.slice(start, end);
+    let oldStart = 1;
+    let newStart = 1;
+    for (let index = 0; index < start; index += 1) {
+      const op = ops[index];
+      if (!op || op.op === "+") continue;
+      oldStart += 1;
+    }
+    for (let index = 0; index < start; index += 1) {
+      const op = ops[index];
+      if (!op || op.op === "-") continue;
+      newStart += 1;
+    }
+    const oldCount = slice.filter((op) => op.op !== "+").length;
+    const newCount = slice.filter((op) => op.op !== "-").length;
+    return {
+      oldStart,
+      oldCount,
+      newStart,
+      newCount,
+      lines: slice.map((op) => `${op.op}${op.line}`),
+    };
+  });
+}
+
+async function findProjectRelative(root: string, preferred: string, fileName: string, under: string): Promise<string | null> {
+  const preferredAbs = resolve(root, preferred);
+  if (await readFile(preferredAbs, "utf8").then((text) => text.length >= 0).catch(() => false)) return preferred;
+  const found = await walkFor(resolve(root, under), fileName, new Set(["Pods", ".symlinks", "build", "node_modules"]));
+  if (!found) return null;
+  return relative(resolve(root), found).split(sep).join("/");
+}
+
+async function walkFor(dir: string, fileName: string, skipped: Set<string>): Promise<string | null> {
+  const entries = await readdir(dir, { withFileTypes: true }).catch(() => []);
+  for (const entry of entries) {
+    if (entry.name.startsWith(".") || skipped.has(entry.name)) continue;
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const nested = await walkFor(full, fileName, skipped);
+      if (nested) return nested;
+    } else if (entry.isFile() && entry.name === fileName) return full;
+  }
+  return null;
 }
 
 function gitDirty(root: string): boolean | "not-a-repo" {

@@ -30,6 +30,8 @@ If a rule needs a new fact, set it in `packages/scan/src/index.ts`, add the name
 
 Package-to-capability mappings live in `packages/packs/core/signatures.yaml`. Needles are plain strings, not regular expressions, so a pack cannot smuggle executable patterns.
 
+A pack you share is data only. `docs/writing-a-pack.md` describes the four YAML files and `launchymind pack add`.
+
 ## Checks
 
 ```bash

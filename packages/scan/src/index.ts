@@ -13,6 +13,7 @@ import {
 
 const capabilitySchema = z.object({
   packages: z.array(z.string().min(1)).min(1),
+  npm: z.array(z.string().min(1)).min(1).optional(),
   iosUsage: z.array(z.string().min(1)),
   androidPermissions: z.array(z.string().min(1)),
 }).strict();
@@ -35,7 +36,7 @@ const signaturesSchema = z.object({
   }).strict(),
 }).strict();
 
-const projectSchema = z.object({
+export const projectSchema = z.object({
   appName: z.string().min(1).max(200).optional(),
   developerName: z.string().min(1).max(200).optional(),
   audience: z.object({
@@ -128,9 +129,19 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   const lockText = await readText(join(projectPath, "pubspec.lock"), 5_000_000);
   const lock = lockText === null ? null : parseYaml(lockText);
   const packages = collectPackages(pubspecText, pubspec, lockText, lock);
+  const packageJsonText = await readText(join(projectPath, "package.json"), 1_000_000);
+  const packageJson = parseJson(packageJsonText);
+  const npmPackages = collectNpmPackages(packageJsonText, packageJson);
+  for (const item of npmPackages) {
+    if (!packages.some((existing) => existing.name === item.name)) packages.push(item);
+  }
+  const expo = await detectExpo(projectPath, npmPackages);
+  const reactNative = expo || npmPackages.some((item) => item.name === "react-native");
   const flutter = isFlutter(pubspec, lock);
   facts["framework.flutter"] = flutter;
-  if (!flutter) unknowns.push("This folder does not look like a Flutter project.");
+  facts["framework.react_native"] = reactNative;
+  facts["framework.expo"] = expo;
+  if (!flutter && !reactNative) unknowns.push("This folder does not look like a Flutter, React Native, or Expo project.");
 
   const ios = await isDir(join(projectPath, "ios"));
   const android = await isDir(join(projectPath, "android"));
@@ -139,6 +150,10 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const dartFiles = await collectFiles(join(projectPath, "lib"), 200, (name) => name.endsWith(".dart"));
   const dartScanned = await isDir(join(projectPath, "lib"));
+  const scriptFiles = reactNative && !flutter
+    ? await collectFiles(projectPath, 200, (name) => /\.(js|jsx|ts|tsx|mjs|cjs)$/.test(name), new Set(["node_modules", "ios", "android", "Pods", "build", "dist", "coverage", "web"]))
+    : [];
+  const codeScanned = dartScanned || scriptFiles.length > 0 || (reactNative && !flutter);
   const imported = new Set<string>();
   let deletion = false;
   let subscription = false;
@@ -148,7 +163,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   const dartTexts: string[] = [];
   const inAppUrls = { privacy: [] as string[], support: [] as string[], accountDeletion: [] as string[] };
 
-  for (const file of dartFiles) {
+  for (const file of [...dartFiles, ...scriptFiles]) {
     const text = await readText(file, 200_000);
     if (text === null) continue;
     const display = rel(projectPath, file);
@@ -169,7 +184,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     if (signatures.subscriptionNeedles.some((needle) => lower.includes(needle.toLowerCase()))) subscription = true;
     if (signatures.priceNeedles.some((needle) => lower.includes(needle.toLowerCase()))) price = true;
     if (/requestconsentinfoupdate|consentinformation|usermessagingplatform/i.test(text)) umpRequested = true;
-    dartTexts.push(text);
+    if (file.endsWith(".dart")) dartTexts.push(text);
     if (unguardedSampleIds(text).length > 0) {
       sampleUnguarded = true;
       bag.add(fileEv(["ads.sample_unit_in_shipped_config"], "Google's sample AdMob publisher id is reachable in a release build.", display, lineOfNeedle(text, GOOGLE_SAMPLE_AD_PUBLISHER), GOOGLE_SAMPLE_AD_PUBLISHER));
@@ -184,22 +199,25 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     }
   }
 
-  const plist = ios ? await readPlist(join(projectPath, "ios", "Runner", "Info.plist")) : null;
-  if (ios && !plist) unknowns.push("ios/Runner/Info.plist was missing or could not be read.");
+  const plistPath = ios ? await findIosPlist(projectPath) : null;
+  const plistRel = plistPath ? rel(projectPath, plistPath) : "ios/Runner/Info.plist";
+  const plist = plistPath ? await readPlist(plistPath) : null;
+  if (ios && !plist) unknowns.push(`${plistRel} was missing or could not be read.`);
   const usage = new Map<string, { value: string; line: number }>();
   if (plist) {
     for (const [key, value] of plist.entries) usage.set(key, value);
   }
 
   for (const [id, spec] of Object.entries(signatures.capabilities)) {
-    const used = spec.packages.some((name) => knownPackages.has(name));
+    const npmNames = spec.npm ?? [];
+    const used = spec.packages.some((name) => knownPackages.has(name)) || npmNames.some((name) => knownPackages.has(name));
     const declared = spec.iosUsage.some((key) => {
       const entry = usage.get(key);
       return Boolean(entry && entry.value.trim());
     });
     facts[`capability.${id}`] = used || declared;
     if (used) {
-      const hit = packages.find((item) => spec.packages.includes(item.name));
+      const hit = packages.find((item) => spec.packages.includes(item.name) || npmNames.includes(item.name));
       if (hit) {
         bag.add({
           facts: [`capability.${id}`],
@@ -215,7 +233,16 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const listed = signatures.listedSdks.filter((item) => knownPackages.has(item.pub));
   const bundled = await loadBundledManifests(packDir);
-  facts["listed_sdk.bundled_manifests"] = listed.length === 0 ? "not-applicable" : bundledManifestCoverage(listed, packages, bundled);
+  const coverage = listed.length === 0 ? null : bundledManifestCoverage(listed, packages, bundled);
+  facts["listed_sdk.bundled_manifests"] = coverage?.status ?? "not-applicable";
+  for (const detail of coverage?.details ?? []) {
+    bag.add({
+      facts: ["listed_sdk.bundled_manifests"],
+      kind: "dependency",
+      detail,
+      path: "pubspec.lock",
+    });
+  }
   facts["capability.listed_sdk"] = listed.length > 0;
   for (const item of listed) {
     bag.add({
@@ -233,7 +260,8 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   facts["capability.apple_sign_in"] = applePackage;
   facts["ads.google"] = signatures.googleAds.some((name) => knownPackages.has(name));
 
-  if (!pubspecKnown) {
+  const packageKnown = Boolean(packageJson && typeof packageJson === "object");
+  if (!pubspecKnown && !packageKnown) {
     for (const id of Object.keys(signatures.capabilities)) facts[`capability.${id}`] = "unknown";
     facts["capability.listed_sdk"] = "unknown";
     facts["capability.third_party_login"] = "unknown";
@@ -244,15 +272,15 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const ignored = new Set(signatures.ignoredPackages);
   const recognized = new Set<string>([
-    ...Object.values(signatures.capabilities).flatMap((item) => item.packages),
+    ...Object.values(signatures.capabilities).flatMap((item) => [...item.packages, ...(item.npm ?? [])]),
     ...signatures.listedSdks.map((item) => item.pub),
     ...signatures.thirdPartyLogin,
     ...signatures.appleSignIn,
     ...signatures.googleAds,
   ]);
   for (const item of packages) {
-    if (item.path !== "pubspec.yaml") continue;
-    if (ignored.has(item.name) || recognized.has(item.name) || item.name === "flutter") continue;
+    if (item.path !== "pubspec.yaml" && item.path !== "package.json") continue;
+    if (ignored.has(item.name) || recognized.has(item.name) || item.name === "flutter" || FRAMEWORK_NPM.has(item.name)) continue;
     observations.push({
       id: `package.unrecognized.${item.name}`,
       detail: `Package ${item.name} is not in the core capability map. It did not select extra rules. Add it to a pack if it implies a store or privacy duty.`,
@@ -261,7 +289,7 @@ export async function scanProject(projectPath: string, packDir: string): Promise
     });
   }
 
-  assignUsage(facts, bag, ios, plist, signatures);
+  assignUsage(facts, bag, ios, plist, plistRel, signatures);
   await assignDeploymentTarget(facts, bag, projectPath, ios, unknowns);
   await assignPrivacyManifests(facts, bag, projectPath, ios);
   const entitlements = ios ? await collectFiles(join(projectPath, "ios"), 20, (name) => name.endsWith(".entitlements"), new Set(["Pods", ".symlinks", "build"])) : [];
@@ -327,13 +355,13 @@ export async function scanProject(projectPath: string, packDir: string): Promise
   const sampleShipped = sampleInPlist || sampleInManifest || sampleUnguarded;
   if (facts["capability.ads"] === true) {
     facts["ads.sample_unit_in_shipped_config"] = sampleShipped;
-    facts["ads.ump_requested"] = dartScanned ? umpRequested : "unknown";
+    facts["ads.ump_requested"] = codeScanned ? umpRequested : "unknown";
     if (sampleShipped) {
       bag.add({
         facts: ["ads.sample_unit_in_shipped_config"],
         kind: sampleInPlist || sampleInManifest ? "file" : "scan",
         detail: "Google's sample AdMob publisher id ca-app-pub-3940256099942544 is in a file that ships, or in Dart without a clear debug-only guard and a separate real id.",
-        ...(sampleInPlist ? { path: "ios/Runner/Info.plist" } : sampleInManifest ? { path: "android/app/src/main/AndroidManifest.xml" } : { path: "lib" }),
+        ...(sampleInPlist ? { path: plistRel } : sampleInManifest ? { path: "android/app/src/main/AndroidManifest.xml" } : { path: "lib" }),
       });
     }
   } else if (facts["capability.ads"] === false) {
@@ -385,19 +413,21 @@ export async function scanProject(projectPath: string, packDir: string): Promise
 
   const accounts = facts["capability.accounts"] === true;
   if (!accounts) facts["account.deletion.in_app"] = facts["capability.accounts"] === false ? "not-applicable" : "unknown";
-  else if (!dartScanned) facts["account.deletion.in_app"] = "unknown";
+  else if (!codeScanned) facts["account.deletion.in_app"] = "unknown";
   else facts["account.deletion.in_app"] = deletion || inAppUrls.accountDeletion.length > 0;
-  if (accounts && dartScanned && facts["account.deletion.in_app"] === false) {
+  if (accounts && codeScanned && facts["account.deletion.in_app"] === false) {
     bag.add({
       facts: ["account.deletion.in_app"],
       kind: "absence",
-      detail: "lib/ was scanned and no account-deletion symbol, phrase, or in-app deletion URL was found.",
-      path: "lib",
+      detail: dartScanned
+        ? "lib/ was scanned and no account-deletion symbol, phrase, or in-app deletion URL was found."
+        : "Source files were scanned and no account-deletion phrase or in-app deletion URL was found.",
+      path: dartScanned ? "lib" : "package.json",
     });
   }
 
   if (facts["capability.payments"] !== true) facts["payments.subscription_terms_found"] = facts["capability.payments"] === false ? "not-applicable" : "unknown";
-  else if (!dartScanned) facts["payments.subscription_terms_found"] = "unknown";
+  else if (!codeScanned) facts["payments.subscription_terms_found"] = "unknown";
   else facts["payments.subscription_terms_found"] = subscription && price;
 
   if (facts["attestation.apple.att_not_required"] === "yes") facts["tracking.att_required"] = "no";
@@ -443,17 +473,27 @@ export async function scanProject(projectPath: string, packDir: string): Promise
       blocksReady: false,
     });
   }
-  limitations.push({
-    id: "dart-surface-scan",
-    detail: "Dart is scanned for imports and selected phrases. It is not type-checked and it is not executed.",
-    blocksReady: false,
-  });
+  if (flutter) {
+    limitations.push({
+      id: "dart-surface-scan",
+      detail: "Dart is scanned for imports and selected phrases. It is not type-checked and it is not executed.",
+      blocksReady: false,
+    });
+  }
+  if (reactNative && !flutter) {
+    limitations.push({
+      id: "javascript-surface-scan",
+      detail: "JavaScript and TypeScript are scanned for imports and selected phrases. They are not executed, and Expo config plugins are not run. Facts the source does not show stay unknown.",
+      blocksReady: false,
+    });
+  }
 
-  const displayName = config?.appName ?? plist?.entries.get("CFBundleDisplayName")?.value ?? plist?.entries.get("CFBundleName")?.value ?? null;
-  const name = stringField(pubspec, "name");
-  const version = stringField(pubspec, "version");
+  const appJsonName = await expoDisplayName(projectPath);
+  const displayName = config?.appName ?? appJsonName ?? plist?.entries.get("CFBundleDisplayName")?.value ?? plist?.entries.get("CFBundleName")?.value ?? null;
+  const name = stringField(pubspec, "name") ?? stringField(packageJson, "name");
+  const version = stringField(pubspec, "version") ?? stringField(packageJson, "version");
   const profile: AppProfile = {
-    framework: flutter ? "flutter" : "unknown",
+    framework: flutter ? "flutter" : expo ? "expo" : reactNative ? "react-native" : "unknown",
     name,
     version,
     displayName: displayName ?? name,
@@ -530,6 +570,73 @@ function parseYaml(text: string): unknown {
   }
 }
 
+function parseJson(text: string | null): unknown {
+  if (!text) return null;
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+}
+
+function collectNpmPackages(text: string | null, doc: unknown): PackageHit[] {
+  const record = asRecord(doc);
+  const deps = { ...asRecord(record.dependencies), ...asRecord(record.optionalDependencies) };
+  const hits: PackageHit[] = [];
+  for (const [name, spec] of Object.entries(deps)) {
+    if (!/^(@[A-Za-z0-9._-]+\/)?[A-Za-z0-9._-]+$/.test(name)) continue;
+    hits.push({
+      name,
+      spec: typeof spec === "string" ? spec : null,
+      path: "package.json",
+      line: text ? jsonKeyLine(text, name) : null,
+    });
+  }
+  return hits.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function jsonKeyLine(text: string, name: string): number | null {
+  const match = text.match(new RegExp(`"${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"\\s*:`));
+  if (!match || match.index === undefined) return null;
+  return lineAt(text, match.index);
+}
+
+const FRAMEWORK_NPM = new Set(["react", "react-native", "expo", "expo-status-bar", "react-dom"]);
+
+async function detectExpo(root: string, npm: PackageHit[]): Promise<boolean> {
+  if (npm.some((item) => item.name === "expo")) return true;
+  const appJson = await readText(join(root, "app.json"), 1_000_000);
+  const parsed = parseJson(appJson);
+  return Boolean(parsed && typeof parsed === "object" && "expo" in parsed);
+}
+
+async function expoDisplayName(root: string): Promise<string | null> {
+  const parsed = parseJson(await readText(join(root, "app.json"), 1_000_000));
+  if (!parsed || typeof parsed !== "object" || !("expo" in parsed)) return null;
+  const expo = (parsed as { expo?: unknown }).expo;
+  return expo && typeof expo === "object" && "name" in expo && typeof expo.name === "string" ? expo.name : null;
+}
+
+async function findIosPlist(root: string): Promise<string | null> {
+  const runner = join(root, "ios", "Runner", "Info.plist");
+  if (await isFile(runner)) return runner;
+  const found = await collectFiles(join(root, "ios"), 40, (name) => name === "Info.plist", new Set(["Pods", ".symlinks", "build", "node_modules"]));
+  return found[0] ?? null;
+}
+
+async function isFile(path: string): Promise<boolean> {
+  try {
+    const info = await lstat(path);
+    return info.isFile() && !info.isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
+
 function isFlutter(pubspec: unknown, lock: unknown): boolean {
   if (pubspec && typeof pubspec === "object" && "dependencies" in pubspec) {
     const deps = pubspec.dependencies;
@@ -581,6 +688,7 @@ function assignUsage(
   bag: EvidenceBag,
   ios: boolean,
   plist: { entries: Map<string, { value: string; line: number }> } | null,
+  plistRel: string,
   signatures: Signatures,
 ): void {
   const usageFacts: Record<string, string> = {
@@ -606,13 +714,13 @@ function assignUsage(
     const found = group.keys.map((key) => ({ key, entry: plist.entries.get(key) })).find((item) => item.entry && item.entry.value.trim());
     facts[group.fact] = Boolean(found);
     if (found?.entry) {
-      bag.add(fileEv([group.fact], `${found.key} is set.`, "ios/Runner/Info.plist", found.entry.line, found.entry.value));
+      bag.add(fileEv([group.fact], `${found.key} is set.`, plistRel, found.entry.line, found.entry.value));
     } else {
       bag.add({
         facts: [group.fact],
         kind: "absence",
         detail: `${group.keys.join(" or ")} was not found in Info.plist.`,
-        path: "ios/Runner/Info.plist",
+        path: plistRel,
       });
     }
   }
@@ -1308,7 +1416,10 @@ async function flutterSdkDefaults(packDir: string, pin: FlutterPin | null): Prom
 interface BundledManifest {
   pub: string;
   since: string;
+  before?: string;
+  implementation?: string;
   source: string;
+  note?: string;
 }
 
 async function loadBundledManifests(packDir: string): Promise<BundledManifest[]> {
@@ -1320,19 +1431,35 @@ async function loadBundledManifests(packDir: string): Promise<BundledManifest[]>
     const pub = "pub" in row && typeof row.pub === "string" ? row.pub : null;
     const since = "since" in row && typeof row.since === "string" ? row.since : null;
     const source = "source" in row && typeof row.source === "string" ? row.source : "";
-    return pub && since ? [{ pub, since, source }] : [];
+    const before = "before" in row && typeof row.before === "string" ? row.before : undefined;
+    const implementation = "implementation" in row && typeof row.implementation === "string" ? row.implementation : undefined;
+    const note = "note" in row && typeof row.note === "string" ? row.note : undefined;
+    if (!pub || !since) return [];
+    return [{ pub, since, source, ...(before ? { before } : {}), ...(implementation ? { implementation } : {}), ...(note ? { note } : {}) }];
   });
 }
 
-function bundledManifestCoverage(listed: Array<{ pub: string }>, packages: PackageHit[], table: BundledManifest[]): "covered" | "partial" {
+function bundledManifestCoverage(listed: Array<{ pub: string }>, packages: PackageHit[], table: BundledManifest[]): { status: "covered" | "partial"; details: string[] } {
+  const details: string[] = [];
   const uncovered = listed.filter((item) => {
     const row = table.find((entry) => entry.pub === item.pub);
-    if (!row) return true;
-    const version = packages.find((pkg) => pkg.name === item.pub)?.spec ?? "";
+    if (!row) {
+      details.push(`${item.pub} is a listed SDK and is not in the bundled privacy-manifest table, so it is not treated as covered.`);
+      return true;
+    }
+    const versionName = row.implementation ?? item.pub;
+    const version = packages.find((pkg) => pkg.name === versionName)?.spec ?? "";
     const clean = version.match(/\d+\.\d+\.\d+/)?.[0];
-    return !clean || !versionAtLeast(clean, row.since);
+    const inRange = Boolean(clean) && versionAtLeast(clean ?? "", row.since) && !(row.before && versionAtLeast(clean ?? "", row.before));
+    if (inRange) {
+      details.push(`${item.pub} is covered by ${versionName} ${clean}, which is inside ${row.since}${row.before ? ` and before ${row.before}` : ""}. ${row.note ?? ""}`.trim());
+      return false;
+    }
+    const why = row.note ?? `${versionName} ${clean ?? "was not read"} is outside the versions recorded as shipping PrivacyInfo.xcprivacy (since ${row.since}${row.before ? `, before ${row.before}` : ""}).`;
+    details.push(`${item.pub} stays uncovered. ${why}`.trim());
+    return true;
   });
-  return uncovered.length === 0 ? "covered" : "partial";
+  return { status: uncovered.length === 0 ? "covered" : "partial", details };
 }
 
 function versionAtLeast(actual: string, minimum: string): boolean {

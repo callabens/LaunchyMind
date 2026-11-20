@@ -2,21 +2,26 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { exitCodeForVerdict, LAUNCHYMIND_VERSION, NotFlutterProjectError, parseFailOn } from "../../../packages/core/src/index.ts";
-import { applyApprovedFix, proposeFix } from "../../../packages/fixes/src/index.ts";
+import { applyApprovedFix, applyApprovedFixes } from "../../../packages/fixes/src/index.ts";
+import { proposeFix } from "../../../packages/fixes/src/index.ts";
+import { initProject } from "../../../packages/init/src/index.ts";
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runScan } from "../../../packages/pipeline/src/index.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
+import { addPack, listInstalledPacks, removePack } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
 import { renderHtml, renderJson, renderTerminal } from "../../../packages/report/src/index.ts";
 
 interface ParsedArgs {
   positionals: string[];
   options: Map<string, string>;
+  repeated: Map<string, string[]>;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
   const positionals: string[] = [];
   const options = new Map<string, string>();
+  const repeated = new Map<string, string[]>();
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
     if (!value) continue;
@@ -26,12 +31,14 @@ function parseArgs(argv: string[]): ParsedArgs {
     }
     const key = value.slice(2);
     const next = argv[index + 1];
-    if (next && !next.startsWith("--")) {
-      options.set(key, next);
-      index += 1;
-    } else options.set(key, "true");
+    const stored = next && !next.startsWith("--") ? next : "true";
+    if (stored !== "true") index += 1;
+    options.set(key, stored);
+    const list = repeated.get(key) ?? [];
+    list.push(stored);
+    repeated.set(key, list);
   }
-  return { positionals, options };
+  return { positionals, options, repeated };
 }
 
 function help(): string {
@@ -40,14 +47,19 @@ function help(): string {
     "",
     "Commands:",
     "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
+    "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
     "  rules",
     "  pack validate [directory]",
+    "  pack add <path-or-git-url> [--project <path>]",
+    "  pack list [--project <path>]",
+    "  pack remove <id> [--project <path>]",
     "  fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]",
+    "  fix <path> --all [--yes] [--dry-run] [--allow-dirty] [--offline]",
     "  fix propose <rule-id> [--project <path>] [--offline]",
     "  mcp",
     "",
     "Exit codes: 0 scan finished and is under the --fail-on line (default reject, so risky is 0),",
-    "  2 risky when --fail-on risky, 3 reject, 4 not a Flutter project, 1 other usage or runtime error.",
+    "  2 risky when --fail-on risky, 3 reject, 4 not a Flutter, React Native, or Expo project, 1 other usage or runtime error.",
     "The verdict comes from the rule engine. This tool does not claim store approval or legal compliance.",
   ].join("\n");
 }
@@ -79,6 +91,19 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "init") {
+    if (!sub) throw new Error("Usage: launchymind init <path> [--set key=value]");
+    const sets = (args.repeated.get("set") ?? []).filter((item) => item !== "true");
+    const result = await initProject(resolve(sub), { sets, interactive: sets.length === 0 && !args.options.has("yes") });
+    if (!result.wrote) {
+      console.log("No answers were set. Blank store questions stay unchecked.");
+      return;
+    }
+    console.log(`Updated ${result.path}`);
+    if (result.set.length) console.log(`Set: ${result.set.join(", ")}`);
+    return;
+  }
+
   if (command === "pack" && sub === "validate") {
     const directory = resolve(extra ?? findCorePackDir());
     const pack = await loadPack(directory);
@@ -89,6 +114,26 @@ async function main(): Promise<void> {
       return;
     }
     console.log(`Valid data pack ${pack.meta.id} ${pack.meta.version}. ${pack.rules.length} enabled rules, ${pack.withheld.length} withheld.`);
+    return;
+  }
+
+  if (command === "pack" && (sub === "add" || sub === "list" || sub === "remove")) {
+    const project = resolve(args.options.get("project") ?? ".");
+    if (sub === "list") {
+      const packs = await listInstalledPacks(project);
+      if (packs.length === 0) console.log("No project packs installed.");
+      for (const pack of packs) console.log(`${pack.id}  ${pack.version}  ${pack.name}`);
+      return;
+    }
+    if (sub === "add") {
+      if (!extra) throw new Error("Usage: launchymind pack add <path-or-git-url> [--project <path>]");
+      const installed = await addPack(project, extra);
+      console.log(`Installed ${installed.id} ${installed.version} into ${installed.directory}`);
+      return;
+    }
+    if (!extra) throw new Error("Usage: launchymind pack remove <id> [--project <path>]");
+    await removePack(project, extra);
+    console.log(`Removed ${extra}`);
     return;
   }
 
@@ -106,9 +151,37 @@ async function main(): Promise<void> {
 
   if (command === "fix" && sub && sub !== "propose") {
     const rule = args.options.get("rule");
-    if (!rule || rule === "true") throw new Error("Usage: launchymind fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]");
+    const all = args.options.has("all");
     const dryRun = args.options.has("dry-run");
     const yes = args.options.has("yes");
+    if (all && rule && rule !== "true") throw new Error("Use either --rule or --all, not both.");
+    if (all) {
+      const result = await applyApprovedFixes({
+        projectPath: resolve(sub),
+        approveAll: yes,
+        dryRun,
+        allowDirty: args.options.has("allow-dirty"),
+        offline: args.options.has("offline"),
+        confirm: !yes && !dryRun,
+      });
+      for (const item of result.results) {
+        if (!item.diff) continue;
+        console.log(`# ${item.ruleId}`);
+        console.log(item.diff.trimEnd());
+      }
+      if (result.status === "BLOCKED" || result.status === "REFUSED") {
+        console.error(result.reason);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(result.reason);
+      if (result.before && result.after) {
+        console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
+        console.log(`After: ${result.after.headline} (${result.after.verdict})`);
+      }
+      return;
+    }
+    if (!rule || rule === "true") throw new Error("Usage: launchymind fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]");
     const result = await applyApprovedFix({
       projectPath: resolve(sub),
       ruleId: rule,

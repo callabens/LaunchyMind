@@ -9,6 +9,7 @@ import {
   type Evidence,
   type FactValue,
   type LaunchReport,
+  type Limitation,
   type LiveCheckRecord,
 } from "../../core/src/index.ts";
 import {
@@ -22,6 +23,7 @@ import {
   type LivePage,
   type PageInspection,
 } from "../../live/src/index.ts";
+import { loadProjectPacks } from "../../packs/src/index.ts";
 import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
 import { decideVerdict } from "../../verdict/src/index.ts";
@@ -38,12 +40,23 @@ export interface RunOptions {
 export async function runScan(projectPath: string, options: RunOptions = {}): Promise<LaunchReport> {
   const pack = options.pack ?? await loadPack(options.packDir ?? findCorePackDir());
   const scanned = await scanProject(projectPath, pack.directory);
-  if (scanned.profile.framework !== "flutter") throw new NotFlutterProjectError(projectPath);
+  if (scanned.profile.framework === "unknown") throw new NotFlutterProjectError(projectPath);
+  const projectPacks = await loadProjectPacks(projectPath);
+  for (const problem of projectPacks.problems) {
+    scanned.limitations.push({ id: "project-pack", detail: problem, blocksReady: true });
+  }
+  for (const pack of projectPacks.packs) {
+    scanned.observations.push({
+      id: `pack.loaded.${pack.meta.id}`,
+      detail: `Loaded project pack ${pack.meta.id} ${pack.meta.version}.`,
+    });
+  }
+  const merged = mergePacks(pack, projectPacks.packs, scanned.limitations);
   const offline = options.offline === true;
   const checker = offline ? null : options.liveChecker ?? createNetworkChecker();
   const live = await applyLive(scanned, checker, offline);
   const now = options.now ?? new Date();
-  const evaluation = evaluatePack(pack, live.facts, live.evidence, now, options.staleDays ?? STALE_DAYS_DEFAULT);
+  const evaluation = evaluatePack(merged, live.facts, live.evidence, now, options.staleDays ?? STALE_DAYS_DEFAULT);
   const decision = decideVerdict(evaluation.findings, scanned.limitations);
   return {
     version: 1,
@@ -222,6 +235,32 @@ function pushLiveEvidence(evidence: Evidence[], facts: string[], checked: Checke
     ...(checked.page ? { path: checked.page.url } : {}),
     ...(snippet ? { snippet } : {}),
   });
+}
+
+function mergePacks(core: LoadedPack, extras: readonly LoadedPack[], limitations: Limitation[]): LoadedPack {
+  const ids = new Set(core.rules.map((rule) => rule.id));
+  const extraRules = [];
+  for (const pack of extras) {
+    const kept = [];
+    for (const rule of pack.rules) {
+      if (ids.has(rule.id)) {
+        limitations.push({
+          id: "project-pack-duplicate",
+          detail: `Project pack ${pack.meta.id} repeats core rule ${rule.id}, so that copy was not loaded.`,
+          blocksReady: false,
+        });
+        continue;
+      }
+      ids.add(rule.id);
+      kept.push(rule);
+    }
+    extraRules.push(...kept);
+  }
+  return {
+    ...core,
+    rules: [...core.rules, ...extraRules],
+    withheld: [...core.withheld, ...extras.flatMap((pack) => pack.withheld)],
+  };
 }
 
 function record(label: string, url: string | null, checked: Checked): LiveCheckRecord {

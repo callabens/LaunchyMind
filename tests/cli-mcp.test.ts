@@ -112,10 +112,12 @@ test("mcp server lists the planned tools and cannot set a verdict", async () => 
     const names = listed.tools.map((tool) => tool.name).sort();
     assert.deepEqual(names, [
       "launchymind_apply_fix",
+      "launchymind_apply_fixes",
       "launchymind_explain_finding",
       "launchymind_get_overview",
       "launchymind_get_verdict",
       "launchymind_propose_fix",
+      "launchymind_propose_fixes",
       "launchymind_scan",
     ]);
     assert.equal(names.some((name) => name.includes("set_verdict")), false);

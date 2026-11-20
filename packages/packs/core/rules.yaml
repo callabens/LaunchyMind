@@ -2,14 +2,14 @@
 # appliesWhen is what the engine uses. platforms is for readers.
 rules:
   - id: product.flutter-project
-    title: This preview scans Flutter projects
+    title: This preview scans Flutter, React Native, and Expo
     severity: risk
     platforms: [any]
     enabled: true
     origin: product
     verification:
       status: verified
-      verifiedAt: 2026-11-19
+      verifiedAt: 2026-11-20
       method: product-rule
       note: This is a LaunchyMind limit, not a store rule.
     source:
@@ -17,21 +17,25 @@ rules:
       section: scanner
       publisher: LaunchyMind
     summary:
-      en: "This preview reads Flutter projects. A folder that is not a Flutter app is not given a store verdict for another framework."
-      tr: "Bu önizleme Flutter projelerini okur. Flutter olmayan klasör için başka bir çerçevenin mağaza kararı üretilmez."
+      en: "This preview reads Flutter, React Native, and Expo projects. A folder that is none of those is not given a store verdict. Checks that the scanner cannot see stay unchecked."
+      tr: "Bu önizleme Flutter, React Native ve Expo projelerini okur. Bunların hiçbiri olmayan klasör için mağaza kararı üretilmez. Görülemeyen kontroller kontrol edilemedi kalır."
     appliesWhen:
       all:
         - { fact: framework.flutter, neq: "unused" }
     evaluate:
       pass:
-        all:
+        any:
           - { fact: framework.flutter, eq: true }
+          - { fact: framework.react_native, eq: true }
+          - { fact: framework.expo, eq: true }
       fail:
         all:
           - { fact: framework.flutter, eq: false }
+          - { fact: framework.react_native, eq: false }
+          - { fact: framework.expo, eq: false }
     check:
       confidence: direct
-      note: "Looks for a Flutter SDK dependency in pubspec.yaml or pubspec.lock. React Native and native apps are not scanned yet."
+      note: "Flutter is a pubspec SDK dependency. React Native is a react-native dependency. Expo is an expo dependency or an app.json expo field. Native-only folders are not scanned."
 
   - id: product.audience-answers
     title: Audience questions the code cannot answer
@@ -646,7 +650,7 @@ rules:
           - { fact: attestation.apple.listed_sdk_manifests, eq: "no" }
     check:
       confidence: direct
-      note: "The table records changelog versions and GitHub paths checked on 2026-11-19. path_provider had no PrivacyInfo.xcprivacy in flutter/packages on that date, so it is not treated as covered. A lockfile version below the recorded version stays uncovered."
+      note: "Checked 2026-11-20. path_provider_foundation 2.3.2 added PrivacyInfo.xcprivacy and 2.6.0 deleted it when the iOS implementation became Dart FFI. The app-facing path_provider package does not ship that file. Without a lockfile path_provider_foundation in 2.3.2 up to but not including 2.6.0, path_provider stays uncovered and this rule stays unchecked unless you attest that you saw the manifest."
 
   - id: apple.minimum-os
     title: Uploads must target iOS 13 or later

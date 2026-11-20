@@ -11,6 +11,7 @@ import {
   type Observation,
 } from "../../core/src/index.ts";
 import { draftLabels, loadSdkBase, sdkFacts } from "../../labels/src/index.ts";
+import { compareDataSafety, DATA_SAFETY_FILE, readDataSafety } from "../../labels/src/datasafety.ts";
 import { detectNative, substituteCatalog, versionCatalog } from "./native.ts";
 import { paymentSignals, type SourceText } from "./payments.ts";
 import { readStore } from "../../store/src/index.ts";
@@ -602,6 +603,22 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   facts["artifact.drift"] = "not-applicable";
   const sdkDraft = draftLabels(packages.map((item) => item.name), await loadSdkBase());
   Object.assign(facts, sdkFacts(sdkDraft, facts));
+  if (facts["platform.android"] !== true) facts["google.data_safety_declaration"] = "not-applicable";
+  else {
+    const read = await readDataSafety(projectPath);
+    const comparison = compareDataSafety(read.declaration, read.present, read.problems, sdkDraft);
+    facts["google.data_safety_declaration"] = comparison.status === "match" || comparison.status === "mismatch" || comparison.status === "missing" ? comparison.status : "unknown";
+    if (comparison.status === "mismatch") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} does not declare data types that verified SDK rows say are collected: ${comparison.missingTypes.map((item) => `${item.type} (${item.sdks.join(", ")})`).join("; ")}.`, path: DATA_SAFETY_FILE });
+    } else if (comparison.status === "match") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} declares every Play data type that verified SDK rows name.`, path: DATA_SAFETY_FILE });
+    } else if (comparison.status !== "missing") {
+      bag.add({ facts: ["google.data_safety_declaration"], kind: "file", detail: `${DATA_SAFETY_FILE} was not compared: ${comparison.problems.join(" ")}`, path: DATA_SAFETY_FILE });
+    }
+    if (comparison.unmapped.length > 0) {
+      observations.push({ id: "datasafety.unmapped", detail: `These vendor rows have no unambiguous Play data type and need a manual mapping: ${comparison.unmapped.map((item) => `${item.sdk} "${item.type}"`).join(", ")}.` });
+    }
+  }
   if (sdkDraft.apple.items.length || sdkDraft.unknownSdks.length) {
     bag.add({
       facts: ["sdk.coverage", "sdk.manifest_mismatch", "sdk.answer_mismatch"],

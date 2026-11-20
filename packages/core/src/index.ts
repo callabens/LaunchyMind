@@ -309,6 +309,7 @@ export const KNOWN_FACTS = [
   "sdk.revenuecat",
   "revenuecat.secret_key",
   "connect.revenuecat",
+  "google.data_safety_declaration",
   "android.target_sdk_basis",
   "ios.privacy_manifest.tracking",
   "ios.privacy_manifest.tracking_consistent",

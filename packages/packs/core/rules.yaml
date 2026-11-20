@@ -2430,3 +2430,39 @@ rules:
     next:
       en: "Add the missing products in RevenueCat, attach them to an entitlement and an offering, or fix the product IDs in the code."
       tr: "Eksik ürünleri RevenueCat'e ekleyin, bir entitlement ve offering'e bağlayın ya da koddaki ürün kimliklerini düzeltin."
+
+  - id: google.data-safety-declaration-sdks
+    title: The local Data safety declaration covers what the SDKs collect
+    severity: risk
+    platforms: [android]
+    enabled: true
+    origin: store
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://support.google.com/googleplay/android-developer/answer/10787469
+      section: "Data collection"
+      publisher: Google Play
+    summary:
+      en: "Google says the Data safety form must include user data transmitted off the device by libraries and SDKs used in the app. The Play API for Data safety is write-only, so LaunchyMind compares the project's launchymind.datasafety.json with the Play data types that verified SDK rows name. Rows without an unambiguous Play type are listed for manual mapping and do not fail."
+      tr: "Google, Data safety formunun uygulamadaki kütüphane ve SDK'ların cihaz dışına gönderdiği verileri de içermesi gerektiğini söyler. Play'in Data safety API'si yalnızca yazılabilir olduğu için LaunchyMind projedeki launchymind.datasafety.json dosyasını doğrulanmış SDK satırlarının adlandırdığı Play veri türleriyle karşılaştırır. Tek anlamlı Play türü olmayan satırlar elle eşleştirme için listelenir ve hata sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: platform.android, eq: true }
+        - { fact: google.data_safety_declaration, neq: "missing" }
+        - { fact: google.data_safety_declaration, neq: "not-applicable" }
+    evaluate:
+      pass:
+        all:
+          - { fact: google.data_safety_declaration, eq: "match" }
+      fail:
+        all:
+          - { fact: google.data_safety_declaration, eq: "mismatch" }
+    check:
+      confidence: heuristic
+      note: "Runs only when launchymind.datasafety.json exists. A file with reviewed: false or invalid JSON stays unchecked. The live Play Console answers are not read."
+    next:
+      en: "Add the missing data types to launchymind.datasafety.json and to the Play Console Data safety form, or confirm with the SDK vendor that your setup does not collect them."
+      tr: "Eksik veri türlerini launchymind.datasafety.json dosyasına ve Play Console Data safety formuna ekleyin ya da kurulumunuzun bunları toplamadığını SDK sağlayıcısıyla doğrulayın."

@@ -746,3 +746,15 @@ cases:
     rule: revenuecat.products-configured
     expect: fail
     facts: { sdk.revenuecat: true, connect.revenuecat: "mismatch" }
+  - id: datasafety-match
+    rule: google.data-safety-declaration-sdks
+    expect: pass
+    facts: { platform.android: true, google.data_safety_declaration: "match" }
+  - id: datasafety-mismatch
+    rule: google.data-safety-declaration-sdks
+    expect: fail
+    facts: { platform.android: true, google.data_safety_declaration: "mismatch" }
+  - id: datasafety-unreviewed
+    rule: google.data-safety-declaration-sdks
+    expect: unchecked
+    facts: { platform.android: true, google.data_safety_declaration: "unknown" }

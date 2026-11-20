@@ -11,6 +11,7 @@ import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runArtifactOnly, runScan } from "../../../packages/pipeline/src/index.ts";
 import { readConnect, readConnectConfig } from "../../../packages/connect/src/index.ts";
 import { readRevenueCat, readRevenueCatConfig } from "../../../packages/connect/src/revenuecat.ts";
+import { dataSafetyCsv, writeDataSafetyTemplate } from "../../../packages/labels/src/datasafety.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
 import { scanProject } from "../../../packages/scan/src/index.ts";
 import { addPack, addPackByName, listInstalledPacks, loadRegistry, packIntegrity, removePack, searchRegistry } from "../../../packages/packs/src/index.ts";
@@ -57,12 +58,13 @@ function help(): string {
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
     "  connect revenuecat [--project <path>] [--json] [--offline]",
-    "  labels <path> [--json] [--lang en|tr] [--offline]",
+    "  labels <path> [--json] [--lang en|tr] [--offline] [--play-csv <file>]",
     "  sources check [--json] [--offline] [--record] [--record-status] [--project <path>]",
     "  history <path>",
     "  dashboard <path> [--out <file>]",
     "  explain <path> --why-not-ready [--offline] [--json]",
     "  init <path> [--set key=value]...     ask store-console questions; blank stays unchecked",
+    "  init <path> --datasafety             write a draft launchymind.datasafety.json (reviewed: false)",
     "  rules",
     "  pack validate [directory]",
     "  pack search <query>",
@@ -108,8 +110,17 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "init" && sub && args.options.has("datasafety")) {
+    const report = await runScan(resolve(sub), { offline: true });
+    const result = await writeDataSafetyTemplate(resolve(sub), await labelsForReport(report));
+    console.log(result.wrote
+      ? `Wrote ${result.path}. It is a draft from verified SDK rows with reviewed: false. Edit every row, then set reviewed to true.`
+      : `${result.path} already exists. Nothing was written.`);
+    return;
+  }
+
   if (command === "init") {
-    if (!sub) throw new Error("Usage: launchymind init <path> [--set key=value]");
+    if (!sub) throw new Error("Usage: launchymind init <path> [--set key=value] [--datasafety]");
     const sets = (args.repeated.get("set") ?? []).filter((item) => item !== "true");
     const result = await initProject(resolve(sub), { sets, interactive: sets.length === 0 && !args.options.has("yes") });
     if (!result.wrote) {
@@ -289,6 +300,12 @@ async function main(): Promise<void> {
     const lang = args.options.get("lang") === "tr" ? "tr" : "en";
     const report = await runScan(resolve(sub), { offline: args.options.has("offline") });
     const draft = await labelsForReport(report);
+    const csvOut = args.options.get("play-csv");
+    if (csvOut && csvOut !== "true") {
+      await writeFile(resolve(csvOut), dataSafetyCsv(draft), "utf8");
+      console.log(`Wrote ${resolve(csvOut)}. It is a review sheet, not the Play Console import format.`);
+      return;
+    }
     if (args.options.has("json")) console.log(JSON.stringify(draft, null, 2));
     else console.log(renderLabels(draft, lang));
     return;

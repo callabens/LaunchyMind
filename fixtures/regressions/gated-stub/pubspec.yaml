@@ -1,0 +1,8 @@
+name: gated_stub
+description: Regression. Stub purchase copy behind const false is not a failure.
+version: 0.0.1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter

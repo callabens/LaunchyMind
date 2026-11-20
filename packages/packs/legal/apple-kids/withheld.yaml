@@ -1,0 +1,27 @@
+rules:
+  - id: legal.apple.kids-category-program
+    title: Full Kids Category program details stay withheld
+    severity: risk
+    platforms: [ios]
+    enabled: false
+    origin: store
+    verification:
+      status: needs-manual-verification
+      note: "Guidelines 1.3 and 5.1.4 were not re-opened beyond the core kids rule, so the rest of the Kids Category program stays withheld."
+    source:
+      url: https://developer.apple.com/app-store/review/guidelines/
+      section: "1.3 and 5.1.4"
+      publisher: Apple
+    summary:
+      en: "The rest of the Kids Category program is not enabled in this pack. The core rule apple.kids-third-party still runs when audience.kids is yes. This is not legal advice."
+      tr: "Kids Category programının geri kalanı bu pakette etkin değildir. audience.kids yes ise çekirdek kural apple.kids-third-party yine çalışır. Bu hukuk görüşü değildir."
+    check:
+      confidence: attestation
+      note: "Disabled. The core kids rule remains the enabled check."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.apple_kids, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: legal.pack.apple_kids, eq: true }

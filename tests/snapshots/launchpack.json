@@ -1,0 +1,260 @@
+{
+  "fixtures/expo/plain": {
+    "framework": "expo",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.minimum-os:unchecked",
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/flutter/ready-notes": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.support-link-quality:unchecked",
+      "kvkk.disclosure:unchecked"
+    ]
+  },
+  "fixtures/flutter/reject-camera": {
+    "framework": "flutter",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.permission-camera:fail",
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/flutter/risky-accounts": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.listed-sdk-manifest:unchecked",
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.account-deletion-link:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/flutter/tracking-mismatch": {
+    "framework": "flutter",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.minimum-os:unchecked",
+      "apple.privacy-manifest-tracking:fail",
+      "apple.privacy-policy-in-app:fail",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-ad-id:unchecked",
+      "google.data-safety-form:unchecked",
+      "google.privacy-policy:fail",
+      "iab.app-ads:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked",
+      "sdk.answer-label-mismatch:unchecked",
+      "sdk.manifest-label-mismatch:fail"
+    ]
+  },
+  "fixtures/native/android": {
+    "framework": "android",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "google.closed-testing:unchecked",
+      "google.data-safety-ad-id:unchecked",
+      "google.data-safety-form:unchecked",
+      "google.privacy-policy:fail",
+      "google.target-api:fail",
+      "google.ump-consent-call:fail",
+      "iab.app-ads:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked",
+      "sdk.answer-label-mismatch:unchecked",
+      "sdk.manifest-label-mismatch:unchecked"
+    ]
+  },
+  "fixtures/native/ios": {
+    "framework": "ios",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.privacy-manifest-tracking:fail",
+      "apple.privacy-policy-in-app:fail",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.tracking-permission:fail",
+      "apple.xcode-sdk:unchecked",
+      "google.ump-consent-call:fail",
+      "iab.app-ads:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked",
+      "sdk.answer-label-mismatch:unchecked",
+      "sdk.manifest-label-mismatch:fail"
+    ]
+  },
+  "fixtures/react-native/camera-gap": {
+    "framework": "react-native",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.minimum-os:unchecked",
+      "apple.permission-camera:fail",
+      "apple.privacy-link-opens:unchecked",
+      "apple.privacy-policy-content:unchecked",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/regressions/gated-stub": {
+    "framework": "flutter",
+    "verdict": "ready",
+    "schema": 1,
+    "findings": []
+  },
+  "fixtures/regressions/guarded-sample-ad": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "google.ump-consent-call:fail",
+      "iab.app-ads:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "sdk.answer-label-mismatch:unchecked",
+      "sdk.manifest-label-mismatch:unchecked"
+    ]
+  },
+  "fixtures/regressions/minimum-target": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "google.closed-testing:unchecked",
+      "google.data-safety-form:unchecked",
+      "google.privacy-policy:fail",
+      "google.target-api:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/regressions/missing-support": {
+    "framework": "flutter",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.minimum-os:unchecked",
+      "apple.privacy-policy-in-app:fail",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "product.audience-answers:unchecked"
+    ]
+  },
+  "fixtures/store/text-bad": {
+    "framework": "flutter",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "store.copyright-year:fail",
+      "store.future-promise:fail",
+      "store.ios.icon:unchecked",
+      "store.ios.name-length:fail",
+      "store.ios.other-platform:fail",
+      "store.ios.screenshots:unchecked",
+      "store.keyword-stuffing:fail",
+      "store.locale-consistency:fail",
+      "store.placeholder-text:fail",
+      "store.play.feature-graphic:unchecked",
+      "store.play.icon:unchecked",
+      "store.play.other-platform:fail",
+      "store.play.screenshots:unchecked",
+      "store.price-claims:fail",
+      "store.urls-reachable:unchecked"
+    ]
+  },
+  "fixtures/store/text-clean": {
+    "framework": "flutter",
+    "verdict": "risky",
+    "schema": 1,
+    "findings": [
+      "store.ios.icon:unchecked",
+      "store.ios.screenshots:unchecked",
+      "store.play.feature-graphic:unchecked",
+      "store.play.icon:unchecked",
+      "store.play.screenshots:unchecked"
+    ]
+  },
+  "fixtures/unity/game": {
+    "framework": "unity",
+    "verdict": "reject",
+    "schema": 1,
+    "findings": [
+      "apple.age-rating:unchecked",
+      "apple.minimum-os:unchecked",
+      "apple.privacy-manifest-tracking:fail",
+      "apple.privacy-policy-in-app:fail",
+      "apple.privacy-policy-metadata:unchecked",
+      "apple.support-contact:unchecked",
+      "apple.tracking-permission:unchecked",
+      "apple.xcode-sdk:unchecked",
+      "google.ad-id-permission:fail",
+      "google.closed-testing:unchecked",
+      "google.data-safety-ad-id:unchecked",
+      "google.data-safety-form:unchecked",
+      "google.privacy-policy:fail",
+      "google.target-api:unchecked",
+      "google.ump-consent-call:fail",
+      "iab.app-ads:unchecked",
+      "kvkk.consent-separate:unchecked",
+      "kvkk.disclosure:unchecked",
+      "product.audience-answers:unchecked",
+      "sdk.answer-label-mismatch:unchecked",
+      "sdk.manifest-label-mismatch:fail"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+name: field_notes
+description: Fixture with open questions and no blocker.
+version: 0.2.0+1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.0
+  firebase_auth: ^5.0.0

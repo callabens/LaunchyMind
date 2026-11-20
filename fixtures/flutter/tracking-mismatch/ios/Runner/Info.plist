@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0"><dict>
+  <key>NSUserTrackingUsageDescription</key>
+  <string>This synthetic app asks to track so the fixture can exercise ATT.</string>
+</dict></plist>

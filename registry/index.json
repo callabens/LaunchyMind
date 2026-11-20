@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "packs": [
+    {
+      "name": "example-notes",
+      "description": "A data-only example with no enabled rules. Installing it does not change a verdict.",
+      "repository": "https://github.com/callabens/LaunchyMind",
+      "path": "registry/packs/example-notes",
+      "commit": "fa6daa14f7e89af8ab3917ba7da14efc18ef5efa",
+      "integrity": "sha256:641b01dfb896b30a5e1fa40f743d3ea3d189b302c68194204c71619af3bd6f83"
+    }
+  ]
+}

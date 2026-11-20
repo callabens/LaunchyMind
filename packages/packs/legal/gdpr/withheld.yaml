@@ -1,0 +1,27 @@
+rules:
+  - id: legal.gdpr.notice
+    title: GDPR information duties stay withheld
+    severity: risk
+    platforms: [any]
+    enabled: false
+    origin: legal
+    verification:
+      status: needs-manual-verification
+      note: "Regulation (EU) 2016/679 was not re-opened article by article for this version, so no GDPR duty is enabled."
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679
+      section: "Article 13"
+      publisher: EUR-Lex
+    summary:
+      en: "A GDPR information duty is not enabled until the regulation text is read again. This withheld rule does not affect the verdict and is not legal advice."
+      tr: "GDPR bilgilendirme yükümlülüğü, yönetmelik metni yeniden okunana kadar etkin değildir. Bu askıdaki kural kararı etkilemez ve hukuk görüşü değildir."
+    check:
+      confidence: attestation
+      note: "Disabled until the regulation text is read again. It cannot change the verdict."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: legal.pack.gdpr, eq: true }

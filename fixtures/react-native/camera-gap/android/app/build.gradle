@@ -1,0 +1,7 @@
+android {
+    defaultConfig {
+        applicationId "dev.example.cameragap"
+        targetSdkVersion 36
+        minSdkVersion 24
+    }
+}

@@ -1,0 +1,11 @@
+name: tracking_mismatch
+description: Synthetic fixture. Not a real game.
+version: 0.0.1+1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  google_mobile_ads: ^5.0.0
+  shared_preferences: ^2.3.2
+  games_services: ^4.0.0

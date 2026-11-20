@@ -1,0 +1,11 @@
+node_modules/
+dist/
+docs-site/.vitepress/dist/
+docs-site/.vitepress/cache/
+artifacts/
+.DS_Store
+*.log
+*.tgz
+*.vsix
+coverage/
+.launchymind-out/

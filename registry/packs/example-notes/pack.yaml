@@ -1,0 +1,10 @@
+format: 1
+id: example.notes
+name: Example notes
+version: 1.0.0
+license: Apache-2.0
+engine: ">=1.0.0-rc.1"
+authors:
+  - callabens
+verifiedAt: 2026-11-20
+description: A data-only example with no enabled rules. Installing it does not change a verdict.

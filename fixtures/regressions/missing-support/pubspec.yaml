@@ -1,0 +1,8 @@
+name: missing_support
+description: Regression. A support URL that exists only in App Store Connect stays unchecked.
+version: 0.0.1
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter

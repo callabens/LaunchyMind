@@ -1,0 +1,4 @@
+<manifest package="dev.example.cameragap">
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <application/>
+</manifest>

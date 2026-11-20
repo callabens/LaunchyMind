@@ -1,0 +1,9 @@
+cases:
+  - id: coppa-yes
+    rule: legal.coppa.notice-answered
+    expect: pass
+    facts: { legal.pack.coppa: true, attestation.coppa.notice: "yes" }
+  - id: coppa-blank
+    rule: legal.coppa.notice-answered
+    expect: unchecked
+    facts: { legal.pack.coppa: true, attestation.coppa.notice: "unknown" }

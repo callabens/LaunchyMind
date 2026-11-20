@@ -1,0 +1,75 @@
+{
+  "name": "@callabens/launchymind",
+  "version": "1.0.0-rc.1",
+  "description": "Local-first pre-release readiness checker for mobile apps. LaunchyMind by callabens.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "bin": {
+    "launchymind": "dist/apps/cli/src/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/packages/core/src/index.d.ts",
+      "import": "./dist/packages/core/src/index.js"
+    },
+    "./cli": {
+      "types": "./dist/apps/cli/src/index.d.ts",
+      "import": "./dist/apps/cli/src/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "launchymind": "node --experimental-strip-types apps/cli/src/index.ts",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "node --experimental-strip-types scripts/lint.ts",
+    "docs:build": "vitepress build docs-site",
+    "validate": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "fast-xml-parser": "5.11.2",
+    "yaml": "2.7.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "ajv": "8.17.1",
+    "typescript": "5.9.3",
+    "vitepress": "^1.6.4"
+  },
+  "files": [
+    "dist/apps",
+    "dist/packages",
+    "packages/packs",
+    "schemas",
+    "skills",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "flutter",
+    "react-native",
+    "expo",
+    "app-store",
+    "google-play",
+    "privacy",
+    "mcp",
+    "launchymind"
+  ],
+  "homepage": "https://github.com/callabens/LaunchyMind#readme",
+  "bugs": {
+    "url": "https://github.com/callabens/LaunchyMind/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callabens/LaunchyMind.git"
+  }
+}

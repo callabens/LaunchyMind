@@ -1,0 +1,5 @@
+{
+  "pins": [
+    { "identity": "googlemobileads", "state": { "version": "11.2.0" } }
+  ]
+}

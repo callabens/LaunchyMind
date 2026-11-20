@@ -1,0 +1,7 @@
+PlayerSettings:
+  productName: Unity Sample
+  bundleVersion: 0.9.0
+  AndroidTargetSdkVersion: 35
+  applicationIdentifier:
+    Android: dev.example.unity
+    iPhone: dev.example.unity

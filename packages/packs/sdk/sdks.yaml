@@ -1,0 +1,366 @@
+# SDK privacy knowledge base. Draft labels may use only entries whose
+# disclosure is "verified" and whose source page was opened on verifiedAt.
+# disclosure: unknown means the package is recognized but this version did
+# not open a vendor data-disclosure page, so it adds no draft answer.
+format: 1
+verifiedAt: 2026-11-20
+sdks:
+  - id: google-mobile-ads
+    names: [google_mobile_ads, react-native-google-mobile-ads]
+    vendor: Google
+    disclosure: verified
+    verifiedAt: 2026-11-18
+    source: https://developers.google.com/admob/ios/privacy/data-disclosure
+    section: "Google Mobile Ads SDK data collection"
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising, analytics]
+        note: "A device advertising identifier or other device identifier may be used for third-party advertising and analytics."
+      - type: Advertising Data
+        tracking: true
+        purposes: [advertising, analytics]
+        note: "Advertisements the user has seen may be used for advertising and analytics."
+      - type: Crash Data
+        tracking: false
+        purposes: [diagnostics, advertising, analytics]
+        note: "Non-user related crash logs may be used to diagnose problems and also for advertising and analytics."
+      - type: Performance Data
+        tracking: false
+        purposes: [analytics, advertising]
+        note: "User-associated performance data may be used to evaluate behavior and to display ads."
+      - type: Coarse Location
+        tracking: false
+        purposes: [advertising]
+        note: "Coarse location, including location derived from an IP address, if the user allows it."
+      - type: Product Interaction
+        tracking: false
+        purposes: [advertising]
+        note: "App launch taps and interaction information such as video views may be used to improve advertising."
+    play:
+      - type: IP address
+        purposes: [advertising, analytics, fraud prevention]
+        note: "Google's Android Play disclosure for SDK 25.5.0 says the SDK collects the device IP address, which may be used to estimate general location."
+        source: https://developers.google.com/admob/android/privacy/play-data-disclosure
+      - type: User product interactions
+        purposes: [advertising, analytics, fraud prevention]
+        note: "The same Android page says the SDK collects user product interactions, including app launch, taps, and video views."
+        source: https://developers.google.com/admob/android/privacy/play-data-disclosure
+      - type: Diagnostic information
+        purposes: [advertising, analytics, fraud prevention]
+        note: "The same Android page says the SDK collects performance information, including launch time, hang rate, and energy usage."
+        source: https://developers.google.com/admob/android/privacy/play-data-disclosure
+      - type: Device and Account identifiers
+        purposes: [advertising, analytics, fraud prevention]
+        note: "The same Android page says the SDK collects the Android advertising ID, the app set ID, and, if applicable, other identifiers related to signed-in accounts. It also says ad ID collection is optional."
+        source: https://developers.google.com/admob/android/privacy/play-data-disclosure
+  - id: revenuecat
+    names: [purchases_flutter, react-native-purchases]
+    vendor: RevenueCat
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://www.revenuecat.com/docs/platform-resources/apple-platform-resources/apple-app-privacy
+    section: Purchase History
+    apple:
+      - type: Purchase History
+        tracking: false
+        purposes: [analytics, app functionality]
+        note: "RevenueCat says every integration must disclose Purchase History, with Analytics and App Functionality selected. It says it does not inherently use purchase history to track users."
+    play: []
+  - id: sentry
+    names: [sentry_flutter, "@sentry/react-native"]
+    vendor: Sentry
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://docs.sentry.io/platforms/apple/data-management/apple-privacy-manifest/
+    section: NSPrivacyCollectedDataTypes
+    apple:
+      - type: Crash Data
+        tracking: false
+        purposes: [app functionality]
+        note: "Sentry's privacy manifest example marks crash data as not linked and not used for tracking, purpose App Functionality."
+      - type: Performance Data
+        tracking: false
+        purposes: [app functionality]
+        note: "The same manifest example includes performance data, not used for tracking."
+      - type: Other Diagnostic Data
+        tracking: false
+        purposes: [app functionality]
+        note: "The same manifest example includes other diagnostic data, not used for tracking."
+    play: []
+  - id: onesignal
+    names: [onesignal_flutter]
+    vendor: OneSignal
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://documentation.onesignal.com/docs/en/apple-app-privacy-requirements
+    section: "Required when using OneSignal"
+    apple:
+      - type: User ID
+        tracking: false
+        purposes: [app functionality]
+        note: "OneSignal says it assigns a OneSignal ID for each user and that the ID is not linked to identity by default."
+      - type: Purchase History
+        tracking: false
+        purposes: [analytics]
+        note: "OneSignal says consumable in-app purchase events are collected."
+      - type: Product Interaction
+        tracking: false
+        purposes: [analytics]
+        note: "OneSignal says session counts, durations, and notification interactions are collected."
+    play:
+      - type: Purchase history
+        purposes: [analytics]
+        note: "OneSignal's Play Data safety page says purchase history is collected if the app has in-app purchases."
+        source: https://documentation.onesignal.com/docs/en/google-play-data-safety-requirements
+      - type: App interactions
+        purposes: [analytics, developer communications]
+        note: "The same Play page says app interactions, including sessions and notification clicks, are collected."
+        source: https://documentation.onesignal.com/docs/en/google-play-data-safety-requirements
+  - id: facebook
+    names: [flutter_facebook_auth, react-native-fbsdk-next]
+    vendor: Meta
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://developers.facebook.com/blog/post/2022/07/18/resources-for-completing-app-store-data-practice-questionnaires-apps-facebook-or-audience-network-sdk/
+    section: Device Information
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising, analytics]
+        note: "Meta says the SDK may receive device identifiers. App events for ads and analytics are logged automatically unless the developer turns that logging off."
+      - type: Product Interaction
+        tracking: true
+        purposes: [analytics, third-party advertising]
+        note: "Meta says app installs, app launches, and in-app purchases can be logged automatically unless automatic event logging is disabled."
+    play: []
+  - id: applovin
+    names: [applovin_max]
+    vendor: AppLovin
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: https://support.axon.ai/en/max/ios/overview/privacy
+    section: Privacy
+    note: "AppLovin's MAX privacy page, opened 2026-11-20, explains consent flags. It does not list App Privacy or Play Data safety data types, so this SDK adds no draft row."
+    apple: []
+    play: []
+  - id: unity-ads
+    names: [unity_ads_plugin]
+    vendor: Unity
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://docs.unity.com/en-us/grow/ads/privacy/apple-privacy-survey
+    section: Identifier data
+    note: "Unity's survey says it was last updated a year ago and does not give a calendar date. Opened 2026-11-20. Rows below are only the types the survey marks collected."
+    apple:
+      - type: Coarse Location
+        tracking: false
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects coarse location, for example country-level information, for regulatory compliance and campaign targeting. The survey has no tracking column for this row."
+      - type: User ID
+        tracking: false
+        purposes: [app functionality]
+        note: "Unity says it collects a user ID and links it to the user for app functionality."
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects a device ID, linked to the user, for third-party advertising, tracking, and analytics. The note says to enable ATT for tracking."
+      - type: Purchase History
+        tracking: false
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects purchase history and links it to the user."
+      - type: Product Interaction
+        tracking: false
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects product interaction. The survey does not say this row is used for tracking."
+      - type: Advertising Data
+        tracking: false
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects advertising data and links it to the user."
+      - type: Other Usage Data
+        tracking: false
+        purposes: [third-party advertising, analytics]
+        note: "Unity says it collects other usage data and links it to the user."
+      - type: Performance Data
+        tracking: false
+        purposes: [app functionality, analytics]
+        note: "Unity says it collects performance data, for example initialization speed and energy use, and links it to the user."
+      - type: Other Data Types
+        tracking: false
+        purposes: [app functionality, third-party advertising, analytics]
+        note: "Unity says it collects other data such as device language, make, model, screen size, and connection type, and links it to the user."
+    play:
+      - type: Approximate location
+        purposes: [advertising or marketing, analytics, app functionality, fraud prevention, security, and compliance]
+        note: "Unity's Play data safety page says approximate location is collected and shared."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+      - type: Personal identifiers
+        purposes: [app functionality]
+        note: "The same Play page says personal identifiers are collected and shared for app functionality."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+      - type: Purchase history
+        purposes: [advertising or marketing, analytics]
+        note: "The same Play page says purchase history is collected and shared."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+      - type: Page views and taps in the ad
+        purposes: [advertising or marketing, analytics, fraud prevention, security, and compliance]
+        note: "The same Play page says Unity Ads collects page views and taps during the ad experience, not during gameplay."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+      - type: Diagnostics
+        purposes: [app functionality, analytics]
+        note: "The same Play page says app diagnostics are collected and shared."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+      - type: Device or other identifiers
+        purposes: [advertising or marketing, analytics, app functionality, fraud prevention, security, and compliance]
+        note: "The same Play page says device or other identifiers are collected and shared."
+        source: https://docs.unity.com/en-us/grow/ads/privacy/google-data-safety
+  - id: ironsource
+    names: [ironsource_mediation]
+    vendor: ironSource
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/apple-privacy-questionnaire
+    section: Identifiers
+    note: "LevelPlay's questionnaire says it was last updated a year ago and does not give a calendar date. Opened 2026-11-20. The page says the table is only data collected by ironSource, not mediated networks."
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising]
+        note: "LevelPlay marks Device ID collected, used for tracking, purpose 3rd party advertising."
+      - type: Product Interaction
+        tracking: false
+        purposes: [third-party advertising]
+        note: "LevelPlay marks Product Interaction collected only if mediation partners share it, not used for tracking, purpose 3rd party advertising."
+      - type: Advertising Data
+        tracking: false
+        purposes: [third-party advertising]
+        note: "LevelPlay marks Advertising Data collected, not used for tracking, purpose 3rd party advertising."
+      - type: Performance Data
+        tracking: false
+        purposes: [third-party advertising]
+        note: "LevelPlay marks Performance Data collected, not used for tracking, purpose 3rd party advertising."
+    play:
+      - type: Approximate location
+        purposes: [analytics, fraud prevention, security and compliance, advertising or marketing]
+        note: "LevelPlay's Play questionnaire says approximate location is collected and shared."
+        source: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/google-data-safety-questionnaire
+      - type: Other actions
+        purposes: [analytics, fraud prevention, security and compliance, advertising or marketing]
+        note: "The same Play questionnaire says other actions, described as interaction with ads, are collected and shared."
+        source: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/google-data-safety-questionnaire
+      - type: Diagnostics
+        purposes: [analytics, fraud prevention, security and compliance, advertising or marketing]
+        note: "The same Play questionnaire says diagnostics are collected and are not shared."
+        source: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/google-data-safety-questionnaire
+      - type: Device or other IDs
+        purposes: [analytics, fraud prevention, security and compliance, advertising or marketing]
+        note: "The same Play questionnaire says device or other IDs are collected and shared."
+        source: https://docs.unity.com/en-us/grow/levelplay/platform/legal-resources/google-data-safety-questionnaire
+  - id: firebase-analytics
+    names: [firebase_analytics, "@react-native-firebase/analytics"]
+    vendor: Google
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://support.google.com/analytics/answer/10285841
+    section: Automatically collected
+    note: "The Firebase Apple disclosure page points here for Google Analytics and does not itself list Analytics types. This article has no calendar date on the page. Opened 2026-11-20. Usage-dependent features (user ID, Google signals, AdSupport, Google Ads linking, data sharing) are not draft rows. No Play Data safety grid was on this page."
+    apple:
+      - type: App instance ID
+        tracking: false
+        purposes: [analytics]
+        note: "Google says an app instance ID is assigned to compute user metrics. By default it is not associated with a user identifier or an advertising identifier. This is not labeled Device ID."
+      - type: Coarse Location
+        tracking: false
+        purposes: [analytics]
+        note: "Google says Analytics does not use Apple Location Services and derives general location from masked IP addresses."
+      - type: Purchase History
+        tracking: false
+        purposes: [analytics]
+        note: "Google says in-app purchase and subscription events are measured via StoreKit, with product ID, name, and price, associated with the app instance ID by default."
+      - type: Product Interaction
+        tracking: false
+        purposes: [analytics]
+        note: "Google says app lifecycle events such as screen views and sessions are measured for Reporting and Exploration and associated with the app instance ID by default."
+    play: []
+  - id: firebase-crashlytics
+    names: [firebase_crashlytics]
+    vendor: Google
+    disclosure: verified
+    verifiedAt: 2026-11-18
+    source: https://firebase.google.com/docs/ios/app-store-data-collection
+    section: FirebaseCrashlytics
+    note: "Only the Always collected bullets are draft rows. Custom keys, breadcrumbs, and Remote Config data are usage-dependent on that page and are not rows. The page is for Apple platforms and has no Play Data safety grid."
+    apple:
+      - type: Crash Data
+        tracking: false
+        purposes: [app functionality]
+        note: "Firebase says Crashlytics always collects stack traces and relevant application state when an app crashes. The page does not say this is used for tracking."
+      - type: Device and OS information
+        tracking: false
+        purposes: [app functionality]
+        note: "Firebase says Crashlytics always collects device and OS information to help debug crashes. The page does not call this a Device ID and does not say it is used for tracking."
+    play: []
+  - id: firebase-messaging
+    names: [firebase_messaging, "@react-native-firebase/messaging"]
+    vendor: Google
+    disclosure: verified
+    verifiedAt: 2026-11-18
+    source: https://firebase.google.com/docs/ios/app-store-data-collection
+    section: FirebaseMessaging
+    note: "Only Always collected bullets are draft rows. Notification interactions via Google Analytics are usage-dependent and are not a row. The page is for Apple platforms and has no Play Data safety grid."
+    apple:
+      - type: App installation ID
+        tracking: false
+        purposes: [app functionality]
+        note: "Firebase says Cloud Messaging records the APNs token and associates it with an app installation ID that acts as the FCM registration token. The page does not say this is used for tracking."
+      - type: Device and app information
+        tracking: false
+        purposes: [app functionality]
+        note: "Firebase says Cloud Messaging collects device model, language, time zone, OS version, application identifier, and application version for topic subscription. The page does not say this is used for tracking."
+    play: []
+  - id: adjust
+    names: [adjust_sdk]
+    vendor: Adjust
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://raw.githubusercontent.com/adjust/ios_sdk/master/Adjust/PrivacyInfo.xcprivacy
+    section: NSPrivacyCollectedDataTypes
+    note: "The opened file is the privacy manifest in Adjust's iOS SDK repository. It has no separate Play Data safety page in this check, so there is no Play row."
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [analytics, third-party advertising]
+        note: "Adjust's manifest marks Device ID linked and used for tracking, purposes Analytics and Third-Party Advertising. NSPrivacyTracking is true."
+      - type: Product Interaction
+        tracking: false
+        purposes: [analytics]
+        note: "Adjust's manifest marks Product Interaction not linked and not used for tracking, purpose Analytics."
+    play: []
+  - id: appsflyer
+    names: [appsflyer_sdk, react-native-appsflyer]
+    vendor: AppsFlyer
+    disclosure: verified
+    verifiedAt: 2026-11-20
+    source: https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/Resources/PrivacyInfo.xcprivacy
+    section: NSPrivacyCollectedDataTypes
+    note: "The opened file is the privacy manifest shipped in AppsFlyer's iOS SDK. The Play help center returned 403 on 2026-11-20, so there is no Play row."
+    apple:
+      - type: Device ID
+        tracking: true
+        purposes: [third-party advertising]
+        note: "AppsFlyer's manifest marks Device ID linked and used for tracking, purpose Third-Party Advertising. NSPrivacyTracking is true."
+      - type: Product Interaction
+        tracking: false
+        purposes: [analytics]
+        note: "AppsFlyer's manifest marks Product Interaction not linked and not used for tracking, purpose Analytics."
+    play: []
+  - id: store-billing
+    names: [in_app_purchase, react-native-iap]
+    vendor: Apple and Google
+    disclosure: unknown
+    verifiedAt: 2026-11-20
+    source: https://support.apple.com/en-us/102399
+    section: Additional details about data use and privacy practices
+    note: "Apple's privacy page, published 2024-09-16 and opened 2026-11-20, says apps do not need to declare information collected only by Apple, such as payment information used for in-app purchases. It does not list StoreKit data types to copy. Google's Play Billing integration guide describes purchase tokens and order IDs the app can read and says not to store billing-config results or use them for advertising. It does not publish a Data safety type list for the library. No draft row."
+    apple: []
+    play: []

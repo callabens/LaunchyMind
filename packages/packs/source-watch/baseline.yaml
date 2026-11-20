@@ -1,0 +1,1184 @@
+# Hashes of normalized source pages. A changed hash flags needs re-verify.
+# This file does not change rule text.
+format: 1
+sources:
+  - url: https://github.com/callabens/LaunchyMind
+    contentHash: sha256:232293593e320bbd6c1efdb456746e23f94f97332ef0ab9c56fc305eb7cbb721
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:ec541e1144bdd13110e3aa24ca848d4666e047c68554c1674ad2841780e8505d
+        excerpt: "GitHub - callabens/LaunchyMind: Smart pre-release readiness checker
+          for mobile apps (App Store, Google Play, KVKK/GDPR) with MCP support.
+          By callabens. · GitHub"
+      - at: 0.12
+        hash: sha256:1dc5777f4b16abf971ceab1395d45c79b7982f5531529b2b183851fb7ae5c106
+        excerpt: e Quality Quality analysis, fixes, and enforcement Codespaces Cloud
+          development environments Secure Code Security Vulnerability detection
+          and remediation Secret
+      - at: 0.25
+        hash: sha256:62f07dbffbe29d3e3fd5b1facf236e475f0fa92cbdfc55f0a320ac94ea6f78c3
+        excerpt: ce for the latest features, improvements, and fixes across GitHub
+          products, all in one place. Businesses By Stage Enterprises Team
+          Startups Nonprofits By Indust
+      - at: 0.37
+        hash: sha256:fe68416d6b08786fbd0375f31f5748e9db5c317d6839455b50c1bdcddf0320d0
+        excerpt: " business Enterprise-grade AI features Premium Support
+          Enterprise-grade 24/7 support Resources Learn & Connect Documentation
+          Resource center Blog Events & webin"
+      - at: 0.5
+        hash: sha256:749b18c7ae35f82732d74073840f24e91a3a6c61fe03f66e06265640c701e2ee
+        excerpt: "Search / Sign in Sign up Appearance settings You signed in with
+          another tab or window. Reload to refresh your session. You signed out
+          in another tab or window. "
+      - at: 0.62
+        hash: sha256:f3b8eaff3837c24bd5e26999097138d1e2d94dc6811b70af5bade8433f29045c
+        excerpt: "rojects Security and quality Insights More items LaunchyMind Public
+          Notifications You must be signed in to change notification settings
+          Fork 0 ( 0 ) Star 0 ( 0 "
+      - at: 0.75
+        hash: sha256:481fa3fea178b214563f90258c35ad2acf0807bf8f1d3b92d5b694143537bb61
+        excerpt: ory main Branches Tags Go to file Code Open more actions menu Latest
+          commit History 1 Commit 1 Commit Folders and files Name Name Last
+          commit message Last commi
+      - at: 0.87
+        hash: sha256:19fd8cab917c7a3b9057b86a26d08124f5df00be726eb7503da0aeb465e5dd07
+        excerpt: iness checker for mobile apps (App Store, Google Play, KVKK/GDPR) with
+          MCP support. By callabens. Resources Readme Activity Stars 0 stars
+          Watchers 0 watching Fo
+  - url: https://developer.apple.com/app-store/review/guidelines/
+    contentHash: sha256:dc3beaf934420ead2211fa6f441f573af0fa23f9cbaaa8af51aa1a3d290c185f
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:5f3000c1c80a1ebd3fdc8b6eee095987b6a7ba5156124465c509f074d0f7a55a
+        excerpt: App Review Guidelines - Apple Developer View in English Apple Developer
+          Get Started Explore Get Started Overview Learn Apple Developer Program
+          Stay Updated Late
+      - at: 0.12
+        hash: sha256:5d5d235aff50439bf92b39fd677dc62f3e2f4d8577dd3341c4e0c63a5a706962
+        excerpt: is your responsibility to remove content that violates this guideline,
+          your terms of service, or your community standards. Developers who
+          fail to implement appr
+      - at: 0.25
+        hash: sha256:12e4c66b6c8e96d894333ccdcc12c9685efec351bf4cc86134c03409513fc4df
+        excerpt: "ke sure your app and in-app purchase icons, screenshots, and previews
+          adhere to a 4+ age rating even if your app is rated higher. For
+          example, if your app is a "
+      - at: 0.37
+        hash: sha256:1cb12f72c8dd7e824c7a69e21eed9df6d8334fde02a59a667beb1753bed2fb4d
+        excerpt: " (such as from the HealthKit APIs), school and classroom data (such as
+          from ClassKit), or from kids (such as from apps in the App Store’s
+          Kids Category), etc. I"
+      - at: 0.5
+        hash: sha256:970b8ed57847b70eaa5eec69b8889831f641b2d3ad6c87bfbf0c700a541786e4
+        excerpt: ed to use in-app purchase, provided there is no purchasing inside the
+          app, or calls to action for purchase outside of the app. 3.1.3(g)
+          Advertising Management A
+      - at: 0.62
+        hash: sha256:65b38c4ab9e511af8c875fa8fcc6f510cbca208ef712e89cff65126fd5895d56
+        excerpt: lly creating variants of existing app categories or popular apps
+          degrades App Store discovery, reduces overall app quality, and harms
+          both users and developers.
+      - at: 0.75
+        hash: sha256:8f4c617275a140e1d381dfed7ee4f36f526843a3169075c7836e5b0a80942e91
+        excerpt: ate interest without consent by relying on the terms of the European
+          Union’s General Data Protection Regulation (“GDPR”) or similar statute
+          must comply with all
+      - at: 0.87
+        hash: sha256:93e8a8eee3a1a51ca16dc05c165ffc243c54b750805087e6f9dd65bc95610cb6
+        excerpt: "l property and other relevant rights. 5.2.2 Third-Party
+          Sites/Services: If your app uses, accesses, monetizes access to, or
+          displays content from a third-party "
+  - url: https://developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api
+    contentHash: sha256:0e48e195b2e0713ab9fb5cfa1214a12d95b5ad302f3d2fb2a18f3b8feab8852b
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:ab77a0b12f6dc34b3b0f6b11db3771aab867ccc5b4d3703c85169386e318641a
+        excerpt: Describing use of required reason API | Apple Developer Documentation
+          This page requires JavaScript. Please turn on JavaScript in your
+          browser and refresh the p
+      - at: 0.12
+        hash: sha256:373c2bae4b200e20cb5d09ff27bd0625b001e87534fe33b9c176de19d9031c3a
+        excerpt: API | Apple Developer Documentation This page requires JavaScript.
+          Please turn on JavaScript in your browser and refresh the page to view
+          its content. Automated
+      - at: 0.25
+        hash: sha256:6815dfc027e1114ed329bcda88070239336df35a7edc6b82ca60a36909def0a0
+        excerpt: "is page requires JavaScript. Please turn on JavaScript in your browser
+          and refresh the page to view its content. Automated tools and
+          assistive tools: A Markdown"
+      - at: 0.37
+        hash: sha256:c06c61d2979cb31fd7a9c6460f61950024df16fe8a1b1164f9dff1766710c7a1
+        excerpt: "e turn on JavaScript in your browser and refresh the page to view its
+          content. Automated tools and assistive tools: A Markdown version of
+          the page content is av"
+      - at: 0.5
+        hash: sha256:8b67adf7ee5696eaf85dddd44cfad7d67c1fe05ab7989117e7be53fb09485b2b
+        excerpt: "nd refresh the page to view its content. Automated tools and assistive
+          tools: A Markdown version of the page content is available: View
+          Markdown"
+      - at: 0.62
+        hash: sha256:61bdf7ec91a53b3ad1cf589517305d636a22914918d49b5d4a2abe76d9b76f20
+        excerpt: "ntent. Automated tools and assistive tools: A Markdown version of the
+          page content is available: View Markdown"
+      - at: 0.75
+        hash: sha256:41450e0c3f18183bd0fe511ba5e6f4c58c106783e91e0889b3a47ad5bda1afae
+        excerpt: "ools: A Markdown version of the page content is available: View
+          Markdown"
+      - at: 0.87
+        hash: sha256:32f5e25d1f61ccdef7db448fc61fccfa0f75662b99373a3c3999c66c2ecdb4ec
+        excerpt: "ge content is available: View Markdown"
+  - url: https://developer.apple.com/support/third-party-SDK-requirements/
+    contentHash: sha256:bf41b5a524ad92c2f9624eb86db336d12d1465d1db2c0131f092a3e2116de121
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:5806fd92fd2e11593ad7b916bd74906560069fe60b067f1b7328777a6a17c27f
+        excerpt: Third-party SDK requirements - Support - Apple Developer ' /> ' /> View
+          in English Apple Developer Get Started Explore Get Started Overview
+          Learn Apple Develope
+      - at: 0.12
+        hash: sha256:6bb13697d47f8de04513fa6038116ef309855c6c1a322020f28ae937da896d22
+        excerpt: "le Developer Centers Documentation Explore Documentation Documentation
+          Library Technology Overviews Sample Code Human Interface Guidelines
+          Videos Release Notes "
+      - at: 0.25
+        hash: sha256:a00656786941d0e582b05321ddcdd0eb45879889ca063712fa675c143bf7d8e9
+        excerpt: "Ks) can provide great functionality for apps; they can also have the
+          potential to impact user privacy in ways that aren’t obvious to
+          developers and users. As a "
+      - at: 0.37
+        hash: sha256:14ac06337b305cea8331bcfbe6459a809065145f54316b19fe193556db743184
+        excerpt: " standard format. When you prepare to distribute your app, Xcode will
+          combine the privacy manifests across all the third-party SDKs used by
+          your app into a sing"
+      - at: 0.5
+        hash: sha256:f56b406a0a47fa04cc282f142b67f522ab8ec7c62b05b7609d12cc2da193d5e5
+        excerpt: s, or when you submit an app update that adds one of the listed SDKs as
+          part of the update. Signatures are also required in these cases where
+          the listed SDKs ar
+      - at: 0.62
+        hash: sha256:9f437d5a6197cf1b4aa605ac5e19afeee6c5bc44206c551ee48c13f02b8f4355
+        excerpt: ebaseInstallations FirebaseMessaging FirebaseRemoteConfig Flutter
+          flutter_inappwebview flutter_local_notifications fluttertoast FMDB
+          geolocator_apple GoogleData
+      - at: 0.75
+        hash: sha256:4dceb8d33c587cdfbc4a485ed910621003b49df393a710427da05875c3c2fcb0
+        excerpt: mit your feedback Ask questions on the forums Contact Apple Developer
+          Support Developer Footer Support Third-party SDK requirements
+          Platforms Open Menu Close Me
+      - at: 0.87
+        hash: sha256:a40939a3821f285ff3c33bc8d2c4cb6d74dbe923e5c5a80eba7c2edb35bdfd3f
+        excerpt: les Contact Us Forums Feedback & Bug Reporting System Status Account
+          Open Menu Close Menu Apple Developer App Store Connect Certificates,
+          IDs, & Profiles Feedba
+  - url: https://developer.apple.com/news/upcoming-requirements/
+    contentHash: sha256:1269c06cffbe90808977f85c6c3416ff02c17da3163a5108ff72b67f5d290482
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:bb8425a637dfed6a09c212330f046ea4dddd27435e6ad2b2e8bec4942e780299
+        excerpt: Upcoming Requirements - Apple Developer View in English Apple Developer
+          Get Started Explore Get Started Overview Learn Apple Developer Program
+          Stay Updated Late
+      - at: 0.12
+        hash: sha256:889ab32248e503e8d19a7440a19abc4c0bc2ae604b1c85cf7444e9028f5063aa
+        excerpt: "eedback Assistant Contact Us Featured Account Help App Review
+          Guidelines App Review Help App Store Connect Help Upcoming
+          Requirements Agreements and Guidelines "
+      - at: 0.25
+        hash: sha256:2340e7096c925eb894259b48a32c23aeb8ade7ac73502c0d530312206c812338
+        excerpt: r apps under the updated system and respond to the new questions in the
+          App Information section of your app in App Store Connect. Learn more
+          about age ratings v
+      - at: 0.37
+        hash: sha256:a643fea9278f69a81e4c36775615f4746891edc7375b4263888a96c0741ca688
+        excerpt: re Receipt Signing Intermediate Certificate Since January 24, 2025 The
+          SHA-1 intermediate certificate used for signing App Store receipts
+          expires on January 24,
+      - at: 0.5
+        hash: sha256:47867ac6ae9a3ce15b33b10158beaf3fe71f2d6178738f8211932398358fa789
+        excerpt: "vember 9, 2022. You can manage this content via the App Store Connect
+          REST API , which makes it easy to customize and automate your
+          workflows. Approved reasons "
+      - at: 0.62
+        hash: sha256:8126a7b6fa429db025c3382a4b751d9edd83059b30147bff57110854c7229ca2
+        excerpt: " iOS, iPadOS, or tvOS offering Game Center features need to include
+          the Game Center entitlement in the entitlements plist and have Game
+          Center features configur"
+      - at: 0.75
+        hash: sha256:3acad05e210324655b31be4ed335d853b6d4ddcb9b2eab7ee0fa8773f9a23138
+        excerpt: "ricing for existing apps and one-time in-app purchases will be updated
+          with enhanced global prices across App Store storefronts using your
+          current price in the "
+      - at: 0.87
+        hash: sha256:552a31990c489d0a17cc03c0ad2f757231b201b0ddfba8a3cf66687aca040d4c
+        excerpt: d Icon Composer SF Symbols Technologies Open Menu Close Menu
+          Accessibility Accessories AI & Machine Learning Apple In-App Purchase
+          Apple Intelligence Audio & Vi
+  - url: https://support.google.com/googleplay/android-developer/answer/11926878
+    contentHash: sha256:d4311c74ac1abb0d03dbf1d2dbe9d6d7c2b9d72ffc746c69b4d2b88d76564e0d
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:ca1f3c6dc38ee4fe9f3bdf2df2d7cc380d6748cc4d2ef885587403131c22bc2c
+        excerpt: "Target API level requirements for Google Play apps - Play Console Help
+          Skip to main content Play Console Help Sign in Google Help Help Center
+          Play Console Help "
+      - at: 0.12
+        hash: sha256:b587a6161f0fb15550e197f3e3b1c5b6386ec81ba6b502329a67f58fb892b29c
+        excerpt: ndroid XR, and Android 12 (API level 31) or lower for Android
+          Automotive OS will only be available on devices running Android OS
+          that are the same or lower than
+      - at: 0.25
+        hash: sha256:de40f1714c76289df6fea6dc84279ece7fdd702d176bbbe18f10a65fcaf9af55
+        excerpt: " are Wear OS app submissions required to target this API level? New
+          apps App updates Android 15(API level 35) or higher August 31, 2026
+          August 31, 2026 Android "
+      - at: 0.37
+        hash: sha256:d4b170979dddfab7566eadbc10496bf3554c0cb043b1805940b384b6d954eb33
+        excerpt: "her. If your existing app targets Android 15 (API level 35) or higher,
+          then your app is compliant with this policy. If your existing app’s
+          target is lower than "
+      - at: 0.5
+        hash: sha256:887ba6f4c0bc5e10d311d8b9ac9ac16928320941cf5955233819f4b0838ba0cf
+        excerpt: ble to all Google Play users whose devices run Android OS versions
+          newer than your apps’ target API level, as your app wasn’t built to
+          meet the safety and quali
+      - at: 0.62
+        hash: sha256:2076b7f463a507d2a2bd343dc71d4d33fcaaec5866703dd1c10b6e7bfb138618
+        excerpt: t will stop being available to all Google Play users whose devices run
+          Android OS versions newer than your apps’ target API level, as your
+          app wasn’t built to m
+      - at: 0.75
+        hash: sha256:3af7bbb9cca0f62f60bdf09bccddc165a38ad43b31aade167ee8f3312ea94f35
+        excerpt: ". How will my users who already downloaded my app previously be
+          impacted? Users who have previously installed the app from Google Play
+          will not be impacted and "
+      - at: 0.87
+        hash: sha256:dbd02386ba7ab0a6bf90ae671f6afe8457529b99fca420987b29b9618731b60e
+        excerpt: hed on Google Play 12 of 30 Best Practices for White Label Developers
+          13 of 30 Update or unpublish your app 14 of 30 Control when app
+          changes are reviewed and p
+  - url: https://support.google.com/googleplay/android-developer/answer/10787469
+    contentHash: sha256:b03dd605d69c3b73aba67ce7bdc84e2b3a780fc002df0de9775a64082af75514
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:9039891f2b8aac96da07b9c0fd5913efdaaa50a536a660a9c23cb8e2eb19475c
+        excerpt: Provide information for Google Play's Data safety section - Play
+          Console Help Skip to main content Play Console Help Sign in Google
+          Help Help Center Play Consol
+      - at: 0.12
+        hash: sha256:183fd2f7e63d63b3462afdaf8670484c336e7b073ecd0896df44b73939975844
+        excerpt: ocessing data "ephemerally" means accessing and using it while the data
+          is only stored in memory and retained for no longer than necessary to
+          service the specif
+      - at: 0.25
+        hash: sha256:f2fe24e70b6a7e61fb885632e1bba645b90bb8ab11f4cf3f052654177d24c416
+        excerpt: ay Store listing verifying that NPCI has validated this app’s
+          implementation of UPI. The badge will read "Offers Payments through
+          UPI," and will not appear to u
+      - at: 0.37
+        hash: sha256:fa206e4071d06e1a573d265028185d8d5d2128655ce20519ce18c13e5c808fa3
+        excerpt: " ready to start, here's how you complete and submit your Data safety
+          form in Play Console: Open Play Console and go to the App content
+          page. Under \"Data safety,"
+      - at: 0.5
+        hash: sha256:176749a96dd672effbc5d30572b990b2a17627af53d8cc0fca2ad6280f8f8ced
+        excerpt: "your Data safety form After you submit, the information you provided
+          will be reviewed by Google as part of the app review process. Until
+          July 20, 2022, you can "
+      - at: 0.62
+        hash: sha256:3fcf720a0c6b7310303bbb1ce8531fc50ee540f83d429bcf1f92d7432c9375f4
+        excerpt: tion disclosed in their Data safety section. Google Play’s User Data
+          policy requires developers to provide accurate information. If we find
+          that a developer has
+      - at: 0.75
+        hash: sha256:71bfc0f37ad0bb520f7b41bdfcd99043998c919fb983c20b9e8b47dd750eaf43
+        excerpt: her identifiers.” As noted above, the collection of data pseudonymously
+          should be disclosed on your survey under the relevant data type. For
+          example, if you col
+      - at: 0.87
+        hash: sha256:b173f7f7fdc6a90cd27d392eb674b5fd7cc6e12f745472aaf1259c28a9340cae
+        excerpt: o not need to complete the declaration. July 20, 2022 We updated the
+          Timeline information details in the "Getting your information ready"
+          section to explain tha
+  - url: https://support.google.com/googleplay/android-developer/answer/13327111
+    contentHash: sha256:9446013bfc6b5b814f30ad549e02e23ec24c0888a3e808b57a2f8e71e2515d6a
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:222c864db1a5246ab3006dca3324432d5007d4c8cf78dc6498cff2ce89ca1cb2
+        excerpt: Understanding Google Play’s app account deletion requirements - Play
+          Console Help Skip to main content Play Console Help Sign in Google
+          Help Help Center Play Co
+      - at: 0.12
+        hash: sha256:bcd483b9389a9cda6dcfa497d7cf6c636acf7360f99c6ab8a36a0844174d4ffe
+        excerpt: "nce with users in mind, visit the Android Developers Blog . Overview
+          The User Data policy's Account Deletion Requirement means that: All
+          developers must complet"
+      - at: 0.25
+        hash: sha256:97bffd1d91f15b9b5e3d5be4282e75237e02341430b224a4ad2f206bc5096287
+        excerpt: ion is reviewed and approved before the feature launches to consumers
+          next year. If there are issues with your answers to the Data deletion
+          questions in your Da
+      - at: 0.37
+        hash: sha256:56d8202eefb2219595ce127e91dd7d4460349f1c53b46c96fc8aeaf18135b677
+        excerpt: " What does “if your app allows users to create an account from within
+          the app” mean? Your app supports account creation within the app if a
+          user can complete cr"
+      - at: 0.5
+        hash: sha256:602d4f98afecdfa030f24db42bac33415af0603c0c18a7db14c0e1442e8cdf2a
+        excerpt: r data, you should delete the data from your own servers and request
+          the service provider to do the same. How quickly should I fulfill
+          users’ deletion requests?
+      - at: 0.62
+        hash: sha256:06147304225619f1293a3cf3f14bc885db78e19cd742a04c6025e64a154aa354
+        excerpt: that is, as it appears on your store listing in Google Play). The user
+          must be able to request deletion of their account through the pathway.
+          You can offer this
+      - at: 0.75
+        hash: sha256:eef4227f4e0bfe0f9449442af094f39dfc2b095ed2e7d04a232318d461a4aa47
+        excerpt: o these requirements apply? We understand that a non-mobile in-app
+          account deletion experience can be challenging for both the developer
+          and the user. That is w
+      - at: 0.87
+        hash: sha256:9c11b3866195c256d1f04ea54254f2867109e55bc83be0aa353ca2b2e3d70b43
+        excerpt: 32 On-device Android container apps and the REQUIRE_SECURE_ENV manifest
+          flag option 20 of 32 Health app categories and additional information
+          21 of 32 Understan
+  - url: https://support.google.com/googleplay/android-developer/answer/14151465
+    contentHash: sha256:78fc1f78c7fb762ad9901743bb6b451b3356b5aaffb279a59679fcc213f700de
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:ea4707e7a37380bb1e8b0d72a3dd6a10b24e612a259e0c181c394616369f01a3
+        excerpt: App testing requirements for new personal developer accounts - Play
+          Console Help Skip to main content Play Console Help Sign in Google
+          Help Help Center Play Con
+      - at: 0.12
+        hash: sha256:2790ad5543c4750f19b0a14e97145fc9497973b5988bd71e0bfc981c878e68f8
+        excerpt: eriences that can lead to higher ratings and greater success on Google
+          Play. Google Play requires personal developer accounts created after
+          November 13, 2023, t
+      - at: 0.25
+        hash: sha256:fec0956988897d4f785ea459d0f4a12aac1c4c32e87e4dbb06e3921dcb4a1589
+        excerpt: "ibility on Google Play. Open testing becomes available after you gain
+          production access. Production: Makes your app available to users on
+          Google Play. Before ap"
+      - at: 0.37
+        hash: sha256:922958ef6e2a2eeed410f9e610cc04f2c4e09e7eda5a6ba3803a0c944652bfcd
+        excerpt: c user groups or device types. Recruit testers who represent your app's
+          intended future audience. For example, if you develop a productivity
+          app for businesses,
+      - at: 0.5
+        hash: sha256:e18ebe94de717cecbbf64def61b45c4c8064cbdf5ac4c7fd0778ca4c4c79f495
+        excerpt: entify issues before reaching users through a detailed report listing
+          warnings, errors, and performance issues. Run closed tests To learn
+          how to set up and conf
+      - at: 0.62
+        hash: sha256:6e757d440d3a028f8b1a1a6c6d7d1b01c0279f8a25c8d23b2fa222888e084641
+        excerpt: "te. For games: Describe what makes your game unique. Select an
+          estimated install range for your app or game during its first year.
+          Click Next . Important: If yo"
+      - at: 0.75
+        hash: sha256:b296a156c2270b399016018f38f935a02c71f6a1c8042163100512f76edd1ac3
+        excerpt: "g screens. Test credentials: If your app requires user authentication,
+          provide valid, working login credentials in Play Console so reviewers
+          can fully test your"
+      - at: 0.87
+        hash: sha256:cc64d2319f61a4a37b4321b979828e94105bc6d3702ac671bd2a0cec3c1fca24
+        excerpt: est releases and bundles page 6 of 30 Prepare and roll out a release 7
+          of 30 About your submission activity 8 of 30 Halting a fully
+          rolled-out release 9 of 30 D
+  - url: https://iabtechlab.com/ads-txt/
+    contentHash: sha256:6e9f89ceba6fc65dab88d001af394a84152f91489bbeb6698a6c8498048bc32f
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:94a27756013d80f2dcddc8ad9e4e7f79d6433aafdb548cff5ebfdeefedb19a08
+        excerpt: IAB Tech Lab --> --> ads.txt - Authorized Digital Sellers - IAB Tech
+          Lab Subscribe to Our Newsletter &times; Toggle navigation Membership
+          About the IAB Tech Lab
+      - at: 0.12
+        hash: sha256:e719ea6d916c9e41079e14f9b98d424cf4fa408f3ee44bb10e3c0bb7c686e07b
+        excerpt: ts OM SDK (Open Measurement SDK) VAST Tag Validator Compliance All
+          Compliance Programs OM SDK Compliance Podcast Measurement Compliance
+          Data Transparency Compli
+      - at: 0.25
+        hash: sha256:b207a191924112366b3f7943ab22c5d03cd3b6c8a4a698ec7998263874b3a135
+        excerpt: " Access Supply Chain Validation GitHub Download the Supply Chain Info
+          Sheet Ads.txt/App-Ads.txt Version 1.1 To Support Owner and Manager
+          Domains is Ready to Imp"
+      - at: 0.37
+        hash: sha256:bc2fda7ae79cb4f3849a71a8921cbc04a2d70870b6b3e835ebd4003a7ac83dd4
+        excerpt: " the requirements for applications distributed through mobile app
+          stores, connected television app stores, or other application
+          distribution channels. The app-a"
+      - at: 0.5
+        hash: sha256:fc65ca67005541b875513923b0e2d70b8276c5377583d928a886696d582ef5ef
+        excerpt: se Date Ads.txt 1.1 View Implementation Guide Adds OWNERDOMAIN and
+          MANAGERDOMAIN variables August 2022 Ads.txt 1.0.3 View Explainer Guide
+          Adds INVENTORYDOMAIN v
+      - at: 0.62
+        hash: sha256:d4065a9c359b53881801e7f5187242b366e8fc6b3dcc201c528b27f826ebec9e
+        excerpt: " of URLs or domains etc and saves them to a SQLite DB table. Please
+          note, this is only an example prototype crawler and would be suitable
+          for a very modest prod"
+      - at: 0.75
+        hash: sha256:70b1b8e56a81e31ed1a7b3175ae95f811874d655bd1c0780e4a869f12f5406e6
+        excerpt: tal Sellers, ads.txt will create greater transparency in the inventory
+          supply chain, and give publishers control over their inventory in the
+          market, making it h
+      - at: 0.87
+        hash: sha256:7634c5797f058abe1d35897e757b8e1293d3435033ff729846fb0040f222bee8
+        excerpt: " For more information: Read our press release on the ads.txt
+          aggregator Read our press release Blog post: Helping the industry
+          prevent the sale of counterfeit i"
+  - url: https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
+    contentHash: sha256:5835621682ee3e7315be7517c113c80da2f4125da58b1bb70ab55ba4db69b94d
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:c8a1f72ab0f6791945a6466e5c21a5a59b40f225a9aabdd8c221d7eba12842bf
+        excerpt: Privacy manifest files | Apple Developer Documentation This page
+          requires JavaScript. Please turn on JavaScript in your browser and
+          refresh the page to view its
+      - at: 0.12
+        hash: sha256:42a2a62ca268d96fdbf32454863846711353b44d17a74d909c716fad43fbaa0e
+        excerpt: eveloper Documentation This page requires JavaScript. Please turn on
+          JavaScript in your browser and refresh the page to view its content.
+          Automated tools and as
+      - at: 0.25
+        hash: sha256:8fb2ce33d46f452520ac4d6844f26eaec23f479f293fd01eb5f8ff54a103a738
+        excerpt: "uires JavaScript. Please turn on JavaScript in your browser and
+          refresh the page to view its content. Automated tools and assistive
+          tools: A Markdown version of"
+      - at: 0.37
+        hash: sha256:266e6dce53c1fa7b0a1a39fa1425e20f3a62609384c6263d14ef029135e88dbc
+        excerpt: "JavaScript in your browser and refresh the page to view its content.
+          Automated tools and assistive tools: A Markdown version of the page
+          content is available: V"
+      - at: 0.5
+        hash: sha256:ea00dc59a33f03be264e44fe62d3b647319463a8fbabdc109c235fbef25960fe
+        excerpt: "esh the page to view its content. Automated tools and assistive tools:
+          A Markdown version of the page content is available: View Markdown"
+      - at: 0.62
+        hash: sha256:49fe8072c0eb4c07827f8e4e5e5c8f53258e24fc0988b5a7123ccf0853819c02
+        excerpt: " Automated tools and assistive tools: A Markdown version of the page
+          content is available: View Markdown"
+      - at: 0.75
+        hash: sha256:f387e059f359cdbf68fecdb1af07e7ebf7458676ab32c50010bd5b242322fec7
+        excerpt: "s: A Markdown version of the page content is available: View Markdown"
+      - at: 0.87
+        hash: sha256:e832483dd97edada35c5230f5cc09ebc13553bc3ec20c2115652d008b0a52715
+        excerpt: " content is available: View Markdown"
+  - url: https://developers.google.com/admob/android/test-ads
+    contentHash: sha256:f9519f76d4879e0ce548dcdf7536dbde705211c6b2573f82f6e924af07b90eed
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:86a6127f9b0a3045d0bf52ea7ea1bd19c1288aa480a1673a79bd9fc67e144f6a
+        excerpt: Enable test ads | Android | Google for Developers Skip to main content
+          Google AdMob Documentation GMA Next-Gen SDK for Android Mobile Ads SDK
+          for iOS Mobile Ads
+      - at: 0.12
+        hash: sha256:22543b960ff03f1b1a0dafb42b22281b7293e26067eb9800d8b1946de4eec92b
+        excerpt: "pen Banner Set up banner ads Use inline adaptive for scrolling banners
+          Use collapsible banners Set a fixed banner size Smart banners
+          Interstitial Native Load a "
+      - at: 0.25
+        hash: sha256:77f2da96e2b0814a6d3867a3603368690265ff10ceecae8ca885bd0bc4370def
+        excerpt: roubleshooting output Test creative types Ad load errors Response info
+          Log ad response ID to Crashlytics Charles proxy Network tracing
+          Troubleshoot ads not show
+      - at: 0.37
+        hash: sha256:e692c680ddd72e5630cbb9b3246a7caeacc4b08c5331bbef9c85652ac73b9730
+        excerpt: "content based on your preferences. Select platform: Android iOS Unity
+          Flutter Android (Legacy) This guide explains how to enable test ads in
+          your ads integratio"
+      - at: 0.5
+        hash: sha256:b52cbe943069f79dcf796e87e3cf0a009fc5ba48b6bced8e71252e05f72641da
+        excerpt: 173712 Rewarded Ads ca-app-pub-3940256099942544/5224354917 Rewarded
+          Interstitial ca-app-pub-3940256099942544/5354046379 Native
+          ca-app-pub-3940256099942544/22476
+      - at: 0.62
+        hash: sha256:8e37408876cc41596ca25985a690bdfe5500adfe74d4c16ec9555aaf14a2b359
+        excerpt: "ps: Load your ads-integrated app and make an ad request. Check the
+          logcat output for a message similar to the following, which shows you
+          your device ID and how "
+      - at: 0.75
+        hash: sha256:98eb2153d38c178ad1f5ce6c494435ebd63b62335f5323742d108b15d6c91c34
+        excerpt: "ed at the top of the ad (banner, interstitial, or rewarded video):
+          Note: To see the Test Ad label, you need to be using an SDK version of
+          11.6.0 or higher. For "
+      - at: 0.87
+        hash: sha256:eeb84049a12f06a04cdd0e5e0a7ebd58acaa583db4ff6657693574f7ea19da07
+        excerpt: is licensed under the Creative Commons Attribution 4.0 License , and
+          code samples are licensed under the Apache 2.0 License . For details,
+          see the Google Develo
+  - url: https://developers.google.com/admob/flutter/eu-consent
+    contentHash: sha256:ef49029b7df90418d055926dd09505c8cde62bbd17ece60904e9c5005f05deda
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f5ff6829b0f2db9921ccc1446056a5981b03995921590f3754a71236137dcff8
+        excerpt: "إعداد حزمة تطوير البرامج (SDK) الخاصة بمنصة UMP | Flutter | Google for
+          Developers التخطّي إلى المحتوى الرئيسي Google AdMob الوثائق الجيل
+          التالي من SDK لإعلانات "
+      - at: 0.12
+        hash: sha256:9be9f87439db6d93948ce46c06380fcdd3080dd5017167f5986e09ce48368127
+        excerpt: نات Google على الأجهزة الجوّالة&#34; الإيقاف النهائي تفعيل الإعلانات
+          الاختبارية اختيار شكل الإعلان إعلان على شاشة فتح التطبيق إعلانات
+          البانر إعداد إعلانات البان
+      - at: 0.25
+        hash: sha256:d4c1f994d1e2a39ef0aeb18f92d81e5cb0169d26abc7625c88d915c88f834674
+        excerpt: تهداف دمج واجهة برمجة التطبيقات WebView API للإعلانات الجيل التالي من
+          SDK لإعلانات Google على الأجهزة الجوّالة لنظام Android حزمة تطوير
+          البرامج (SDK) لعرض الإعل
+      - at: 0.37
+        hash: sha256:f6aa11c1f20ffb11b18be2181407fa3bd63ad56fcb94da556f6532c9ba4067dd
+        excerpt: لمراسلة" . إنشاء نوع رسالة يمكنك إنشاء رسائل للمستخدمين باستخدام أحد
+          أنواع رسائل المستخدمين المتاحة ضمن علامة التبويب الخصوصية والمراسلة في
+          حسابك على AdMob. تحا
+      - at: 0.5
+        hash: sha256:3c520b4a6e0261e1636fa20d1ed5bb9017a4a47174c6c2e7458497765b711cf7
+        excerpt: itState () { super . initState (); // Create a ConsentRequestParameters
+          object. final params = ConsentRequestParameters (); // Request an
+          update to consent info
+      - at: 0.62
+        hash: sha256:52693c44518544a1ce6d0b4ee5da290a0d095e14fdbb15c2a87a0389c5dc0b89
+        excerpt: "وصية عندما يتفاعل المستخدم مع العنصر، اعرض نموذج خيارات الخصوصية:
+          ConsentForm . showPrivacyOptionsForm (( formError ) { if ( formError
+          != null ) { debugPrint ( "
+      - at: 0.75
+        hash: sha256:adc266fd0be0a80214d518e81f92da614475599a49a7fb71150d37727bd7825b
+        excerpt: "ug device. iOS <UMP SDK>To enable debug mode for this device, set:
+          UMPDebugSettings.testDeviceIdentifiers =
+          @[2077ef9a63d2b398840261c8221a0c9b] انسخ رقم تعريف ا"
+      - at: 0.87
+        hash: sha256:85027bede8709200e1d8968cec6680f0d270eeca58e6d52d2c9bdce62b6085d7
+        excerpt: GitHub يمكنك الاطّلاع على مثال كامل حول تكامل حزمة تطوير البرامج لمنصة
+          UMP التي ناقشناها في هذه الصفحة ضمن أمثلة Flutter . إرسال ملاحظات إنّ
+          محتوى هذه الصفحة مر
+  - url: https://developer.android.com/about/versions/13/behavior-changes-13
+    contentHash: sha256:6d2b45aea96005cce3043c42324b3e27d6a09d560a7eed0b834137cf1c0fad44
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:d5d6ba922fc3d24a697b718e58fefeee84a32d11fcd9405e0482a599eb08246a
+        excerpt: "التغييرات في السلوك: التطبيقات التي تستهدف الإصدار 13 من نظام التشغيل
+          Android أو الإصدارات الأحدث | Android Developers التخطّي إلى المحتوى
+          الرئيسي Essentials إن"
+      - at: 0.12
+        hash: sha256:78c94759b5929e15258fc7437b1a2356e2761ffb72bedf62a6b23ab539b656d3
+        excerpt: لاء تكنولوجيا الجهاز اكتب رمزًا برمجيًا لأشكال الأجهزة. ربط الأجهزة
+          ومشاركة البيانات الهواتف والأجهزة اللوحية والهواتف القابلة للطي
+          Googlebook ChromeOS ‫Android
+      - at: 0.25
+        hash: sha256:14a73b8ea0e3d2639238718dce7f7b409b1c87b9962c975f1dd1f7d14ab15ef1
+        excerpt: تطوير البرامج (SDK) الميزات وواجهات برمجة التطبيقات الجديدة نظرة عامة
+          إتاحة استخدام الأجهزة اللوحية والشاشات الكبيرة أداة اختيار الصور
+          إعدادات اللغة المخصّصة حس
+      - at: 0.37
+        hash: sha256:9a3ce4ea97a66c4d313254a6a398ab2801d32b2ef3b0576f6251103c3574a225
+        excerpt: " خدمات ألعاب Play ألعاب Google Play على الكمبيوتر إرشادات برنامج Level
+          Up جميع أدلة Play ⤵️ المكتبات عرض الميزات في Play Play In-app Updates
+          واجهة برمجة التطبيق"
+      - at: 0.5
+        hash: sha256:05bd2593fe20d13fec5659397466df094b146d3e4e60145d74b958e7344e96a1
+        excerpt: ت الموقع الجغرافي من واجهات برمجة التطبيقات لشبكة Wi-Fi. لإجراء ذلك،
+          اضبط السمة android:usesPermissionFlags على neverForLocation . وتشبه
+          هذه العملية تلك التي تن
+      - at: 0.62
+        hash: sha256:530ddaa55085048b76dc21a7bc4128ad4e6f331617ddef4ad96fed978eacb06b
+        excerpt: ' بدء تشغيل التطبيق لأسباب أخرى. تجربة المستخدم أدوات التحكّم في
+          الوسائط مشتقة من " PlaybackState " بالنسبة إلى التطبيقات التي تستهدف
+          الإصدار 13 من نظام التشغيل '
+      - at: 0.75
+        hash: sha256:c3e1955831e1d660e36b7592f6e812935db5ae48bdba393a3d7ecd890fadb135
+        excerpt: "أو لم يتم تحديدها، تكون السمة prefers-color-scheme هي light ، وإلا
+          تكون dark . يعني هذا السلوك أنّه يتم تطبيق النمط الفاتح أو الداكن
+          للمحتوى على الويب تلقائيًا "
+      - at: 0.87
+        hash: sha256:23de45a50ba3277778e866af73d8782de554c52af1b849db9a4ce80870ea955d
+        excerpt: ( وفقًا لمستوى واجهة برمجة التطبيقات المستهدَف في تطبيقك )، فإنّ
+          استخدام أي طريقة أو حقل غير مضمّن في حزمة تطوير البرامج ينطوي دائمًا
+          على مخاطرة كبيرة بتعطُّل ت
+  - url: https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/
+    contentHash: sha256:bc5efaeb7fc62f2b2f002c27692d07c7ecbe993af5584ea4dea3c37c3b3f7ef5
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:df293cec2d00abcd60f515cc2b076447d187325fcc2f5dd1c9f2c41337c90d3d
+        excerpt: App information - App information - Reference - App Store Connect -
+          Help - Apple Developer ' /> ' /> View in English Apple Developer Get
+          Started Explore Get Sta
+      - at: 0.12
+        hash: sha256:83d5ca57ca9b0e20d82eb24bf2297f4a88fd873592ecc9f7271615e8249775e5
+        excerpt: ild Test a beta version Provide export compliance information for beta
+          builds Test a beta version Test Apple-hosted asset packs Test a beta
+          version Remove teste
+      - at: 0.25
+        hash: sha256:f91967cb340a0db9d102bfde5b51c8e7bcc77548138bca21bb2e805d9fee39bc
+        excerpt: odes Offer App Clip experiences Manage an App Clip experience Offer App
+          Clip experiences View domain URL status Offer App Clip experiences
+          Configure multiple pr
+      - at: 0.37
+        hash: sha256:a2035e61a8d6a2adb1da4fe19f2920667901cf03a997108ca74ca2fa98e74a42
+        excerpt: "ce documentation for encryption Reference > App information App bundle
+          information Reference > App information App pricing and availability
+          Reference > Pricing "
+      - at: 0.5
+        hash: sha256:8983b691d42f4fc5af2e150f9f2d052b4972d7588b5a061d4dd435dcfaf748a6
+        excerpt: "io Descriptions evaluation criteria Manage Accessibility Nutrition
+          Labels Test a beta version TestFlight Overview Provide test
+          information Add internal testers "
+      - at: 0.62
+        hash: sha256:d6886634c09cb6fc7cec88132e81aa1b3bdb411defc54318a831f84f49334ddd
+        excerpt: ilability for In-App Purchases Create offer codes for In-App Purchases
+          Manage subscriptions Offer auto-renewable subscriptions Set
+          availability for an auto-rene
+      - at: 0.75
+        hash: sha256:d27f09e31390c981d8ff2746df4bc7b1edea1a47bf61a6a5e988a3af7f3852c7
+        excerpt: "Important: The Bundle ID property must match the bundle ID you set in
+          the Xcode project . SKU A unique ID you give to your app for internal
+          tracking that's not "
+      - at: 0.87
+        hash: sha256:13d689fc8de03339899dd9e4d521168ea7461d4f423a9f3ce417b27e6e8abc41
+        excerpt: tain an Internet News Information Permit from the Cyberspace
+          Administration of China (CAC). If you offer or plan to offer any of
+          these on the App Store in China
+  - url: https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information/
+    contentHash: sha256:6015b7df1fa3983268a5a92d9ac7f33c13a6fa6e3578244bc9d7eb2e9b3b8ca2
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:629fca2b24a16f2d376b4d1313f7ff89060a994587b239fc22f55f5ce86fbb48
+        excerpt: Platform version information - App information - Reference - App Store
+          Connect - Help - Apple Developer ' /> ' /> View in English Apple
+          Developer Get Started Ex
+      - at: 0.12
+        hash: sha256:c7d85478cd0fac2066a9703d29afe5b334ef63e5df3ee416b7ff2facea06251b
+        excerpt: ite external testers Test a beta version View and manage tester
+          information Test a beta version View tester feedback Test a beta
+          version Add testers to builds T
+      - at: 0.25
+        hash: sha256:a89fe9c9d4b5cb00dfa61e8757ca5208952b33d0d5e096ef0b704c8a9f83a99e
+        excerpt: ts Making payments to Apple Understanding taxes Making payments to
+          Apple Invoice fields Making payments to Apple Reporting tokens and
+          transactions to Apple Maki
+      - at: 0.37
+        hash: sha256:d88fb740dc529c7790cc51d7bda76cc7e607358fc02b9497010466826487322f
+        excerpt: s Reference > Account management App and submission statuses Reference
+          > App information App and compliance information Reference > App
+          information Platform ver
+      - at: 0.5
+        hash: sha256:8fba83f1e127a9fce7b6125572b20328281a8e20ed9cf49476d81656551a32f4
+        excerpt: p bundle information Remove an app Edit access to an app Manage builds
+          Upload builds View builds and metadata Choose a build to submit Manage
+          asset packs Overvi
+      - at: 0.62
+        hash: sha256:e1ac1ebd99c3b509b353c3ca10cc0440aa6c8e2d253bae5e0935d30ec55b09ce
+        excerpt: ts Understanding taxes Invoice fields Reporting tokens and transactions
+          to Apple Understanding the Core Technology Fee Core Technology Fee
+          report fields Offer p
+      - at: 0.75
+        hash: sha256:f4e6ee35de1f219e74e53401e05b7d2b760f46e9495f87462fa4042c0a96aebf
+        excerpt: vents Promotional codes Product type identifiers Cancellation reasons
+          Sales and Trends metrics and dimensions Sales and Trends reports
+          availability Banking info
+      - at: 0.87
+        hash: sha256:91da5cefdba16373fbd9f5e775f7e53f7ba6dc1675bcf5230e7cf26e580a2797
+        excerpt: lease, but is automatically released at the date specified. What’s New
+          in this Version A description of the changes in this version of the
+          app, such as new feat
+  - url: https://support.google.com/googleplay/android-developer/answer/9859152
+    contentHash: sha256:c1de4d4502b9e20bf598b90739ca5093ab88a3684f6c746af9fe881eac3cdf7d
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:dfe8050fb6cf23540f82e09e3bf984fea49ee59ff7bbb1b64bc979b8c987679c
+        excerpt: "Create and set up your app - Play Console Help Skip to main content
+          Play Console Help Sign in Google Help Help Center Play Console Help
+          Policy Center Community "
+      - at: 0.12
+        hash: sha256:c406d19ddd4fe48ccceadd7fba1475aa6a2134ed392727504f09cd1ffe496ae9
+        excerpt: "fault language. Specify whether your application is an app or a game.
+          You can change this later. Specify whether your application is free or
+          paid. Note: If your"
+      - at: 0.25
+        hash: sha256:7e1a77dca6e9f6efe797782b43ca1ec659e3feec07804bd855d67cd301f7cd6a
+        excerpt: " to build, sign, and upload a single app bundle to support optimized
+          APKs for a wide variety of device configurations. Google Play manages
+          and serves your app's"
+      - at: 0.37
+        hash: sha256:ddde8f58a144e92c6882b51aff725f3f4b48f700b3393cbb48db5ce8a37bc67f
+        excerpt: d with a certificate before installation. For more information, see
+          Sign your app on the Android Developers site. When you create your
+          first release, you can co
+      - at: 0.5
+        hash: sha256:deaa2272c8e87faf59f023344513363d6bcdfe3e582934dc2fbc38cad0874eb3
+        excerpt: ge. Short description The first text users see when looking at your
+          app's detail page in Google Play. 80 Users can expand this text to
+          view your app's full desc
+      - at: 0.62
+        hash: sha256:ec624a148180e37e1e4b45166382075713443898f927f5d7c0f8254e426528ef
+        excerpt: " you upload an app, the default language is English (United States,
+          en-US). You can add translations of your app information, along with
+          in-language screenshots"
+      - at: 0.75
+        hash: sha256:d2fc21270b069b5146a5b97b79dc42ac1cdcb97a0888dd4296918ce4382ad880
+        excerpt: " a website where users can contact you is recommended. To add your
+          support information: Sign in to Play Console, select your app, and go
+          to the Store settings p"
+      - at: 0.87
+        hash: sha256:71e06c70e7723a01adeac6e88c60b940681a3745003e652323465d752e67bf5e
+        excerpt: "sers to update to your latest app version 17 of 30 Manage your store
+          listings 18 of 30 Distribute your instant experience 19 of 30 Manage
+          different form factor "
+  - url: https://support.google.com/googleplay/android-developer/answer/9866151
+    contentHash: sha256:6298c72cb75a9c4200492d3d39ab85f417e53ce0f4047d260e903e20f0880fca
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:a3d089e2fc4028aec0dc8c5a3a5458e16f31f65102f09d7dadd6853f1ff969c7
+        excerpt: Add preview assets to showcase your app - Play Console Help Skip to
+          main content Play Console Help Sign in Google Help Help Center Play
+          Console Help Policy Cent
+      - at: 0.12
+        hash: sha256:05cca85231fbbf4e3ac7d139029faaa5f50f2de5da77964530bb0522d070c518
+        excerpt: " but may result in changes to how your preview assets appear on Google
+          Play or limit promotional opportunities. All content must comply with
+          our Developer Progr"
+      - at: 0.25
+        hash: sha256:79d660b1bcdbfef9018475f8573edd48951522fae900d6d540d1a55942339bff
+        excerpt: lso capitalized. Feature graphic You must provide a feature graphic to
+          publish your store listing. Your feature graphic is a powerful tool to
+          convey app or game
+      - at: 0.37
+        hash: sha256:a57e8155317e207902701d61e510a57e30723d747710b55e255552c6f9456d71
+        excerpt: "le, “The transaction complete screen.” Screenshots Use screenshots to
+          convey capabilities, the look and feel, and the experience of your app
+          to potential users "
+      - at: 0.5
+        hash: sha256:c0dcf5d972c8fc73d73036c6c2237a670c7fecc9e08ab5bbbf18e984d5e991b0
+        excerpt: "s store listing on Google Play must: Contain at least one screenshot
+          that accurately depicts the current version of the watch face. Show
+          more than one of the av"
+      - at: 0.62
+        hash: sha256:b1efa4421ad1c58ce950f96edb2177e40c2066d295b54f203ec569a2c44a310b
+        excerpt: " depict the in-game experience so users can get a sense of what the
+          gameplay will be like if they download and play Screenshots must
+          demonstrate the actual in-a"
+      - at: 0.75
+        hash: sha256:65490a8d77524c3d29193ecd04011fcda6d81218496158a2040f2c4802252280
+        excerpt: atures by entering a YouTube URL. This video must be 360°, 180° or 3D,
+          be public or unlisted, ads must be turned off, and it must not be age
+          restricted. This vi
+      - at: 0.87
+        hash: sha256:545cc12f4cf98ef198339c08fb9c8c1e0eab0edd8c6890c87cddf51dc7855f22
+        excerpt: es not need to be professionally made, but the pacing, visual effects,
+          sound effects/music, transitions and text overlays should be smooth
+          and work seamlessly t
+  - url: https://support.google.com/googleplay/android-developer/answer/13393723
+    contentHash: sha256:a4865f2606a8a33112862877d81ac1409b6287b9c0bcfb22e48a257711951501
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:3edf4cfe73ac263d57269386f7e1fcf6d5667fff2647fe13c250f9e0641830a8
+        excerpt: Best practices for your store listing - Play Console Help Skip to main
+          content Play Console Help Sign in Google Help Help Center Play Console
+          Help Policy Center
+      - at: 0.12
+        hash: sha256:459a0fd1c9df05c0aca490f740b533977d8a8f0cf9049cc83fd69ea611021af9
+        excerpt: eceptive behavior Impersonation Restricted content Common violations
+          and steps to resolve them Guidance for creating compliant app
+          descriptions and elements Aft
+      - at: 0.25
+        hash: sha256:6bfc90e8544356c5cb9ef270406228c7b142909c431add246a92d618b4f4e6a5
+        excerpt: pp’s store listing doesn’t include descriptions or graphic depictions
+          of violence or violent threats to any person or animal. Your store
+          listing shouldn’t inclu
+      - at: 0.37
+        hash: sha256:3029ef616ac36fffb8c93d11b6aba4bf37ef743df74d25ee1655c7ee9c2a166f
+        excerpt: r store listing shouldn’t include text that indicate store performance
+          or ranking, such as "App of the year," "#1," "Best of Play 20XX,"
+          "Popular," award icons,
+      - at: 0.5
+        hash: sha256:6d2592a96bfd698af59f05000fbdac198f3091c829ddb39d6a629766b183d40f
+        excerpt: tellectual Property and Impersonation policies before uploading new
+          graphics. Remember that the Metadata policy and our other policies
+          apply to all translations
+      - at: 0.62
+        hash: sha256:e4b2a7deb3c682faa233f034ebc518c713ee311b30fab6193e7ca511e4fc0597
+        excerpt: "ior Make sure that you don’t use false or misleading information or
+          claims to describe your app, including: Misrepresentations or unclear
+          descriptions of functi"
+      - at: 0.75
+        hash: sha256:89ac40f55607bad09b0c7e11c3c710c75a299a70ae2777e133a251afbfe55f83
+        excerpt: "resolve them Here are common mistakes made in store listing
+          descriptions and some best practices to consider instead. General
+          audiences vs target age groups No "
+      - at: 0.87
+        hash: sha256:c71f046b61e68de599aea8a242462f3bb12bff2968551129a8c3c3f432e9f08b
+        excerpt: our app. We want Google Play users to trust your app or game and know
+          what they’re getting when they download it. Related content Google
+          Play Developer Policy C
+  - url: https://developer.apple.com/documentation/xcode/configuring-your-app-icon
+    contentHash: sha256:a6a9c9915387fbeaf32cef31c8369d97472d8430d68c32ae3ebd282299f80c53
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:6fd376b039dc8b1c285491547ec5f2a3bbc2d4ba0d0025f9f0a4553e7694daef
+        excerpt: Configuring your app icon using an asset catalog | Apple Developer
+          Documentation This page requires JavaScript. Please turn on JavaScript
+          in your browser and re
+      - at: 0.12
+        hash: sha256:10dffe40d9a692951f746ba20da39432458d2a33a3669fd69f3458c51cea43c8
+        excerpt: asset catalog | Apple Developer Documentation This page requires
+          JavaScript. Please turn on JavaScript in your browser and refresh the
+          page to view its content.
+      - at: 0.25
+        hash: sha256:042def8560bf25c0556c909e68f398b2089b4bc5e6fdb5d94c6d045b804f2c0b
+        excerpt: "tation This page requires JavaScript. Please turn on JavaScript in
+          your browser and refresh the page to view its content. Automated tools
+          and assistive tools: A"
+      - at: 0.37
+        hash: sha256:99b78c06ea01b0722a1e0de43ed40b32ac2053d28846f22fa69435d54eece0f4
+        excerpt: ". Please turn on JavaScript in your browser and refresh the page to
+          view its content. Automated tools and assistive tools: A Markdown
+          version of the page conten"
+      - at: 0.5
+        hash: sha256:1e32333565dbb0760ebb816add4eec110c7488f602d1048baa816b95e2c1a829
+        excerpt: "wser and refresh the page to view its content. Automated tools and
+          assistive tools: A Markdown version of the page content is available:
+          View Markdown"
+      - at: 0.62
+        hash: sha256:974bc26b9a118b2b766f283aa86267d6dc80fdda323eddae44dc7192b5b315d6
+        excerpt: "s content. Automated tools and assistive tools: A Markdown version of
+          the page content is available: View Markdown"
+      - at: 0.75
+        hash: sha256:73f8a9e5c62f5fc196e3bd6f44dd5bf63b01922c9f24ae56c02ad98e9feb161a
+        excerpt: "e tools: A Markdown version of the page content is available: View
+          Markdown"
+      - at: 0.87
+        hash: sha256:5fb88efbd9681ee77eee357b186ae14fca5c1be5c25462c298f2e25cb7b015df
+        excerpt: "age content is available: View Markdown"
+  - url: https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications
+    contentHash: sha256:479c28569f874d8e6d38685ede033ce63df78aa2c9b84b94fe79a1d27ff37680
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:426f2424d16278cb85b535156cc72a6ef3e66c59414f16ef911ac83aae216513
+        excerpt: "Screenshot specifications - App information - Reference - App Store
+          Connect - Help - Apple Developer ' /> ' /> ' /> View in English Apple
+          Developer Get Started "
+      - at: 0.12
+        hash: sha256:824df6b2a82ee0e6479107d754f5d8ceb34757c4e58d06dba3a00c36f3fb1e5a
+        excerpt: " a beta version Stop testing a build Test a beta version Provide
+          export compliance information for beta builds Test a beta version Test
+          Apple-hosted asset packs"
+      - at: 0.25
+        hash: sha256:1a421b5b61b78a1bcf113f20627e9d053cea0e81576dae1ebb97865a9c2bd7dd
+        excerpt: rience Offer App Clip experiences Generate App Clip codes Offer App
+          Clip experiences Manage an App Clip experience Offer App Clip
+          experiences View domain URL st
+      - at: 0.37
+        hash: sha256:9a16715cdff5814b3df93926851d21203e3c3de25c206a968f751c4257836dff
+        excerpt: vide app motion information Reference > App information Export
+          compliance documentation for encryption Reference > App information
+          App bundle information Refere
+      - at: 0.5
+        hash: sha256:e677a57958b7dc2da7923deab3f2ab5b7bac4ac523a0290d1ca2bba34f079a53
+        excerpt: n criteria Sufficient Contrast evaluation criteria Reduced Motion
+          evaluation criteria Captions evaluation criteria Audio Descriptions
+          evaluation criteria Manage
+      - at: 0.62
+        hash: sha256:ceafe7f7d425d03a8c714040659bf187767a89d9b32ec05ff49563eb958d763e
+        excerpt: rchases View and edit In-App Purchase information Set a price for an
+          In-App Purchase Schedule price changes for In-App Purchases Set
+          availability for In-App Pur
+      - at: 0.75
+        hash: sha256:5cf8eff9d4d6e0347dd107c45349d26318c0a2dfcd75ac52a51ccc3a57f068a0
+        excerpt: "ct page. Note: Images can’t include alpha channels or transparencies.
+          Specifications iPhone iPhone Duo Screenshot size 1398 × 2034 pixels
+          2034 × 1398 pixels (ou"
+      - at: 0.87
+        hash: sha256:beb3b76341f63b64ba37996b568c504bb694c905977847cde42167494fced6c6
+        excerpt: red if app runs on iPad 12.9" display iPad Pro (2nd generation)
+          Screenshot size 2048 x 2732 pixels (portrait) 2732 x 2048 pixels
+          (landscape) Note If screenshots
+  - url: https://developer.apple.com/app-store/app-privacy-details/
+    contentHash: sha256:ddf7531fcde2f9a4f66b84877e399fedb4e5ef78e5c61bd6bc69a8a0e8a1e5f3
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:5d2cac60a574f808af188da27d4af4f68f26f256de4d1783a210cabf58cc7586
+        excerpt: App Privacy Details - App Store - Apple Developer View in English Apple
+          Developer Get Started Explore Get Started Overview Learn Apple
+          Developer Program Stay Up
+      - at: 0.12
+        hash: sha256:24ebb7598037cca94b0502b02ca550d0af6fe8e1e465681b3188f57ac3eca6e0
+        excerpt: the data meets all of the criteria for optional disclosure listed
+          below. Your app’s privacy practices should follow the App Review
+          Guidelines and all applicable
+      - at: 0.25
+        hash: sha256:3cc27cf77996b97697d8bdddf8399d201b41063fccb5a5599eed6a53cf6da945
+        excerpt: "ct Improvement Programs Data types that meet all of the following
+          criteria are optional to disclose: Data collected is only used for the
+          purpose of improving yo"
+      - at: 0.37
+        hash: sha256:b6d51d83965a2bc1b777f0e8780e195d87ff64b3a056426e1d41dfb136dcf3cc
+        excerpt: "hics review board. All such data collection must follow the relevant
+          App Review Guidelines and the data may not be used for tracking
+          purposes. If the data type "
+      - at: 0.5
+        hash: sha256:6965d000d0007ceea7e16da63dea98fdad868ccf8378b56fbb1d4ae5ad44e5ef
+        excerpt: " or other user- or account-level ID that can be used to identify a
+          particular user or account Device ID Such as the device’s advertising
+          identifier, or other de"
+      - at: 0.62
+        hash: sha256:0cedc1bfa55f6328cf448b25eedb09b254d76038a2b660d80e4db356890a0d04
+        excerpt: ch as user ID or name, before collection. Manipulating data to break
+          the linkage and prevent re-linkage to real-world identities.
+          Additionally, in order for dat
+      - at: 0.75
+        hash: sha256:b341086d8c227204bdb3f1099b2e49c721279f7b98d7428ffc8a6acf288590dd
+        excerpt: an access their data, request deletion, or make changes. Additional
+          guidance Your app has web views. Data collected via web traffic must
+          be declared, unless you
+      - at: 0.87
+        hash: sha256:f17e997bbd05fbb3a1a56cf1f52dfedaa066d066a2404a978b0e96933a5d7d01
+        excerpt: llect" refers to transmitting data off the device and storing it in a
+          readable form for longer than the time it takes you and/or your
+          third-party partners to se
+  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679
+    contentHash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.12
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.25
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.37
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.5
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.62
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.75
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.87
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+  - url: https://developer.apple.com/design/human-interface-guidelines/accessibility
+    contentHash: sha256:ad27d73f88f3fe990e1282e8315251303f43f4d1a165a13ba43482592e96ca02
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:c3e2140d1bb0d94ebaa5c38ecbb390a016fa385133048df40fad6f65cf7b903f
+        excerpt: Accessibility | Apple Developer Documentation This page requires
+          JavaScript. Please turn on JavaScript in your browser and refresh the
+          page to view its content.
+      - at: 0.12
+        hash: sha256:7987c3b69b1403ddde76347a93f32979ce07ed3613b9943c30673506f36ee10a
+        excerpt: " Documentation This page requires JavaScript. Please turn on
+          JavaScript in your browser and refresh the page to view its content.
+          Automated tools and assistive "
+      - at: 0.25
+        hash: sha256:c64c031db7cc4f3ec80a992625246ad9dad232ebe0b98939b6aaeffa9a62a54e
+        excerpt: "avaScript. Please turn on JavaScript in your browser and refresh the
+          page to view its content. Automated tools and assistive tools: A
+          Markdown version of the pa"
+      - at: 0.37
+        hash: sha256:e05d075de94784883930fea33a687aaab25170c1fb5f6c06b77a982687076a3d
+        excerpt: "cript in your browser and refresh the page to view its content.
+          Automated tools and assistive tools: A Markdown version of the page
+          content is available: View M"
+      - at: 0.5
+        hash: sha256:f30f30b9aa0d868025b671e560cb1d15e6bdc4685bdd45e5664405c819eddd82
+        excerpt: "he page to view its content. Automated tools and assistive tools: A
+          Markdown version of the page content is available: View Markdown"
+      - at: 0.62
+        hash: sha256:3a722a20233d8ffc01ac49bf314aa84a1f3527c10677f79efc4ff94e9f434707
+        excerpt: "tomated tools and assistive tools: A Markdown version of the page
+          content is available: View Markdown"
+      - at: 0.75
+        hash: sha256:fc88a47f5abefad6489276387a50d62920aa474f4dee82fda864a7f302ea943e
+        excerpt: "A Markdown version of the page content is available: View Markdown"
+      - at: 0.87
+        hash: sha256:fbc95ec0faadfd917467f02e00323a6ea2f6bc414324e8e41fe155ca2586aada
+        excerpt: "content is available: View Markdown"
+  - url: https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312/section-312.3
+    contentHash: sha256:fc128f65ca713c60b0362b2c1b2deb9e6e84343ad4b67088eb779e92b53381fc
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f4b603c348be847b57524d15e2f1d575a2121fc7a0448be1fae43e6317adaebc
+        excerpt: "Federal Register :: Request Access Request Access Due to aggressive
+          automated scraping of FederalRegister.gov and eCFR.gov, programmatic
+          access to these sites i"
+      - at: 0.12
+        hash: sha256:d093b3671a2db2d85f176586c0a7388f58d3b91ca506f7e50ca5369df0999f94
+        excerpt: ss to these sites is limited to access to our extensive developer APIs.
+          Please visit FederalRegister.gov API documentation or eCFR.gov API
+          documentation to lear
+      - at: 0.25
+        hash: sha256:9ad1a6c2518d5b1ccfc070f174c5b7e23ca73e10e6be0f9f1a4684e0bd5fb9b0
+        excerpt: "o learn more about how to access the API. Your request has been
+          flagged as potentially automated. If you are human user receiving this
+          message, please complete "
+      - at: 0.37
+        hash: sha256:3def1bf0d5f7836114281900174d08e89755afc2c4925ecb6d67dbf71cb2620b
+        excerpt: e, please complete the CAPTCHA (bot test) below and click "Request
+          Access". You may occassionally be asked to complete the CAPTCHA again,
+          this is normal and par
+      - at: 0.5
+        hash: sha256:2f8abbb735166004e663c3c96354f5442b23ae1a9c8689c46a32e2155ce05e52
+        excerpt: nd part of our security measures. unblock#handleSubmit"> Request Access
+          An official website of the United States government. If you
+          experiencing issues with the
+      - at: 0.62
+        hash: sha256:b43ff94eff47f85fe26e77f37fb4545f1a1843289c2e700ea6a4969b45aaa46b
+        excerpt: 'ing issues with the CAPTCHA or want to request a wider IP range, you
+          can use the "Site Help" button found in the lower, right of this page
+          to make a request. × '
+      - at: 0.75
+        hash: sha256:790700c8e253cc3c4f6c55a57df07b7e48cb5b96b71073ca2fdc898496c128eb
+        excerpt: st. × IP Access Help This contact form is only for IP Access help.
+          Please do not provide confidential information or personal data. *
+          Your Name * Email * How ca
+      - at: 0.87
+        hash: sha256:4a0e3bdd0313fc0d1470b2ae79971d099f8419a65e90d0a4c1b38d117b627662
+        excerpt: me * Email * How can we help you? Upload Attachment * I am requesting
+          technical help. site-feedback#openModal" aria-label="Open site help
+          form"> Site Help
+  - url: https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-compliance-information
+    contentHash: sha256:9a7845590480018b7880c38973ecf1d2552104b47be72ca48afb15b32800603a
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:33c1db6e541bf7a38422a92304aede6b846c64a8195f3c407fc73137279974a0
+        excerpt: Manage European Union Digital Services Act trader requirements - Manage
+          compliance information - App Store Connect - Help - Apple Developer '
+          /> ' /> View in En
+      - at: 0.12
+        hash: sha256:99262d69abf628287a9a105d41860c9d4146ae682a37d4fecb0a1f68d8166b10
+        excerpt: " version View tester feedback Test a beta version Add testers to
+          builds Test a beta version View build status and metrics Test a beta
+          version Stop testing a bui"
+      - at: 0.25
+        hash: sha256:d8e60a81135ae40c41588b4aa231f56101506d0ed7c00e0c806140e71dbdf3e5
+        excerpt: standing the Core Technology Fee Request and manage promo codes Offer
+          promo codes Overview of App Clips Offer App Clip experiences Offer a
+          default App Clip expe
+      - at: 0.37
+        hash: sha256:3080f0323b7f7f51442c0b273837582f6b40dc881e6625ce78b9c571c7f0b4f9
+        excerpt: erence > App information Creative assets specifications Reference > App
+          information Required, localizable, and editable properties Reference >
+          App information A
+      - at: 0.5
+        hash: sha256:d4bd675442539c6b82303f1cd320ff7e9f6b886188fef6d83f304dfa4a076b26
+        excerpt: "re Regulated Medical Device Status Overview of export compliance
+          Determine and upload app encryption documentation Add an app icon
+          Manage your App Store assets "
+      - at: 0.62
+        hash: sha256:27f595aefb397278d0ebb378d2e0af4c03f5e3127d048b4e082fb695aa6ef436
+        excerpt: Configure test treatments Run a test Apply a test treatment to your
+          product page Offer In-App Events Overview of In-App Events Offer
+          In-App Events Manage events
+      - at: 0.75
+        hash: sha256:225ef0914579d380095e2730f78f1bba35e17af34c64cad4977b8ac74a1dc4ea
+        excerpt: App Store product page when your app is distributed in any of the 27
+          territories of the EU. Even if you don’t distribute apps in the EU,
+          you’ll still need to de
+      - at: 0.87
+        hash: sha256:c44a82aefa2bb742918baa645a7a6dc7734a2653b5d3a1ec772bf3997a07a85b
+        excerpt: so be asked to certify that you only offer products or services that
+          comply with the applicable rules of EU law. Enter EU Digital Services
+          Act compliance inform
+  - url: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679
+    contentHash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.12
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.25
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.37
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.5
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.62
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.75
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+      - at: 0.87
+        hash: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        excerpt: ""
+  - url: https://support.google.com/googleplay/android-developer/answer/9893335
+    contentHash: sha256:b7111ce55b0c549176986860e726e44ae6be79fe335f56ce571f4424d95df895
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:9e5f062ed656f2cda45c73e9e50d65dfcccfed490563f667a4bb06307b0fa2b7
+        excerpt: Google Play Families Policies - Play Console Help Skip to main content
+          Play Console Help Sign in Google Help Help Center Play Console Help
+          Policy Center Communi
+      - at: 0.12
+        hash: sha256:5f5e06c3d1b8f8d18a80c87ebd27d2195a5bfab5010e17f339eaf6209c26ecfb
+        excerpt: " in different locales and in different contexts. It is important that
+          you consult with your legal counsel to help determine what obligations
+          and/or age-based re"
+      - at: 0.25
+        hash: sha256:c9188de4f06de48054de1deae35deac124bddb67e9c3e0055483cb5e2672707d
+        excerpt: lay Console, including in the Target Audience and Content section, may
+          result in removal or suspension of your app, so it is important to
+          provide accurate infor
+      - at: 0.37
+        hash: sha256:c3a4033069cd6dd6e95d414d656c9d0dff728812a8df27f93bd3a276eebecb61
+        excerpt: se the Companion Device Manager (CDM) when requesting Bluetooth, unless
+          your app is only targeting device Operating System (OS) versions that
+          are not compatible
+      - at: 0.5
+        hash: sha256:f091b920d02eb4bc685fbbd7dea2e1fc9df288b27ccce3178efad6743ae2af46
+        excerpt: freeform media or information. You must also provide a method for
+          adults to manage social features for child users, including, but not
+          limited to, enabling/disa
+      - at: 0.62
+        hash: sha256:8d87198829b8a1509bc6a7b41dbef65191c2dc487679df9f7f6a35bd45242eb3
+        excerpt: ization and advertising in these apps must comply with all applicable
+          laws and regulations (including any relevant self-regulatory or
+          industry guidelines). Goog
+      - at: 0.75
+        hash: sha256:76e2a2881b2e5a4c5f4ffe71a08370fec4aed23f05d5b901b45527ddf0e3bbaa
+        excerpt: another ad, or by making ads suddenly appear in areas of the app where
+          the user usually taps for another function. Not providing a
+          distinction between the use o
+      - at: 0.87
+        hash: sha256:9db665dd2a8c2d82a754d9bf5aff2328a46acd5174f0e39ff1f5d1b7d8b05260
+        excerpt: " on these requirements and refer here to see the current list of
+          Families Self-Certified ads SDK versions. If you use AdMob, refer to
+          the AdMob Help Center for "

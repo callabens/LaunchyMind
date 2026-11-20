@@ -1,0 +1,9 @@
+packages:
+  google_mobile_ads:
+    version: "5.1.0"
+  shared_preferences:
+    version: "2.3.2"
+  games_services:
+    version: "4.0.0"
+sdks:
+  flutter: ">=3.24.0"

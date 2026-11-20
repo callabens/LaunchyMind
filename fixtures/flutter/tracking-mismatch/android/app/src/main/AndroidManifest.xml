@@ -1,0 +1,3 @@
+<manifest package="dev.example.synthetic">
+  <application android:label="synthetic"></application>
+</manifest>

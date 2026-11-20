@@ -1,0 +1,11 @@
+format: 1
+id: launchymind.legal.google-families
+name: Google Play Families
+version: 2026.11.20
+license: Apache-2.0
+engine: ">=0.4.0"
+authors: [callabens]
+verifiedAt: 2026-11-20
+description: >
+  Families policy checks that can be read from the project. This pack is
+  not legal advice and does not know whether the app solely targets children.

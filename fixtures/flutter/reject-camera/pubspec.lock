@@ -1,0 +1,6 @@
+packages:
+  camera:
+    dependency: "direct main"
+    version: "0.11.0"
+sdks:
+  flutter: ">=3.16.0"

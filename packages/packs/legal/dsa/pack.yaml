@@ -1,0 +1,11 @@
+format: 1
+id: launchymind.legal.dsa
+name: EU DSA trader status
+version: 2026.11.20
+license: Apache-2.0
+engine: ">=0.4.0"
+authors: [callabens]
+verifiedAt: 2026-11-20
+description: >
+  Asks whether the project answered the EU trader question. Apple says it
+  cannot decide trader status. This pack is not legal advice.

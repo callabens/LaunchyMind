@@ -1,0 +1,297 @@
+# Rule explanations (zh-Hans). Translated from the English rule texts; keep ids, file names, keys, and guideline numbers unchanged.
+product.flutter-project:
+  title: "项目属于本检查工具能读取的类型"
+  summary: "LaunchyMind 读取 Flutter、React Native、Expo、原生 iOS、原生 Android 和 Unity 项目。不属于其中任何一种的文件夹不会得到商店结论。文件中看不出的事实保持未检查。"
+product.audience-answers:
+  title: "代码无法回答的受众问题"
+  summary: "是否面向儿童、健康和用户生成内容无法从代码中可靠读取。在 .launchymind/project.yaml 回答这些问题之前，这些主题保持未检查。"
+apple.kids-third-party:
+  title: "面向儿童的 App 应避免第三方广告和分析"
+  summary: "Apple 表示，主要面向儿童的 App 不应包含第三方分析或第三方广告。受众回答是开发者的声明，不是儿童类别的勾选框。"
+apple.privacy-policy-in-app:
+  title: "App 内需要隐私政策链接"
+  summary: "App 源代码中还没有隐私政策链接。准则 5.1.1(i) 要求在 App 内提供一个。这只是缺少一个链接，并不意味着 App 的其余部分都要推倒重来。"
+  next: "在用户能打开的界面（例如设置）中添加隐私政策 URL，然后重新扫描。"
+apple.privacy-policy-metadata:
+  title: "为商店元数据声明了隐私政策 URL"
+  summary: "准则 5.1.1(i) 也要求在 App Store Connect 中提供隐私政策链接。LaunchyMind 无法查看 App Store Connect。缺少本地声明时为未检查，而不是失败。"
+  next: "如果想在项目中记录，请在 .launchymind/project.yaml 中设置 urls.privacy。如果链接只存在于 App Store Connect 中，请留空。"
+apple.privacy-link-opens:
+  title: "隐私政策链接可以打开"
+  summary: "App 内和元数据中的隐私链接必须指向真实的政策。此检查会请求项目中找到的 URL，并标出 HTTP 错误和占位页面。"
+apple.privacy-policy-content:
+  title: "政策文本涵盖收集、删除和同意"
+  summary: "准则 5.1.1(i) 要求政策说明收集哪些数据及收集方式、所有用途、第三方保护、保留和删除，以及用户如何撤回同意或请求删除。关键词命中只是一种启发式方法，不是对政策的审查。"
+apple.support-contact:
+  title: "提供了支持 URL 或联系途径"
+  summary: "准则 1.5 要求用户能够联系到你。如果项目没有支持 URL，LaunchyMind 无法查看 App Store Connect 中的字段，因此结果保持未检查。已声明但打不开的页面由另一项检查处理。"
+  next: "在 App 或 project.yaml 中添加支持 URL，或自行确认 App Store Connect 中的技术支持网址字段。"
+apple.support-link-quality:
+  title: "支持页面提供了联系方式"
+  summary: "支持页面应为用户提供便捷的联系方式。此检查会查找电子邮件地址或联系用语，并拒绝占位页面。"
+apple.account-deletion:
+  title: "支持创建账户就要支持在 App 内删除账户"
+  summary: "如果 App 支持创建账户，也必须在 App 内提供删除账户的功能。此检查会查找删除相关符号或 App 内的删除链接，但无法判断该控件是否容易找到。"
+apple.tracking-permission:
+  title: "跟踪需要 App Tracking Transparency 说明"
+  summary: "要跟踪用户，必须通过 App Tracking Transparency API 获得明确许可。存在广告或跟踪 SDK 时，此检查要求提供 NSUserTrackingUsageDescription。"
+apple.login-equivalent:
+  title: "第三方登录需要提供同等选项"
+  summary: "使用第三方或社交登录作为主账户的 App，还必须提供一个同等的登录方式：只收集姓名和电子邮件、允许用户隐藏电子邮件，且未经同意不为广告目的收集 App 内的互动。Apple 列出的例外情况此检查无法看到。"
+apple.permission-camera:
+  title: "使用相机需要 iOS 用途说明"
+  summary: "用途说明必须清楚、完整地描述数据的使用方式。检测到相机功能却没有 NSCameraUsageDescription 时，此检查失败。"
+apple.permission-photos:
+  title: "使用照片图库需要 iOS 用途说明"
+  summary: "访问照片图库需要描述用途的说明。NSPhotoLibraryUsageDescription 或 NSPhotoLibraryAddUsageDescription 均可满足存在性检查。"
+apple.permission-location:
+  title: "使用位置需要 iOS 用途说明"
+  summary: "访问位置需要用途说明。使用期间或始终允许的键均可满足存在性检查。"
+apple.permission-microphone:
+  title: "使用麦克风需要 iOS 用途说明"
+  summary: "访问麦克风需要描述用途的 NSMicrophoneUsageDescription。"
+apple.permission-contacts:
+  title: "使用通讯录需要 iOS 用途说明"
+  summary: "访问通讯录需要描述用途的 NSContactsUsageDescription。"
+apple.privacy-manifest-reasons:
+  title: "隐私清单中需声明理由的 API 必须有理由代码"
+  summary: "自 2024 年 5 月 1 日起，使用需声明理由的 API 却未在隐私清单中说明理由的 App 不会被 App Store Connect 接受。只有当项目清单列出了没有理由代码的 API 时，此检查才会失败。"
+apple.listed-sdk-manifest:
+  title: "列表中的第三方 SDK 需要自己的隐私清单"
+  summary: "Apple 要求提交内容中包含的列表内 SDK 提供隐私清单。LaunchyMind 版本化表格中的插件自带 PrivacyInfo.xcprivacy，因此不会保持未检查。不在该表格中的列表内 SDK 仍需要声明。"
+  next: "对于不在内置清单表格中的列表内 SDK，请检查其 pod 或软件包，看到文件后再设置 apple.listed-sdk-manifests。"
+apple.minimum-os:
+  title: "上传的 App 必须以 iOS 13 或更高版本为目标"
+  summary: "自 2026 年 9 月 9 日起，上传到 App Store Connect 的 iOS 和 iPadOS App 必须以 iOS 13 或更高版本为目标。"
+apple.xcode-sdk:
+  title: "上传的 App 必须使用 Xcode 26 和 iOS 26 SDK 构建"
+  summary: "自 2026 年 4 月 28 日起，上传到 App Store Connect 的 App 必须使用 Xcode 26 或更高版本，并搭配 iOS 26、iPadOS 26、tvOS 26、visionOS 26 或 watchOS 26 SDK 构建。项目源代码中没有 Xcode 版本，因此此检查使用明确的声明。"
+apple.age-rating:
+  title: "必须回答更新后的年龄分级问题"
+  summary: "Apple 的年龄分级问题必须在 2026 年 1 月 31 日前回答，以免提交更新时受阻。未查询 App Store Connect，因此此检查使用明确的声明。"
+apple.subscription-terms:
+  title: "订阅购买界面应说明所提供的内容"
+  summary: "在请用户订阅之前，App 应清楚说明用户付费后能得到什么。此检查会查找订阅和价格相关的字词，或声明。它不会读取开发者协议的附表 2。"
+google.target-api:
+  title: "新应用和更新必须以 Android 16（API 36）为目标"
+  summary: "自 2026 年 8 月 31 日起，新应用和更新必须以 Android 16（API 级别 36）或更高版本为目标，另有本扫描器无法检测的设备类型例外。帮助页面上的延期日期截至 2026 年 11 月 1 日。"
+google.privacy-policy:
+  title: "Play 要求提供隐私权政策链接"
+  summary: "Google Play 表示，每位开发者都必须填写数据安全部分（包括不收集用户数据的应用），并提供隐私权政策链接。未查询 Play 管理中心。"
+google.data-safety-form:
+  title: "必须填写数据安全部分"
+  summary: "所有在 Google Play 上架应用的开发者都必须填写数据安全部分，SDK 收集的数据也计算在内。仅在内部测试轨道上的应用可以豁免。未查询 Play 管理中心，因此这里使用声明。"
+google.account-deletion:
+  title: "支持创建账号就需要应用内删除途径和网页删除链接"
+  summary: "如果应用允许用户创建账号，Google Play 要求提供应用内删除账号的途径，以及用户可以申请删除的网页链接。应用内指向该网页资源的链接可以作为应用内途径。"
+google.account-deletion-link:
+  title: "网页账号删除链接必须能打开并注明应用名称"
+  summary: "Google 表示，网页链接必须能加载，删除途径要容易找到，并注明商品详情中显示的应用名称或开发者名称。"
+google.closed-testing:
+  title: "新的个人 Play 账号需要进行封闭式测试"
+  summary: "2023 年 11 月 13 日之后创建的个人 Play 管理中心账号，在获得正式版访问权限之前，必须进行封闭式测试，至少有 12 名测试人员连续 14 天保持选择加入。组织账号不受此要求约束。账号类型基于声明。"
+iab.app-ads:
+  title: "含广告的应用发布了 app-ads.txt 文件"
+  summary: "IAB Tech Lab 的 app-ads.txt 1.0 是适用于应用的 ads.txt 标准。ads.txt 1.1 增加了 OWNERDOMAIN 和 MANAGERDOMAIN。此检查会请求所声明开发者网站根目录下的 app-ads.txt，不会捏造卖方 ID。"
+policy.ads-disclosure:
+  title: "含广告应用的隐私页面应提及广告"
+  summary: "隐私政策必须说明所收集数据的用途，包括与广告网络共享（如有）。如果存在广告 SDK，而获取到的政策从未提及广告，这是风险，而不是阻断项。"
+kvkk.disclosure:
+  title: "隐私页面上的 KVKK 第 10 条告知事项"
+  summary: "获取个人数据时，数据控制者至少必须告知当事人：控制者的身份、目的、数据接收方及原因、收集方式和法律依据，以及第 11 条规定的权利。指南将移动应用列为一种电子告知方式。关键词命中不构成法律意见。"
+kvkk.consent-separate:
+  title: "明示同意和告知文本是分开的步骤"
+  summary: "当处理以明示同意为依据时，告知义务和明示同意的获取应分别进行。此检查不判断 App 是否需要明示同意，而是使用项目的回答。"
+  next: "在 .launchymind/project.yaml 中设置 kvkk.explicitConsent；如果为 true，再设置 kvkk.consentSeparate。请参阅 README 中的示例。"
+apple.privacy-manifest-tracking:
+  title: "广告或跟踪应与隐私清单的跟踪字段一致"
+  summary: "显示广告或请求跟踪的 App 应有一个 App 级隐私清单，其 NSPrivacyTracking 标志应与标记为用于跟踪的已收集数据类型一致，并在开启跟踪时与跟踪域名一致。不一致是风险，并不代表已被确认拒绝。"
+  next: "打开 App 的 PrivacyInfo.xcprivacy。如果你进行跟踪，请将 NSPrivacyTracking 设为 true 并列出跟踪域名。如果某个已收集数据类型被标记为跟踪，跟踪标志就不应为 false。"
+apple.stub-purchase-ui:
+  title: "没有购买 SDK 却有占位购买或恢复购买文字"
+  summary: "准则 2.1(a) 要求提交的内容应为最终版本，并清除占位文本。没有购买 SDK 却有恢复购买或占位购买文案，且该文案可被访问时，属于风险。若由 const false 标志屏蔽，则仅作为观察记录。"
+  next: "删除占位文案，或在接入真正的购买 SDK 之前将其放在 const false 标志之后。"
+google.sample-ad-id:
+  title: "不应在发布版本中使用 Google 示例广告单元 ID"
+  summary: "Google 发布了用于测试的示例广告单元，发布商 ID 为 ca-app-pub-3940256099942544。若该 ID 出现在 Info.plist、Android 清单或 Dart 中，且没有明确限定在调试分支，即为风险。"
+  next: "将示例 ID 放在 kDebugMode 或 kReleaseMode 条件之后，并在 plist 和清单中使用你自己的广告单元 ID 发布。"
+google.ump-consent-call:
+  title: "含广告的应用应请求 UMP 同意信息更新"
+  summary: "Google 的 AdMob 欧盟同意指南要求在启动时请求用户消息平台的同意信息更新，因为某些地区要求获得同意。广告 SDK 存在但 lib/ 中没有调用 requestConsentInfoUpdate、ConsentInformation 或 UserMessagingPlatform，即为风险。"
+  next: "在加载广告前调用 ConsentInformation.instance.requestConsentInfoUpdate，并在 Google 要求的位置保留隐私选项入口。"
+product.kids-policy-consistency:
+  title: "不面向儿童的政策应与儿童相关回答一致"
+  summary: "如果获取到的隐私页面说明 App 不面向儿童，则 audience.kids 不应为 yes。缺少回答时保持未检查，以便对齐页面和项目文件。"
+  next: "如果页面正确，请在 .launchymind/project.yaml 中设置 audience.kids: false。如果 App 面向儿童，请修改页面并回答商店的年龄分级问题。"
+google.ad-id-permission:
+  title: "Android 上的广告需要广告 ID 权限"
+  summary: "Android 13 要求使用广告 ID 的应用声明 AD_ID 权限。SDK 库清单中声明的权限会被合并。google_mobile_ads 依赖 play-services-ads，因此除非应用清单移除了该权限，否则这项依赖即算数。"
+  next: "声明 com.google.android.gms.permission.AD_ID，或保留 google_mobile_ads 且不要移除该权限。如果 android/app/build 下存在合并后的清单，也会读取。"
+google.data-safety-ad-id:
+  title: "使用广告时，数据安全中应包含广告 ID"
+  summary: "Play 的数据安全部分要求将 Android 广告 ID 申报为“设备或其他 ID”。未查询 Play 管理中心，因此这里使用项目回答 google.data-safety-ad-id。"
+  next: "在数据安全部分加入广告 ID 后，在 .launchymind/project.yaml 中设置 attestations.google.data-safety-ad-id: true。"
+store.ios.name-length:
+  title: "App Store 名称在 2 到 30 个字符之间"
+  summary: "App Store Connect 规定，本地化的 App 名称至少 2 个字符，最多 30 个字符。只读取本地的 name.txt。"
+store.ios.subtitle-length:
+  title: "App Store 副标题最多 30 个字符"
+  summary: "App 名称下方的副标题不能超过 30 个字符。没有副标题文件的项目不会失败。"
+store.ios.description-length:
+  title: "App Store 描述最多 4000 个字符"
+  summary: "App Store 描述限 4000 个字符，且必须是纯文本。这里统计本地描述文件。"
+store.ios.keywords-length:
+  title: "App Store 关键词不超过 100 字节"
+  summary: "关键词最多 100 字节。App Store Connect 参考文档按字节计算，此检查也按字节计算。"
+store.ios.promo-length:
+  title: "推广文本最多 170 个字符"
+  summary: "推广文本不能超过 170 个字符。它是可选项，因此缺少文件不算失败。"
+store.ios.release-notes-length:
+  title: "新内容文本最多 4000 个字符"
+  summary: "此版本的新内容限 4000 个字符。没有本地版本说明文件时，此检查不会运行。"
+store.play.title-length:
+  title: "Play 标题最多 30 个字符"
+  summary: "Play 管理中心将应用名称限制为 30 个字符，全角和半角字符各计为一个。"
+store.play.short-description-length:
+  title: "Play 简短说明最多 80 个字符"
+  summary: "Play 简短说明限 80 个字符。这里测量本地简短说明文件。"
+store.play.full-description-length:
+  title: "Play 完整说明最多 4000 个字符"
+  summary: "Play 完整说明允许 4000 个字符。这里统计本地完整说明文件。"
+store.placeholder-text:
+  title: "商店详情文本不是占位文案"
+  summary: "准则 2.1(a) 要求在提交前清除占位文本和其他临时内容。本地详情中出现 Lorem ipsum、TODO 和 TBD 即为失败。"
+store.ios.other-platform:
+  title: "iOS 详情未提及其他移动平台"
+  summary: "准则 2.3.10 要求不要在 App 或其元数据中包含其他移动平台或替代应用市场的名称。"
+store.play.other-platform:
+  title: "Play 详情未突出其他移动平台"
+  summary: "Play 要求说明准确描述应用。在 Play 详情中提及 iPhone、iPad、iOS 或 App Store 是风险，不会自动被拒。"
+store.future-promise:
+  title: "详情文本未承诺尚不存在的功能"
+  summary: "准则 2.3.7 要求副标题不应包含无法验证的产品声明。“即将推出”和“将会添加”等表述在推广文本之外会被标出；Apple 允许在推广文本中提及即将推出的功能。"
+store.copyright-year:
+  title: "版权年份不在未来"
+  summary: "Apple 表示，版权字段以获得权利的年份开头。晚于扫描年份的年份不可能是那一年。较早的年份不视为错误。"
+store.price-claims:
+  title: "详情文本没有添加页面上已显示的价格"
+  summary: "准则 2.3.7 要求不要在元数据中堆砌价格信息。Play 也要求标题不得宣传“免费”或折扣百分比之类的优惠。"
+store.keyword-stuffing:
+  title: "关键词没有重复，也没有塞满其他品牌"
+  summary: "准则 2.3.7 要求不要在关键词中堆砌商标词、热门 App 名称或无关短语。重复的关键词或少量其他产品名称是风险，本身不构成拒绝。"
+store.locale-consistency:
+  title: "英文和土耳其文详情提及相同的功能"
+  summary: "Apple 按语言对元数据进行本地化。同时存在英文和土耳其文描述时，只出现在其中一种语言中的功能词是风险。磁盘上只有一种语言时，另一种语言保持未检查。"
+store.urls-reachable:
+  title: "商店详情中写的 URL 可以打开"
+  summary: "准则 2.1(a) 要求提交内容包含功能完整的 URL。只有在线扫描时才会请求详情中的 URL。离线时它们保持未检查。"
+store.ios.icon:
+  title: "App Store 图标为 1024×1024 且没有 Alpha 通道"
+  summary: "Xcode 中 iOS 的 App Store 图标位是一张 1024×1024 的图片。App Store Connect 会拒绝透明或带有 Alpha 通道的图标。无法测量的文件保持未检查。"
+store.ios.screenshots:
+  title: "屏幕快照符合目标设备的所需尺寸"
+  summary: "App Store Connect 要求提供带灵动岛的 iPhone 屏幕快照，除非项目仅面向 iPad，此时需要 13 英寸 iPad 尺寸。屏幕快照不能包含 Alpha 通道。每种尺寸最多 10 张。不在规格列表中的尺寸，或未读取到设备系列的一组快照，保持未检查。"
+store.play.icon:
+  title: "Play 图标为 512×512 的 PNG"
+  summary: "Play 要求使用带 Alpha 通道的 512×512、32 位 PNG 图标，文件不得超过 1024 KB。无法读取的文件保持未检查。"
+store.play.feature-graphic:
+  title: "Play 置顶大图为 1024×500 且没有 Alpha 通道"
+  summary: "Play 要求置顶大图为 1024×500，格式为 JPEG 或 24 位 PNG，且没有 Alpha 通道。无法读取的文件保持未检查。"
+store.play.screenshots:
+  title: "Play 手机屏幕截图符合公布的尺寸和数量"
+  summary: "Play 要求至少 2 张、最多 8 张屏幕截图。每条边须在 320 到 3840 像素之间，长边不超过短边的两倍，且没有 Alpha 通道。无法测量的文件保持未检查。"
+artifact.drift:
+  title: "构建产物与从源代码读取的值一致"
+  summary: "在项目旁扫描 IPA、APK 或 AAB 时，会比较 targetSdk、AD_ID 权限、App 隐私清单的跟踪标志和相机用途说明。存在差异即为风险。产物中不包含的值保持未检查。"
+sdk.manifest-label-mismatch:
+  title: "已核实的 SDK 披露与隐私清单不一致"
+  summary: "Apple 表示，隐私回答必须包括其代码在 App 中的第三方合作伙伴。如果为本知识库打开的供应商页面说明某个 SDK 可能将数据用于第三方广告，而 App 隐私清单将 NSPrivacyTracking 设为 false，这种不一致是风险。未知 SDK 不会增加行。"
+sdk.answer-label-mismatch:
+  title: "已核实的 SDK 披露与项目回答不一致"
+  summary: "Play 表示，SDK 的数据也计入数据安全部分。如果项目回答未申报广告 ID，而某个已核实的 SDK 行列出了设备 ID 或广告 ID，这种不一致是风险。空白回答保持未检查。"
+apple.restore-purchases:
+  title: "可恢复的 App 内购买项目需要恢复控件"
+  summary: "准则 3.1.1 要求确保为所有可恢复的 App 内购买项目提供恢复机制，Apple 的订阅页面也表示，订阅注册界面必须为现有订阅者提供登录或恢复购买的方式。此检查会在源代码中查找 restorePurchases 调用或恢复购买标签，或声明。"
+  next: "添加一个调用 SDK 恢复方法的“恢复购买”按钮（RevenueCat：Purchases.restorePurchases()），或在 .launchymind/project.yaml 中设置 attestations.payments.restore-control。"
+apple.subscription-paywall-links:
+  title: "订阅注册需要使用条款和隐私政策链接"
+  summary: "Apple 的自动续期订阅页面列出了订阅注册界面必须包含的内容：订阅名称和时长、完整的续订价格，以及恢复购买的方式。页面还表示，App 和 App Store 元数据必须包含指向你的使用条款和隐私政策的链接。此检查会在源代码中查找使用条款或 EULA 字样以及 App 内隐私 URL，或声明。"
+  next: "在付费墙上放置使用条款（或 Apple 标准 EULA）和隐私政策链接，或在人工检查后设置 attestations.payments.paywall-links。"
+google.subscription-offer-terms:
+  title: "Play 订阅必须披露价格、结算周期和自动续订"
+  summary: "Google Play 的订阅政策要求清楚、明确地披露优惠条款、订阅费用、结算周期频率、自动续订条款，以及使用应用是否需要订阅。此检查会在源代码中查找价格、结算周期和自动续订字样，或订阅条款声明。"
+  next: "在订阅按钮旁显示价格、结算周期以及会自动续订，或在人工审核付费墙后设置 attestations.apple.subscription-terms。"
+revenuecat.secret-key-in-app:
+  title: "不得在 App 中附带 RevenueCat 密钥 API key"
+  summary: "RevenueCat 表示，密钥 API key 以 sk_ 开头，应保密，且只应存放在你自己的服务器上，而 SDK 使用公开 SDK 密钥进行配置。已在 App 源代码中搜索以 sk_ 开头的字符串字面量。公开 SDK 密钥没有问题。"
+  next: "从 App 中删除 sk_ 密钥，在 RevenueCat 控制台中将其撤销，并使用该 App 专用的公开密钥配置 SDK。"
+revenuecat.products-configured:
+  title: "RevenueCat 产品和 offering 与代码一致"
+  summary: "设置 REVENUECAT_API_KEY 后，LaunchyMind 会通过 RevenueCat REST API v2（只读）读取产品、entitlement 和 offering，并将产品的商店标识符与代码中写的产品 ID 进行比较。没有该密钥时，此规则不会运行。"
+  next: "在 RevenueCat 中添加缺少的产品，并将其关联到 entitlement 和 offering，或修正代码中的产品 ID。"
+google.data-safety-declaration-sdks:
+  title: "本地数据安全声明涵盖了 SDK 收集的数据"
+  summary: "Google 表示，数据安全部分必须包括应用中使用的库和 SDK 传出设备的用户数据。Play 的数据安全 API 只能写入，因此 LaunchyMind 会将项目的 launchymind.datasafety.json 与已核实 SDK 行所列的 Play 数据类型进行比较。没有明确 Play 类型的行会列出以供人工映射，不会导致失败。"
+  next: "将缺少的数据类型添加到 launchymind.datasafety.json 和 Play 管理中心的数据安全部分，或向 SDK 供应商确认你的配置不会收集这些数据。"
+build.native-build:
+  title: "已运行请求的原生构建并读取了其产物"
+  summary: "使用 scan --build 时，LaunchyMind 会在项目的临时副本中构建调试版 APK 和 iOS 模拟器 App，然后像扫描产物一样读取它们。构建失败是风险。因缺少工具链而未运行的构建保持未检查，绝不算通过。"
+  next: "阅读报告中的构建日志行，修复构建后重新运行 scan --build。在构建未运行的环境中安装 Flutter、JDK 或 Xcode。"
+apple.launch-crash:
+  title: "iOS 构建在模拟器上启动时不崩溃"
+  summary: "准则 2.1 表示，Apple 会拒绝会崩溃或存在明显技术问题的二进制文件。使用 launchymind run 或 scan --live 时，会将 IPA 安装到已启动的模拟器并运行；几秒钟后 App 必须仍在运行。没有 Xcode 或已启动的模拟器时，保持未检查。"
+  next: "打开模拟器崩溃报告或 Xcode 控制台，修复崩溃后重新运行检查。"
+google.launch-crash:
+  title: "Android 构建在设备上启动时不崩溃"
+  summary: "Google Play 的最低功能政策表示，不允许会崩溃、强制关闭、冻结或以其他方式运行异常的应用。使用 launchymind run 或 scan --live 时，会用 adb 安装并启动 APK；几秒钟后进程必须仍在运行，且崩溃日志中不得出现该应用。没有 adb 或已连接的设备时，保持未检查。"
+  next: "阅读证据中的崩溃行或运行 adb logcat -b crash，修复崩溃后重新运行检查。"
+legal.accessibility.element-labels:
+  title: "交互元素应有无障碍标签"
+  summary: "Android 无障碍指南要求为每个界面元素添加用途说明，通常写在 contentDescription 中；Apple 的 VoiceOver 评估标准表示，屏幕上的重要项目应有 VoiceOver 能朗读的标签或描述。此检查只在源代码中查找标签 API（Semantics、semanticLabel、accessibilityLabel、aria-label、contentDescription）。找到一个并不代表每个元素都有标签。"
+  next: "为图标按钮和图片添加标签（Flutter 用 Semantics 或 semanticLabel，React Native 用 accessibilityLabel，SwiftUI 用 .accessibilityLabel，Android 用 contentDescription），然后用 VoiceOver 和 TalkBack 测试。"
+legal.accessibility.nutrition-labels-answered:
+  title: "已考虑 App Store 的辅助功能营养标签"
+  summary: "Apple 表示，辅助功能营养标签（Accessibility Nutrition Labels）起初是自愿的，但随着时间推移，提交新 App 和更新时将必须提供辅助功能支持详情。此检查只询问项目是否回答了 attestations.apple.accessibility-labels。目前任一回答都可通过。"
+legal.accessibility.eaa-scope-answered:
+  title: "已回答《欧洲无障碍法案》是否适用于该 App"
+  summary: "第 2 条第 2 款列出了 2025 年 6 月 28 日之后向消费者提供、受该指令约束的服务，包括电子通信、视听媒体访问、客运移动应用、消费者银行服务、电子书和电子商务。第 4 条第 5 款豁免了提供服务的微型企业。许多游戏不在该列表中。此检查只询问项目是否回答了 attestations.eaa.applies。它不决定适用范围，也不构成法律意见。"
+legal.accessibility.eaa-information:
+  title: "适用范围内的服务公布了无障碍信息"
+  summary: "第 13 条规定，服务提供者应按照无障碍要求设计和提供服务，准备附件 V 中的信息，说明服务如何满足要求，并以无障碍的方式公开这些信息。此检查仅在项目表示该法案适用时运行，并询问这些信息是否已公布（attestations.eaa.information）。这不构成法律意见。"
+legal.apple.kids-parental-gate:
+  title: "儿童类别中的购买和外部链接位于家长监控门之后"
+  summary: "准则 1.3 规定，儿童类别 App 不得包含指向 App 外的链接、购买机会或其他会分散儿童注意力的内容，除非仅限于家长监控门之后的指定区域。该 App 有购买项目。此检查询问项目是否声明购买流程位于家长监控门之后（attestations.apple.kids-parental-gate）。"
+legal.apple.kids-third-party-analytics:
+  title: "儿童类别 App 不应包含第三方分析"
+  summary: "准则 1.3 和 5.1.4 规定，儿童类别 App 不应包含第三方分析。在有限情况下，如果该服务不收集或传输 IDFA 或任何关于儿童、其位置或其设备的可识别信息，则可能被允许。依赖项中有一个分析 SDK。除非项目声明适用该例外（attestations.apple.kids-analytics-exception），否则此检查失败。"
+legal.coppa.notice-answered:
+  title: "COPPA 通知问题已有回答"
+  summary: "16 CFR 312.3 规定，面向儿童的服务的运营者通常必须在收集儿童个人信息之前发出通知并获得可验证的家长同意。此检查只记录项目是否回答已完成通知步骤。它不判断 App 是否面向儿童，也不构成法律意见。"
+legal.dsa.trader-answered:
+  title: "已回答欧盟交易者身份"
+  summary: "Apple 表示，DSA 第 30 条和第 31 条要求其收集交易者联系信息，而 Apple 无法判断你是否为交易者。此检查只要求项目回答是或否。它不决定交易者身份，也不构成法律意见。"
+legal.gdpr.notice-contents:
+  title: "隐私政策应包含第 13 条要求的信息"
+  summary: "第 13 条列出了收集个人数据时控制者必须提供的信息：控制者的身份和联系方式、目的和法律依据、接收方、向第三国的传输、存储期限、数据主体的权利，以及向监管机构投诉的权利。此检查会在已发布的隐私页面上查找每一项的相应表述。这只是短语匹配，不是法律审查，也不构成法律意见。"
+  next: "在隐私政策中补充第 13 条缺少的事项：控制者和联系方式、目的和法律依据、接收方、向第三国的传输、保留期限、权利以及投诉权。"
+legal.gdpr.lawful-basis-answered:
+  title: "已为每个处理目的记录了合法依据"
+  summary: "第 6 条第 1 款规定，只有至少适用一项所列依据时处理才合法；第 13 条第 1 款 (c) 项要求将法律依据告知数据主体。此检查只询问项目是否记录了已为每个目的选定依据（attestations.gdpr.lawful-basis）。它不替你选择依据，也不构成法律意见。"
+legal.gdpr.consent-withdrawal:
+  title: "以同意为依据时，政策说明了如何撤回同意"
+  summary: "第 7 条第 3 款赋予数据主体随时撤回同意的权利，规定应在同意之前告知其这一点，并且撤回同意应与给予同意一样容易。当项目表示某些处理依赖同意，或 App 请求同意表单（UMP）时，此检查会运行。它会在已发布的隐私页面上查找有关撤回的表述。这不构成法律意见。"
+legal.gdpr.erasure-path:
+  title: "拥有账户的用户有途径请求删除"
+  summary: "第 17 条赋予数据主体在适用其所列理由之一时，要求控制者及时删除其个人数据的权利；第 13 条第 2 款 (b) 项要求告知用户存在这一权利。当 App 有账户时，此检查会查找 App 内的删除途径或已声明的账户删除 URL。它不判断适用哪项理由，也不构成法律意见。"
+legal.gdpr.processors-answered:
+  title: "已记录第三方 SDK 的处理者条款"
+  summary: "第 28 条规定，控制者只能使用提供充分保证的处理者，且处理者的处理应受合同或其他法律文件约束。该 App 含有广告、分析、跟踪、通知或支付 SDK。此检查询问项目是否记录了已审查每个供应商的角色和条款（attestations.gdpr.processors）。部分 SDK 供应商作为独立控制者而非处理者行事，这由开发者判断。这不构成法律意见。"
+legal.gdpr.transfers-disclosed:
+  title: "已披露向欧盟或欧洲经济区以外的传输"
+  summary: "第 44 条只允许在第五章规定的条件下向第三国传输数据；第 13 条第 1 款 (f) 项要求告知数据主体拟进行的传输以及充分性认定或保障措施。该 App 包含第三方 SDK。此检查会在已发布的隐私页面上查找有关传输的表述，或项目关于不存在传输的声明（attestations.gdpr.transfers）。这不构成法律意见。"
+legal.google.families-ad-id:
+  title: "面向儿童的 Play 应用不应保留广告 ID"
+  summary: "家庭政策规定，仅以儿童为目标的应用不应在 Android API 33 或更高版本上请求 AD_ID 权限，且不得传输儿童的广告 ID。项目回答并不能证明该应用仅以儿童为目标，因此这是风险而不是拒绝，也不构成法律意见。"
+legal.kvkk.consent-answered:
+  title: "必须回答 KVKK 明示同意问题"
+  summary: "依据是 KVKK 关于告知义务的公报。此检查只询问项目是否回答了 kvkk.explicitConsent。它不判断处理是否需要同意，也不构成法律意见。"

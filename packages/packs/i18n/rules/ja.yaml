@@ -1,3 +1,297 @@
+# Rule explanations (ja). Translated from the English rule texts; keep ids, file names, keys, and guideline numbers unchanged.
+product.flutter-project:
+  title: "このチェッカーが読み取れる種類のプロジェクトである"
+  summary: "LaunchyMind は Flutter、React Native、Expo、ネイティブ iOS、ネイティブ Android、Unity のプロジェクトを読み取ります。そのいずれでもないフォルダにはストア向けの判定を出しません。ファイルから分からない事実は未確認のままです。"
+product.audience-answers:
+  title: "コードからは答えられない対象ユーザーに関する質問"
+  summary: "子ども向けかどうか、健康、ユーザー生成コンテンツはコードから確実に読み取れません。.launchymind/project.yaml で回答するまで、これらの項目は未確認のままです。"
+apple.kids-third-party:
+  title: "子ども向けアプリはサードパーティの広告や分析を避けるべき"
+  summary: "Apple は、主に子ども向けのアプリにはサードパーティの分析やサードパーティの広告を含めるべきではないとしています。対象ユーザーの回答は開発者の申告であり、キッズカテゴリのチェックボックスではありません。"
 apple.privacy-policy-in-app:
-  summary: "アプリのソースにはまだプライバシーポリシーへのリンクがありません。ガイドライン 5.1.1(i) はアプリ内にリンクを置くよう求めています。欠けているのはこのリンク 1 つだけで、アプリの他の部分を否定するものではありません。"
-  next: "設定画面など、ユーザーが開ける画面にプライバシー URL を追加してから、もう一度スキャンしてください。"
+  title: "アプリ内にプライバシーポリシーへのリンクが必要"
+  summary: "アプリのソースにはまだプライバシーポリシーへのリンクがありません。ガイドライン 5.1.1(i) はアプリ内にリンクを置くよう求めています。足りないのはリンク 1 つだけで、アプリの他の部分を捨てるべきだという判断ではありません。"
+  next: "設定画面など、ユーザーが開ける画面にプライバシーポリシーの URL を追加してから、もう一度スキャンしてください。"
+apple.privacy-policy-metadata:
+  title: "ストアのメタデータ用にプライバシーポリシーの URL が申告されている"
+  summary: "ガイドライン 5.1.1(i) は App Store Connect にもプライバシーポリシーへのリンクを求めています。LaunchyMind は App Store Connect を参照できません。ローカルの申告がない場合は失敗ではなく未確認です。"
+  next: "プロジェクトに記録したい場合は .launchymind/project.yaml に urls.privacy を設定してください。リンクが App Store Connect にしかない場合は空欄のままにしてください。"
+apple.privacy-link-opens:
+  title: "プライバシーポリシーのリンクが開く"
+  summary: "アプリ内とメタデータのプライバシーリンクは、実在するポリシーでなければなりません。このチェックはプロジェクト内で見つかった URL にアクセスし、HTTP エラーや仮のページを指摘します。"
+apple.privacy-policy-content:
+  title: "ポリシーの本文が収集、削除、同意を扱っている"
+  summary: "ガイドライン 5.1.1(i) は、ポリシーに収集するデータとその方法、すべての用途、第三者による保護、保持と削除、そしてユーザーが同意を取り消したり削除を求めたりする方法を明記するよう求めています。キーワードの一致は目安であり、ポリシーの審査ではありません。"
+apple.support-contact:
+  title: "サポート URL または連絡手段がある"
+  summary: "ガイドライン 1.5 は、ユーザーが開発者に連絡できる手段を求めています。プロジェクトにサポート URL がない場合、LaunchyMind は App Store Connect の欄を参照できないため、結果は未確認のままです。申告されたページが開かない場合は別のチェックで扱います。"
+  next: "アプリ内か project.yaml にサポート URL を追加するか、App Store Connect のサポート URL 欄をご自身で確認してください。"
+apple.support-link-quality:
+  title: "サポートページに連絡手段が示されている"
+  summary: "サポートページには、簡単に連絡できる手段を載せるべきです。このチェックはメールアドレスや連絡を促す文言を探し、仮のページは不合格にします。"
+apple.account-deletion:
+  title: "アカウント作成がある場合はアプリ内でのアカウント削除が必要"
+  summary: "アプリでアカウントを作成できる場合は、アプリ内でアカウントを削除できるようにする必要があります。このチェックは削除用のシンボルやアプリ内の削除リンクを探します。その操作が見つけやすいかどうかは判断できません。"
+apple.tracking-permission:
+  title: "トラッキングには App Tracking Transparency による説明が必要"
+  summary: "ユーザーをトラッキングするには、App Tracking Transparency の API を通じて明示的な許可を得る必要があります。広告やトラッキングの SDK がある場合、このチェックは NSUserTrackingUsageDescription を求めます。"
+apple.login-equivalent:
+  title: "サードパーティのログインには同等の選択肢が必要"
+  summary: "メインのアカウントにサードパーティやソーシャルのログインを使うアプリは、データを名前とメールアドレスに限り、メールアドレスを非公開にでき、同意なしにアプリ内の操作を広告目的で収集しない同等のログインも用意する必要があります。Apple が定める例外はこのチェックでは確認できません。"
+apple.permission-camera:
+  title: "カメラの使用には iOS の利用目的の説明文が必要"
+  summary: "利用目的の説明文は、データの使い方を明確かつ十分に説明している必要があります。カメラ機能が検出されたのに NSCameraUsageDescription がない場合、このチェックは失敗します。"
+apple.permission-photos:
+  title: "写真ライブラリの使用には iOS の利用目的の説明文が必要"
+  summary: "写真ライブラリへのアクセスには、用途を説明する説明文が必要です。NSPhotoLibraryUsageDescription か NSPhotoLibraryAddUsageDescription があれば存在チェックを満たします。"
+apple.permission-location:
+  title: "位置情報の使用には iOS の利用目的の説明文が必要"
+  summary: "位置情報へのアクセスには利用目的の説明文が必要です。使用中のみ、または常に許可のキーがあれば存在チェックを満たします。"
+apple.permission-microphone:
+  title: "マイクの使用には iOS の利用目的の説明文が必要"
+  summary: "マイクへのアクセスには、用途を説明する NSMicrophoneUsageDescription が必要です。"
+apple.permission-contacts:
+  title: "連絡先の使用には iOS の利用目的の説明文が必要"
+  summary: "連絡先へのアクセスには、用途を説明する NSContactsUsageDescription が必要です。"
+apple.privacy-manifest-reasons:
+  title: "プライバシーマニフェスト内の理由が必要な API には理由コードが必要"
+  summary: "2024 年 5 月 1 日以降、理由の申告が必要な API を使用しながらプライバシーマニフェストで理由を説明していないアプリは、App Store Connect で受け付けられません。このチェックが失敗するのは、プロジェクトのマニフェストが理由コードなしで API を記載している場合だけです。"
+apple.listed-sdk-manifest:
+  title: "リストに載っているサードパーティ SDK にはプライバシーマニフェストが必要"
+  summary: "Apple は、提出物に含まれるリスト掲載の SDK にプライバシーマニフェストを求めています。LaunchyMind のバージョン管理された表にあるプラグインは独自の PrivacyInfo.xcprivacy を同梱しているため、未確認にはなりません。表にないリスト掲載の SDK には引き続き申告が必要です。"
+  next: "同梱マニフェストの表にないリスト掲載の SDK は、pod またはパッケージを確認し、ファイルを実際に見てから apple.listed-sdk-manifests を設定してください。"
+apple.minimum-os:
+  title: "アップロードは iOS 13 以降を対象にする必要がある"
+  summary: "2026 年 9 月 9 日以降、App Store Connect にアップロードする iOS および iPadOS のアプリは iOS 13 以降を対象にする必要があります。"
+apple.xcode-sdk:
+  title: "アップロードは Xcode 26 と iOS 26 SDK でビルドする必要がある"
+  summary: "2026 年 4 月 28 日以降、App Store Connect にアップロードするアプリは、Xcode 26 以降で iOS 26、iPadOS 26、tvOS 26、visionOS 26、watchOS 26 のいずれかの SDK を使ってビルドする必要があります。プロジェクトのソースには Xcode のバージョンが含まれないため、このチェックは明示的な申告を使います。"
+apple.age-rating:
+  title: "更新された年齢制限の質問に回答する必要がある"
+  summary: "アップデートの提出が中断されないよう、Apple の年齢制限に関する質問には 2026 年 1 月 31 日までに回答する必要がありました。App Store Connect には問い合わせていないため、このチェックは明示的な申告を使います。"
+apple.subscription-terms:
+  title: "サブスクリプションの購入画面ではオファー内容を説明するべき"
+  summary: "顧客に登録を求める前に、アプリはその価格で何が得られるかを明確に説明するべきです。このチェックはサブスクリプションや価格に関する言葉、または申告を探します。開発者契約のスケジュール 2 は読みません。"
+google.target-api:
+  title: "新規アプリとアップデートは Android 16（API 36）をターゲットにする必要がある"
+  summary: "2026 年 8 月 31 日以降、新規アプリとアップデートは Android 16（API レベル 36）以上をターゲットにする必要があります。このスキャナでは検出できないフォーム ファクタ別の例外があります。ヘルプページに記載された延長期限は 2026 年 11 月 1 日まででした。"
+google.privacy-policy:
+  title: "Play ではプライバシー ポリシーへのリンクが必要"
+  summary: "Google Play は、ユーザーデータを収集しないアプリも含め、すべてのデベロッパーがデータ セーフティ セクションに記入し、プライバシー ポリシーへのリンクを提供する必要があるとしています。Play Console には問い合わせていません。"
+google.data-safety-form:
+  title: "データ セーフティ セクションへの記入が必要"
+  summary: "Google Play でアプリを公開しているすべてのデベロッパーはデータ セーフティ セクションに記入する必要があり、SDK によるデータ収集も対象です。内部テスト トラックにのみあるアプリは対象外です。Play Console には問い合わせていないため、申告を使います。"
+google.account-deletion:
+  title: "アカウント作成がある場合はアプリ内の手順とウェブの削除リンクが必要"
+  summary: "アプリでアカウントを作成できる場合、Google Play はアプリ内でアカウントを削除する手順と、ユーザーが削除をリクエストできるウェブリンクを求めています。そのウェブリソースへのアプリ内リンクをアプリ内の手順とすることもできます。"
+google.account-deletion-link:
+  title: "ウェブのアカウント削除リンクが開き、アプリ名が記載されている"
+  summary: "Google は、ウェブリンクが読み込めること、削除手順が見つけやすいこと、ストアの掲載情報に表示されるアプリ名またはデベロッパー名が記載されていることを求めています。"
+google.closed-testing:
+  title: "新しい個人の Play アカウントにはクローズド テストが必要"
+  summary: "2023 年 11 月 13 日より後に作成された個人の Play Console アカウントは、製品版へのアクセス前に、12 人以上のテスターが 14 日間継続してオプトインしたクローズド テストを実施する必要があります。組織アカウントはこの要件の対象外です。アカウントの種類は申告に基づきます。"
+iab.app-ads:
+  title: "広告付きアプリは app-ads.txt ファイルを公開する"
+  summary: "IAB Tech Lab の app-ads.txt 1.0 は、アプリ向けの ads.txt 規格です。ads.txt 1.1 では OWNERDOMAIN と MANAGERDOMAIN が追加されています。このチェックは、申告されたデベロッパーのウェブサイトのルートにある app-ads.txt を取得します。販売者 ID を推測で作ることはしません。"
+policy.ads-disclosure:
+  title: "広告付きアプリのプライバシーページでは広告に触れるべき"
+  summary: "プライバシーポリシーでは、収集したデータの用途を説明する必要があります。広告ネットワークと共有する場合はそれも含まれます。広告 SDK があるのに取得したポリシーが広告に一切触れていない場合、それはリスクであり、ブロッカーではありません。"
+kvkk.disclosure:
+  title: "プライバシーページにおける KVKK 第 10 条の通知項目"
+  summary: "個人データを取得する際、管理者は少なくとも、管理者の身元、目的、データの受領者とその理由、収集方法と法的根拠、第 11 条の権利を本人に伝える必要があります。ガイドでは、その電子的手段の一つとしてモバイルアプリが挙げられています。キーワードの一致は法的意見ではありません。"
+kvkk.consent-separate:
+  title: "明示的同意と通知文は別の手順になっている"
+  summary: "処理が明示的同意に基づく場合、通知義務と明示的同意の取得は別々に行われます。このチェックはアプリに明示的同意が必要かどうかを判断しません。プロジェクトの回答を使います。"
+  next: ".launchymind/project.yaml で kvkk.explicitConsent を設定し、それが true の場合は kvkk.consentSeparate も設定してください。README の例を参照してください。"
+apple.privacy-manifest-tracking:
+  title: "広告やトラッキングはプライバシーマニフェストのトラッキング項目と一致させるべき"
+  summary: "広告を表示したりトラッキングを求めたりするアプリは、アプリ単位のプライバシーマニフェストを持ち、その NSPrivacyTracking フラグが、トラッキングに使用するとされた収集データの種類と、トラッキングが有効な場合はトラッキングドメインと一致しているべきです。不一致はリスクであり、リジェクトが確定したわけではありません。"
+  next: "アプリの PrivacyInfo.xcprivacy を開いてください。トラッキングを行う場合は NSPrivacyTracking を true にし、トラッキングドメインを記載してください。収集データの種類にトラッキングの印がある場合、トラッキングフラグを false にするべきではありません。"
+apple.stub-purchase-ui:
+  title: "購入 SDK がないのに仮の購入や購入の復元の文言がある"
+  summary: "ガイドライン 2.1(a) は、提出物は完成版であるべきで、仮のテキストは取り除くべきだとしています。購入 SDK がないのに購入の復元や仮の購入の文言があり、それが画面に表示されうる場合はリスクです。const false のフラグで隠されている場合は所見にとどめます。"
+  next: "仮の文言を削除するか、実際の購入 SDK を組み込むまで const false のフラグで隠しておいてください。"
+google.sample-ad-id:
+  title: "Google のサンプル広告ユニット ID を公開版に含めない"
+  summary: "Google はテスト用に、サイト運営者 ID ca-app-pub-3940256099942544 のサンプル広告ユニットを公開しています。この ID がデバッグ分岐に明確に限定されないまま Info.plist、Android マニフェスト、Dart に含まれている場合はリスクです。"
+  next: "サンプル ID は kDebugMode または kReleaseMode の条件の中に置き、plist とマニフェストには自分の広告ユニット ID を入れて公開してください。"
+google.ump-consent-call:
+  title: "広告付きアプリは UMP の同意情報の更新をリクエストするべき"
+  summary: "Google の AdMob EU 同意ガイドでは、地域によって同意が必要なため、起動時にユーザー メッセージングの同意情報の更新をリクエストするよう求めています。広告 SDK があるのに lib/ に requestConsentInfoUpdate、ConsentInformation、UserMessagingPlatform の呼び出しがない場合はリスクです。"
+  next: "広告を読み込む前に ConsentInformation.instance.requestConsentInfoUpdate を呼び出し、Google が必要とする場合はプライバシー オプションの入り口を用意してください。"
+product.kids-policy-consistency:
+  title: "子ども向けではないとするポリシーは子ども向けの回答と一致させるべき"
+  summary: "取得したプライバシーページにアプリは子ども向けではないと書かれている場合、audience.kids を yes にするべきではありません。回答がない場合は、ページとプロジェクトファイルをそろえられるよう未確認のままにします。"
+  next: "ページが正しければ .launchymind/project.yaml に audience.kids: false を設定してください。アプリが子ども向けなら、ページを修正し、ストアの年齢制限の質問に回答してください。"
+google.ad-id-permission:
+  title: "Android の広告には広告 ID の権限が必要"
+  summary: "Android 13 では、広告 ID を使うアプリに AD_ID 権限が必要です。SDK ライブラリのマニフェストで宣言された権限は統合されます。google_mobile_ads は play-services-ads に依存しているため、アプリのマニフェストで権限を削除していない限り、この依存関係が数に入ります。"
+  next: "com.google.android.gms.permission.AD_ID を宣言するか、google_mobile_ads を残したまま権限を削除しないでください。android/app/build に統合済みマニフェストがあれば、それも読み取ります。"
+google.data-safety-ad-id:
+  title: "広告を使う場合はデータ セーフティに広告 ID を含めるべき"
+  summary: "Play のデータ セーフティ セクションでは、Android の広告 ID をデバイスまたはその他の ID として申告するよう求めています。Play Console には問い合わせていないため、プロジェクトの回答 google.data-safety-ad-id を使います。"
+  next: "データ セーフティ セクションに広告 ID を含めたら、.launchymind/project.yaml に attestations.google.data-safety-ad-id: true を設定してください。"
+store.ios.name-length:
+  title: "App Store の名前は 2～30 文字"
+  summary: "App Store Connect では、ローカライズされたアプリ名は 2 文字以上 30 文字以下である必要があります。読み取るのはローカルの name.txt だけです。"
+store.ios.subtitle-length:
+  title: "App Store のサブタイトルは 30 文字以内"
+  summary: "アプリ名の下に表示されるサブタイトルは 30 文字を超えられません。サブタイトルのファイルがないプロジェクトは失敗になりません。"
+store.ios.description-length:
+  title: "App Store の説明は 4000 文字以内"
+  summary: "App Store の説明は 4000 文字までで、プレーンテキストである必要があります。ローカルの説明ファイルの文字数を数えます。"
+store.ios.keywords-length:
+  title: "App Store のキーワードは 100 バイト以内"
+  summary: "キーワードは最大 100 バイトです。App Store Connect のリファレンスはバイト数で数えるため、このチェックもバイト数で数えます。"
+store.ios.promo-length:
+  title: "プロモーションテキストは 170 文字以内"
+  summary: "プロモーションテキストは 170 文字を超えられません。任意項目なので、ファイルがなくても失敗にはなりません。"
+store.ios.release-notes-length:
+  title: "新機能のテキストは 4000 文字以内"
+  summary: "このバージョンの新機能は 4000 文字までです。ローカルのリリースノートファイルがなければ、このチェックは実行されません。"
+store.play.title-length:
+  title: "Play のタイトルは 30 文字以内"
+  summary: "Play Console ではアプリ名は 30 文字までで、全角文字と半角文字はどちらも 1 文字として数えます。"
+store.play.short-description-length:
+  title: "Play の簡単な説明は 80 文字以内"
+  summary: "Play の簡単な説明は 80 文字までです。ローカルの簡単な説明ファイルを計測します。"
+store.play.full-description-length:
+  title: "Play の詳しい説明は 4000 文字以内"
+  summary: "Play の詳しい説明は 4000 文字まで入力できます。ローカルの詳しい説明ファイルの文字数を数えます。"
+store.placeholder-text:
+  title: "ストアの掲載テキストが仮の文言ではない"
+  summary: "ガイドライン 2.1(a) は、提出前に仮のテキストやその他の一時的なコンテンツを取り除くよう求めています。ローカルの掲載情報に Lorem ipsum、TODO、TBD があれば失敗です。"
+store.ios.other-platform:
+  title: "iOS の掲載情報に他のモバイルプラットフォーム名がない"
+  summary: "ガイドライン 2.3.10 は、アプリやそのメタデータに他のモバイルプラットフォームや代替マーケットプレイスの名前を含めないよう求めています。"
+store.play.other-platform:
+  title: "Play の掲載情報が他のモバイルプラットフォームを前面に出していない"
+  summary: "Play は、説明でアプリを正確に説明するよう求めています。Play の掲載情報で iPhone、iPad、iOS、App Store に触れるのはリスクであり、自動的にリジェクトされるわけではありません。"
+store.future-promise:
+  title: "掲載テキストがまだない機能を約束していない"
+  summary: "ガイドライン 2.3.7 は、サブタイトルで検証できない製品の主張をするべきではないとしています。「近日公開」や「追加予定」といった表現は、プロモーションテキスト以外で指摘します。プロモーションテキストでは、Apple は今後の機能に触れることを認めています。"
+store.copyright-year:
+  title: "著作権の年が未来になっていない"
+  summary: "Apple は、著作権の欄は権利を取得した年から始めるとしています。スキャンした年より後の年はその年になりえません。古い年は誤りとして扱いません。"
+store.price-claims:
+  title: "掲載テキストにページですでに表示される価格を加えていない"
+  summary: "ガイドライン 2.3.7 は、メタデータに価格情報を詰め込まないよう求めています。Play も、タイトルで無料や割引率などのお得情報を宣伝するべきではないとしています。"
+store.keyword-stuffing:
+  title: "キーワードが重複しておらず、他のブランド名で埋められていない"
+  summary: "ガイドライン 2.3.7 は、商標登録された用語、人気アプリの名前、無関係な語句をキーワードに詰め込まないよう求めています。重複したキーワードや他の製品名がいくつかあることはリスクであり、それだけでリジェクトにはなりません。"
+store.locale-consistency:
+  title: "英語とトルコ語の掲載情報で同じ機能に触れている"
+  summary: "Apple はメタデータを言語ごとにローカライズします。英語とトルコ語の両方の説明がある場合、片方にしかない機能の言葉はリスクです。ディスクに一つの言語しかない場合、もう一方の言語は未確認のままです。"
+store.urls-reachable:
+  title: "ストアの掲載情報に書かれた URL が開く"
+  summary: "ガイドライン 2.1(a) は、提出物には完全に機能する URL を含めるよう求めています。掲載情報の URL はオンラインでスキャンしたときだけ取得します。オフラインでは未確認のままです。"
+store.ios.icon:
+  title: "App Store のアイコンは 1024×1024 でアルファなし"
+  summary: "iOS 用の Xcode の App Store アイコン枠は 1024×1024 の画像です。App Store Connect は、透明だったりアルファチャンネルを含んだりするアイコンを受け付けません。サイズを測れないファイルは未確認のままです。"
+store.ios.screenshots:
+  title: "スクリーンショットが対象デバイスの必要サイズに合っている"
+  summary: "App Store Connect では、iPad のみを対象とするプロジェクトを除き、iPhone の Dynamic Island 搭載機種のスクリーンショットが必要です。iPad のみの場合は 13 インチ iPad のサイズが必要です。スクリーンショットにアルファチャンネルは使えません。各サイズ 10 枚まで登録できます。仕様一覧にないサイズや、デバイスファミリーを読み取れなかったセットは未確認のままです。"
+store.play.icon:
+  title: "Play のアイコンは 512×512 の PNG"
+  summary: "Play では、アルファ付きの 512×512、32 ビット PNG のアイコンが必要で、ファイルサイズは 1024 KB 以下である必要があります。読み取れないファイルは未確認のままです。"
+store.play.feature-graphic:
+  title: "Play のフィーチャー グラフィックは 1024×500 でアルファなし"
+  summary: "Play では、アルファなしの JPEG または 24 ビット PNG で 1024×500 のフィーチャー グラフィックが必要です。読み取れないファイルは未確認のままです。"
+store.play.screenshots:
+  title: "Play のスマートフォン用スクリーンショットが公開されたサイズと枚数を満たしている"
+  summary: "Play では、スクリーンショットは 2 枚以上 8 枚以下が必要です。各辺は 320～3840 ピクセルで、長辺は短辺の 2 倍以下、アルファなしである必要があります。サイズを測れないファイルは未確認のままです。"
+artifact.drift:
+  title: "ビルド成果物がソースから読み取った値と一致している"
+  summary: "IPA、APK、AAB をプロジェクトと一緒にスキャンすると、targetSdk、AD_ID 権限、アプリのプライバシーマニフェストのトラッキングフラグ、カメラの利用目的の説明文を比較します。違いがあればリスクです。成果物に含まれていなかった値は未確認のままです。"
+sdk.manifest-label-mismatch:
+  title: "確認済みの SDK の開示内容がプライバシーマニフェストと食い違っている"
+  summary: "Apple は、プライバシーに関する回答に、アプリにコードが含まれるサードパーティのパートナーも含めるよう求めています。このナレッジベースのために開いたベンダーのページに、SDK がデータをサードパーティ広告に使う可能性があると書かれ、アプリのプライバシーマニフェストで NSPrivacyTracking が false の場合、その食い違いはリスクです。不明な SDK は行を追加しません。"
+sdk.answer-label-mismatch:
+  title: "確認済みの SDK の開示内容がプロジェクトの回答と食い違っている"
+  summary: "Play は、SDK のデータもデータ セーフティ セクションの対象になるとしています。プロジェクトが広告 ID を申告していないと回答し、確認済みの SDK の行にデバイス ID や広告 ID が挙がっている場合、その食い違いはリスクです。回答が空欄の場合は未確認のままです。"
+apple.restore-purchases:
+  title: "復元可能な App 内課金には復元の操作が必要"
+  summary: "ガイドライン 3.1.1 は、復元可能な App 内課金には必ず復元の仕組みを用意するよう求めており、Apple のサブスクリプションのページでは、登録画面に現在の登録者がサインインまたは購入を復元できる手段を含める必要があるとしています。このチェックは、ソース内の restorePurchases の呼び出しや購入の復元のラベル、または申告を探します。"
+  next: "SDK の復元メソッド（RevenueCat の場合は Purchases.restorePurchases()）を呼ぶ「購入を復元」ボタンを追加するか、.launchymind/project.yaml に attestations.payments.restore-control を設定してください。"
+apple.subscription-paywall-links:
+  title: "サブスクリプションの登録画面には利用規約とプライバシーポリシーへのリンクが必要"
+  summary: "Apple の自動更新サブスクリプションのページには、登録画面に含めるべきもの、つまりサブスクリプションの名前と期間、更新時の価格全額、購入を復元する手段が挙げられています。また、アプリと App Store のメタデータには利用規約とプライバシーポリシーへのリンクを含める必要があるとしています。このチェックは、ソース内の利用規約や EULA の文言とアプリ内のプライバシー URL、または申告を探します。"
+  next: "ペイウォールに利用規約（または Apple の標準 EULA）とプライバシーポリシーへのリンクを置くか、手作業で確認してから attestations.payments.paywall-links を設定してください。"
+google.subscription-offer-terms:
+  title: "Play の定期購入では価格、請求期間、自動更新を明示する必要がある"
+  summary: "Google Play の定期購入に関するポリシーでは、オファーの条件、定期購入の料金、請求サイクルの頻度、自動更新の条件、アプリの利用に定期購入が必要かどうかを、明確かつ明示的に開示する必要があるとしています。このチェックは、ソース内の価格、請求期間、自動更新の文言、または定期購入の条件の申告を探します。"
+  next: "登録ボタンの近くに価格、請求期間、自動更新されることを表示するか、ペイウォールを手作業で確認してから attestations.apple.subscription-terms を設定してください。"
+revenuecat.secret-key-in-app:
+  title: "RevenueCat のシークレット API キーをアプリに含めてはならない"
+  summary: "RevenueCat によれば、シークレット API キーは sk_ で始まり、機密として扱い、自社のサーバーにのみ保存するべきもので、SDK の設定には公開 SDK キーを使います。アプリのソースから sk_ で始まる文字列リテラルを検索しました。公開 SDK キーは問題ありません。"
+  next: "アプリから sk_ キーを削除し、RevenueCat のダッシュボードで無効化して、SDK はアプリ固有の公開キーで設定してください。"
+revenuecat.products-configured:
+  title: "RevenueCat の商品とオファリングがコードと一致している"
+  summary: "REVENUECAT_API_KEY が設定されていると、LaunchyMind は RevenueCat REST API v2（読み取り専用）から商品、エンタイトルメント、オファリングを読み取り、ストアの商品 ID とコードに書かれた商品 ID を比較します。キーがなければこのルールは実行されません。"
+  next: "不足している商品を RevenueCat に追加してエンタイトルメントとオファリングに紐付けるか、コード内の商品 ID を修正してください。"
+google.data-safety-declaration-sdks:
+  title: "ローカルのデータ セーフティ申告が SDK の収集内容を網羅している"
+  summary: "Google は、アプリで使うライブラリや SDK がデバイス外に送信するユーザーデータもデータ セーフティ セクションに含める必要があるとしています。データ セーフティ用の Play API は書き込み専用のため、LaunchyMind はプロジェクトの launchymind.datasafety.json と、確認済みの SDK の行が挙げる Play のデータの種類を比較します。Play の種類が一意に決まらない行は手作業での対応付け用に一覧にし、失敗にはしません。"
+  next: "不足しているデータの種類を launchymind.datasafety.json と Play Console のデータ セーフティ セクションに追加するか、ご自身の設定ではそれらを収集しないことを SDK ベンダーに確認してください。"
+build.native-build:
+  title: "要求されたネイティブビルドが実行され、成果物が読み取られた"
+  summary: "scan --build を使うと、LaunchyMind はプロジェクトの一時コピーでデバッグ用 APK と iOS シミュレータ用アプリをビルドし、スキャンした成果物と同じように読み取ります。ビルドの失敗はリスクです。ツールチェーンがなくてビルドが実行されなかった場合は未確認のままで、合格にはなりません。"
+  next: "レポートのビルドログの行を読み、ビルドを直してから scan --build をもう一度実行してください。ビルドが実行されなかった環境には Flutter、JDK、Xcode をインストールしてください。"
+apple.launch-crash:
+  title: "iOS ビルドがシミュレータでクラッシュせずに起動する"
+  summary: "ガイドライン 2.1 は、クラッシュしたり明らかな技術的問題があったりするバイナリを Apple はリジェクトするとしています。launchymind run または scan --live では、起動済みのシミュレータに IPA をインストールして起動し、数秒後もアプリが動作し続けている必要があります。Xcode や起動済みのシミュレータがなければ未確認のままです。"
+  next: "シミュレータのクラッシュレポートか Xcode のコンソールを開き、クラッシュを直してから、もう一度チェックを実行してください。"
+google.launch-crash:
+  title: "Android ビルドがデバイスでクラッシュせずに起動する"
+  summary: "Google Play の最低限の機能に関するポリシーでは、クラッシュ、強制終了、フリーズなど、正常に機能しないアプリは認められていません。launchymind run または scan --live では、adb で APK をインストールして起動し、数秒後もプロセスが動作し続け、クラッシュログにアプリ名が出ていない必要があります。adb や接続済みのデバイスがなければ未確認のままです。"
+  next: "証拠に含まれるクラッシュの行を読むか adb logcat -b crash を実行し、クラッシュを直してから、もう一度チェックを実行してください。"
+legal.accessibility.element-labels:
+  title: "操作できる要素にはアクセシビリティラベルを付けるべき"
+  summary: "Android のアクセシビリティ ガイドでは、各 UI 要素の目的の説明を、通常は contentDescription に含めるよう求めており、Apple の VoiceOver 評価基準では、画面上の重要な項目には VoiceOver が読み上げられるラベルや説明が必要だとしています。このチェックは、ソース内のラベル用 API（Semantics、semanticLabel、accessibilityLabel、aria-label、contentDescription）を探すだけです。一つ見つかっても、すべての要素にラベルがあるとは限りません。"
+  next: "アイコンボタンや画像にラベルを付け（Flutter は Semantics か semanticLabel、React Native は accessibilityLabel、SwiftUI は .accessibilityLabel、Android は contentDescription）、VoiceOver と TalkBack で確認してください。"
+legal.accessibility.nutrition-labels-answered:
+  title: "App Store のアクセシビリティ栄養ラベルを検討済み"
+  summary: "Apple によれば、アクセシビリティ栄養ラベル（Accessibility Nutrition Labels）は当初は任意で、いずれ新規アプリやアップデートの提出にはアクセシビリティ対応の詳細の共有が必要になります。このチェックは、プロジェクトが attestations.apple.accessibility-labels に回答したかどうかだけを確認します。現時点ではどちらの回答でも合格です。"
+legal.accessibility.eaa-scope-answered:
+  title: "欧州アクセシビリティ法がアプリに適用されるかどうかが回答されている"
+  summary: "第 2 条第 2 項は、2025 年 6 月 28 日以降に消費者に提供される、指令の対象となるサービスを挙げています。電子通信、視聴覚メディアへのアクセス、旅客輸送のモバイルアプリ、消費者向け銀行サービス、電子書籍、電子商取引などです。第 4 条第 5 項は、サービスを提供する零細企業を適用除外としています。多くのゲームはこの一覧に含まれません。このチェックは、プロジェクトが attestations.eaa.applies に回答したかどうかだけを確認します。適用範囲を判断するものではなく、法的助言でもありません。"
+legal.accessibility.eaa-information:
+  title: "対象サービスがアクセシビリティ情報を公開している"
+  summary: "第 13 条は、サービス提供者がアクセシビリティ要件に従ってサービスを設計・提供し、附属書 V の情報を作成し、サービスが要件をどう満たすかを説明し、その情報をアクセシブルな形で公開するとしています。このチェックはプロジェクトが同法の適用ありと回答した場合にのみ実行され、その情報が公開されているか（attestations.eaa.information）を確認します。法的助言ではありません。"
+legal.apple.kids-parental-gate:
+  title: "キッズカテゴリの購入や外部リンクがペアレンタルゲートの内側にある"
+  summary: "ガイドライン 1.3 は、キッズカテゴリのアプリには、ペアレンタルゲートの内側の指定エリアに限る場合を除き、アプリ外へのリンク、購入の機会、その他子どもの気を散らすものを含めてはならないとしています。このアプリには購入があります。このチェックは、購入フローがペアレンタルゲートの内側にあるとプロジェクトが申告しているか（attestations.apple.kids-parental-gate）を確認します。"
+legal.apple.kids-third-party-analytics:
+  title: "キッズカテゴリのアプリにはサードパーティの分析を含めるべきではない"
+  summary: "ガイドライン 1.3 と 5.1.4 は、キッズカテゴリのアプリにはサードパーティの分析を含めるべきではないとしています。サービスが IDFA や、子ども、その位置情報、デバイスに関する識別可能な情報を収集も送信もしない場合に限り、例外的に認められることがあります。依存関係に分析 SDK があります。プロジェクトが例外に該当すると申告しない限り（attestations.apple.kids-analytics-exception）、このチェックは失敗します。"
+legal.coppa.notice-answered:
+  title: "COPPA の通知に関する質問に回答がある"
+  summary: "16 CFR 312.3 は、子ども向けサービスの運営者は通常、子どもから個人情報を収集する前に通知を行い、検証可能な保護者の同意を得る必要があるとしています。このチェックは、通知の手順を済ませたとプロジェクトが回答したかどうかを記録するだけです。アプリが子ども向けであると判断するものではなく、法的助言でもありません。"
+legal.dsa.trader-answered:
+  title: "EU の事業者ステータスが回答されている"
+  summary: "Apple によれば、DSA 第 30 条と第 31 条により Apple は事業者の連絡先情報を収集する必要があり、あなたが事業者かどうかを Apple は判断できません。このチェックは、プロジェクトが「はい」か「いいえ」で回答することだけを求めます。事業者ステータスを判断するものではなく、法的助言でもありません。"
+legal.gdpr.notice-contents:
+  title: "プライバシーポリシーに第 13 条の情報を記載するべき"
+  summary: "第 13 条は、個人データを収集する際に管理者が提供すべき情報を挙げています。管理者の身元と連絡先、目的と法的根拠、受領者、第三国への移転、保存期間、データ主体の権利、監督機関に苦情を申し立てる権利です。このチェックは、公開中のプライバシーページで各項目に当たる文言を探します。語句の照合であって法的な審査ではなく、法的助言でもありません。"
+  next: "第 13 条の不足項目をプライバシーポリシーに追加してください。管理者と連絡先、目的と法的根拠、受領者、第三国への移転、保存期間、権利、苦情を申し立てる権利です。"
+legal.gdpr.lawful-basis-answered:
+  title: "処理目的ごとの法的根拠が記録されている"
+  summary: "第 6 条第 1 項は、挙げられた根拠のうち少なくとも一つが当てはまる場合にのみ処理は適法であるとし、第 13 条第 1 項 (c) は法的根拠をデータ主体に示すよう求めています。このチェックは、目的ごとに根拠を選んだことをプロジェクトが記録したか（attestations.gdpr.lawful-basis）だけを確認します。根拠を選ぶものではなく、法的助言でもありません。"
+legal.gdpr.consent-withdrawal:
+  title: "同意が根拠の場合、ポリシーで撤回方法を説明している"
+  summary: "第 7 条第 3 項は、データ主体にいつでも同意を撤回する権利を与え、同意の前にそのことを知らされるべきこと、撤回は同意と同じくらい簡単であるべきことを定めています。このチェックは、一部の処理が同意に基づくとプロジェクトが回答した場合、またはアプリが同意フォーム（UMP）をリクエストする場合に実行されます。公開中のプライバシーページで撤回に関する文言を探します。法的助言ではありません。"
+legal.gdpr.erasure-path:
+  title: "アカウントを持つユーザーが消去を求める手段がある"
+  summary: "第 17 条は、所定の事由のいずれかに該当する場合、データ主体に個人データを不当な遅滞なく消去させる権利を与え、第 13 条第 2 項 (b) はその権利があることを知らせるよう求めています。アプリにアカウントがある場合、このチェックはアプリ内の削除手順か、申告されたアカウント削除 URL を探します。どの事由に該当するかを判断するものではなく、法的助言でもありません。"
+legal.gdpr.processors-answered:
+  title: "サードパーティ SDK の処理者条件が記録されている"
+  summary: "第 28 条は、管理者は十分な保証を示す処理者のみを利用でき、処理者による処理は契約その他の法律行為によって規律されるとしています。このアプリには広告、分析、トラッキング、通知、決済の SDK があります。このチェックは、各ベンダーの役割と条件を確認したことをプロジェクトが記録したか（attestations.gdpr.processors）を確認します。SDK ベンダーの中には処理者ではなく独立した管理者として行動するものもあり、その判断は開発者に委ねられます。法的助言ではありません。"
+legal.gdpr.transfers-disclosed:
+  title: "EU または EEA 域外への移転が開示されている"
+  summary: "第 44 条は第 V 章の条件の下でのみ第三国への移転を認め、第 13 条第 1 項 (f) は予定している移転と、十分性認定または適切な保護措置をデータ主体に伝えるよう求めています。このアプリはサードパーティの SDK を含んでいます。このチェックは、公開中のプライバシーページの移転に関する文言、または移転がないというプロジェクトの申告（attestations.gdpr.transfers）を探します。法的助言ではありません。"
+legal.google.families-ad-id:
+  title: "子ども向けの Play アプリは広告 ID を保持するべきではない"
+  summary: "ファミリー ポリシーでは、子どものみを対象とするアプリは Android API 33 以上で AD_ID 権限をリクエストするべきではなく、子どもの広告 ID を送信してはならないとしています。プロジェクトの回答だけではアプリが子どものみを対象としているとは証明できないため、これはリスクであってリジェクトではなく、法的助言でもありません。"
+legal.kvkk.consent-answered:
+  title: "KVKK の明示的同意に関する質問に回答している必要がある"
+  summary: "根拠は通知義務に関する KVKK の告示です。このチェックは、プロジェクトが kvkk.explicitConsent に回答したかどうかだけを確認します。処理に同意が必要かどうかを判断するものではなく、法的助言でもありません。"

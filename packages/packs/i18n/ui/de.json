@@ -49,9 +49,9 @@
   "html.none": "Keine.",
   "html.generated": "Erstellt am {date}. Diese Datei lädt keine externen Skripte oder Stile.",
   "html.quote_note": "Regelquellen werden in ihrer Originalsprache zitiert.",
-  "labels.draft": "ENTWURF. Dies ist kein fertiges App Privacy- oder Data safety-Formular, keine Store-Freigabe und keine Rechtsberatung. Jede Zeile enthält nur, was eine Anbieterseite über dieses SDK sagt.",
+  "labels.draft": "ENTWURF. Dies ist kein fertiges Formular für den App-Datenschutz oder die Datensicherheit, keine Store-Freigabe und keine Rechtsberatung. Jede Zeile enthält nur, was eine Anbieterseite über dieses SDK sagt.",
   "labels.apple": "App Store-Entwurf",
-  "labels.play": "Play Data safety-Entwurf",
+  "labels.play": "Entwurf für die Datensicherheit bei Play",
   "labels.no_row": "Keine geprüfte Zeile.",
   "labels.unknown": "Unbekannte SDKs fügen keine Entwurfszeile hinzu.",
   "labels.tracking": "Tracking",
@@ -85,5 +85,7 @@
   "cstatus.found": "gefunden",
   "cstatus.not-found": "nicht gefunden",
   "cstatus.not-checked": "nicht geprüft",
-  "cstatus.not-applicable": "nicht anwendbar"
+  "cstatus.not-applicable": "nicht anwendbar",
+  "why.unchecked": "Das ließ sich aus dem Projekt nicht prüfen.",
+  "why.ready": "Jede anwendbare Regel wurde bestanden. Das ist trotzdem keine Store-Freigabe."
 }

@@ -32,4 +32,4 @@ Exit codes: `0` under the `--fail-on` line (the default is `reject`, so risky is
 
 `--lang <locale>` picks the language. Without it, the first set of `LC_ALL`, `LC_MESSAGES`, and `LANG` decides; if none is set, the VS Code display language; otherwise English. Supported: en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar (right-to-left in the HTML report and dashboard), ru. Rule sources are quoted in their original language, and store terms such as App Store Connect, Play Console, App Privacy, and Data safety stay as the stores write them. A rule explanation without a translation is shown in English with a note.
 
-Supported projects are Flutter, React Native, Expo, native iOS, native Android, and Unity. See the capability matrix in the README. This release is `1.0.0`. The owner publishes it to npm; until then npm has `1.0.0-rc.1`.
+Supported projects are Flutter, React Native, Expo, native iOS, native Android, and Unity. See the capability matrix in the README. This release is `1.0.1`. The owner publishes it to npm; until then npm has `1.0.0`.

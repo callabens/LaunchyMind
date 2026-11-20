@@ -4,7 +4,7 @@ import { parse } from "yaml";
 import { DISCLAIMERS, type Finding, type LaunchReport } from "../../core/src/index.ts";
 import { DEFAULT_LOCALE, findI18nDir, isRtl, pickText, translator, type Locale, type Translate } from "../../i18n/src/index.ts";
 
-type RuleTexts = Record<string, { summary?: string; next?: string }>;
+type RuleTexts = Record<string, { title?: string; summary?: string; next?: string }>;
 const overlays = new Map<Locale, RuleTexts>();
 
 /** Optional per-locale rule explanations in packages/packs/i18n/rules/<locale>.yaml. */
@@ -17,11 +17,11 @@ export function ruleOverlay(locale: Locale): RuleTexts {
   return loaded;
 }
 
-export function localizedFinding(finding: Finding, locale: Locale): { summary: string; next: string | null; fallback: boolean } {
-  const overlay = ruleOverlay(locale)[finding.ruleId] ?? {};
+export function localizedFinding(finding: Finding, locale: Locale): { title: string; summary: string; next: string | null; fallback: boolean } {
+  const overlay = locale === DEFAULT_LOCALE ? {} : ruleOverlay(locale)[finding.ruleId] ?? {};
   const summary = pickText({ en: finding.summaryEn, tr: finding.summaryTr, [locale]: locale === "tr" ? finding.summaryTr : overlay.summary }, locale);
   const next = pickText({ en: finding.nextEn, tr: finding.nextTr, [locale]: locale === "tr" ? finding.nextTr : overlay.next }, locale);
-  return { summary: summary?.text ?? finding.summaryEn, next: next?.text ?? null, fallback: Boolean(summary?.fallback || next?.fallback) };
+  return { title: overlay.title ?? finding.title, summary: summary?.text ?? finding.summaryEn, next: next?.text ?? null, fallback: Boolean(summary?.fallback || next?.fallback || (locale !== DEFAULT_LOCALE && !overlay.title)) };
 }
 
 export function verdictLabel(report: Pick<LaunchReport, "verdict" | "verdictHeadline">, t: Translate): string {
@@ -124,7 +124,7 @@ export function renderHtml(report: LaunchReport, lang: Locale = DEFAULT_LOCALE, 
   <p class="verdict ${verdictClass}">${esc(verdictLabel(report, t))}</p>
   ${report.disclaimers.map((item) => `<p class="disclaimer">${esc(disclaimer(item, t))}</p>`).join("\n  ")}
   <h2>${esc(t("html.why"))}</h2>
-  <ul>${report.verdictBecause.map((item) => `<li dir="auto">${esc(item)}</li>`).join("")}</ul>
+  <ul>${whyLines(report, lang, t).map((item) => `<li dir="auto">${esc(item)}</li>`).join("")}</ul>
   <h2>${esc(t("html.capabilities"))}</h2>
   ${caps ? `<ul>${caps}</ul>` : `<p>${esc(t("html.no_capabilities"))}</p>`}
   <h2>${esc(t("html.findings"))}</h2>
@@ -151,7 +151,7 @@ function findingHtml(finding: Finding, lang: Locale, t: Translate): string {
   const textLang = text.fallback ? ` lang="en" dir="ltr"` : "";
   return `<article>
   <p class="tag ${esc(finding.status)}">${esc(t(`status.${finding.status}`))} · ${esc(t(`severity.${finding.severity}`))} · <bdi>${esc(finding.ruleId)}</bdi>${finding.stale ? ` · ${esc(t("finding.stale"))}` : ""}</p>
-  <h3>${esc(finding.title)}</h3>
+  <h3>${esc(text.title)}</h3>
   <p${textLang}>${esc(text.summary)}</p>
   ${text.next ? `<p${textLang}>${esc(t("finding.next"))}: ${esc(text.next)}</p>` : ""}
   ${text.fallback ? `<p class="fallback">${esc(t("finding.english_only"))}</p>` : ""}
@@ -164,7 +164,7 @@ function findingHtml(finding: Finding, lang: Locale, t: Translate): string {
 function formatFinding(finding: Finding, lang: Locale, t: Translate): string[] {
   const text = localizedFinding(finding, lang);
   const lines = [
-    `${t(`status.${finding.status}`)}  ${t(`severity.${finding.severity}`)}  ${finding.title}`,
+    `${t(`status.${finding.status}`)}  ${t(`severity.${finding.severity}`)}  ${text.title}`,
     `  ${text.summary}`,
     ...(text.next ? [`  ${t("finding.next")}: ${text.next}`] : []),
     ...(text.fallback ? [`  (${t("finding.english_only")})`] : []),
@@ -180,6 +180,29 @@ function formatFinding(finding: Finding, lang: Locale, t: Translate): string[] {
     lines.push(`  ${t("finding.evidence")}: ${where} — ${item.detail}`);
   }
   return lines;
+}
+
+/**
+ * The verdict reasons in the report language. The rule engine wrote them in
+ * English from the same findings; this only re-renders that list.
+ */
+export function whyLines(report: LaunchReport, lang: Locale, t: Translate): string[] {
+  if (lang === DEFAULT_LOCALE) return report.verdictBecause;
+  const applicable = report.findings.filter((item) => item.status !== "not_applicable");
+  const blockers = applicable.filter((item) => item.status === "fail" && item.severity === "blocker");
+  const sentence = (finding: Finding, unchecked: boolean) => {
+    const text = localizedFinding(finding, lang);
+    return `${unchecked ? `${t("why.unchecked")} ` : ""}${text.summary}${text.next ? ` ${t("finding.next")}: ${text.next}` : ""}`;
+  };
+  if (report.verdict === "reject" && blockers.length > 0) return blockers.map((item) => sentence(item, false));
+  if (report.verdict === "ready") return [t("why.ready")];
+  const lines = [
+    ...applicable.filter((item) => item.status === "fail" && item.severity === "risk").map((item) => sentence(item, false)),
+    ...applicable.filter((item) => item.status === "unchecked").map((item) => sentence(item, true)),
+  ];
+  const known = new Set(report.findings.flatMap((item) => [item.summaryEn]));
+  for (const item of report.verdictBecause) if (![...known].some((summary) => item.includes(summary))) lines.push(item);
+  return lines.length > 0 ? lines : report.verdictBecause;
 }
 
 function deviceLines(report: LaunchReport, t: Translate): string[] {

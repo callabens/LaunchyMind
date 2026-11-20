@@ -1,18 +1,28 @@
 # Changelog
 
-## 1.1.0 (unreleased): live device check
+## 1.0.1
+
+### Rule explanations in 12 languages
+
+- Every shipped rule (91 in the core and legal packs) now has its title, explanation, and next step in German, French, Spanish, Brazilian Portuguese, Italian, Japanese, Korean, Simplified Chinese, Arabic, and Russian, in `packages/packs/i18n/rules/<locale>.yaml`. Turkish gains rule titles. Reports in those languages no longer fall back to English for core and legal rules.
+- Store terms follow the name each store uses in that language (for example Datensicherheit, データ セーフティ, أمان البيانات for Data safety; App-Datenschutz, Appのプライバシー for App Privacy). Rule ids, guideline numbers, file names, keys, identifiers, and URLs are unchanged, and source quotes stay in their original language.
+- The terminal and HTML reports show the translated rule title. The "Why" list is rebuilt from the same findings in the report language; the verdict itself is unchanged and still comes only from the rule engine.
+- `tests/i18n.test.ts` fails when a locale file misses a rule, a title, a summary, or a next step that English has, or adds one English does not.
+- Core rule pack version 2026.11.20.
+
+### Live device check
 
 - `launchymind run <apk|ipa>` and `scan --live` install the artifact on the first adb device or a booted iOS simulator, launch it once, and record a screenshot embedded in the HTML report.
 - New blocker rules `apple.launch-crash` (Guideline 2.1) and `google.launch-crash` (Play Minimum Functionality). Without adb, Xcode, or a device they stay unchecked.
 - Android also reads the first screen's UI tree for privacy, support, and account-deletion text and for a launch-time permission dialog. These are evidence, not verdict inputs; "not found on the first screen" is never a failure. iOS screen text and the ATT prompt are not checked.
 - Artifacts now expose the bundle id or package name and the permission or purpose-string keys.
 
-## Unreleased: languages
+### Languages
 
 - Interface strings come from `packages/packs/i18n/ui/<locale>.json` for en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar, and ru. A test fails when a locale misses a key or a placeholder.
 - `--lang <locale>` on `scan`, `labels`, `history`, and `dashboard`. Without it, the first set of LC_ALL, LC_MESSAGES, LANG decides, then the VS Code display language, then English. The editor extension passes its display language.
 - The HTML report and the dashboard set `lang` and `dir`; Arabic is right-to-left. Rule ids, URLs, file paths, and source quotes stay left-to-right and in their original language.
-- Rule explanations exist in English and Turkish. Other locales can add `packages/packs/i18n/rules/<locale>.yaml`; until a rule has one, its explanation is shown in English with a note. German, Spanish, French, and Japanese start with the privacy-policy rule.
+- Rule explanation overlays in `packages/packs/i18n/rules/<locale>.yaml`. A rule without one (for example a community or project rule) is shown in English with a note.
 - Getting-started pages in German, Spanish, and Japanese; the English and Turkish pages describe `--lang`.
 
 ## 1.0.0

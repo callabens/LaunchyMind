@@ -1,7 +1,7 @@
 format: 1
 id: launchymind.core
 name: LaunchyMind Core Rules
-version: 2026.11.19
+version: 2026.11.20
 license: Apache-2.0
 engine: ">=0.1.0-dev.1"
 authors:

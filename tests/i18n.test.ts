@@ -32,10 +32,15 @@ test("every locale catalog has exactly the English keys and the same placeholder
   }
 });
 
-test("store terms stay as the stores write them", () => {
+test("store terms follow the name each store uses in that language", () => {
+  const dataSafety: Record<string, RegExp> = {
+    en: /Data safety/, tr: /Veri güvenliği/, de: /Datensicherheit/, fr: /Sécurité des données/, es: /Seguridad de los datos/,
+    "pt-BR": /Segurança dos dados/, it: /Sicurezza dei dati/, ja: /データ セーフティ/, ko: /데이터 보안/, "zh-Hans": /数据安全/,
+    ar: /أمان البيانات/, ru: /Безопасность данных/,
+  };
   for (const locale of LOCALES) {
     const t = translator(locale);
-    assert.match(t("labels.play"), /Data safety/, locale);
+    assert.match(t("labels.play"), dataSafety[locale] ?? /$^/, locale);
     assert.match(t("labels.apple"), /App Store/, locale);
   }
 });
@@ -76,7 +81,7 @@ test("translated reports keep the verdict, rule ids, and source URLs; untranslat
       assert.ok(text.includes(finding.ruleId), `${locale} ${finding.ruleId}`);
       assert.ok(text.includes(finding.sourceUrl), `${locale} ${finding.sourceUrl}`);
     }
-    if (locale !== "en" && locale !== "tr") assert.ok(text.includes(t("finding.english_only")), locale);
+    assert.equal(text.includes(t("finding.english_only")), false, `${locale} should not fall back to English for core rules`);
   }
   assert.equal(en.includes(translator("en")("finding.english_only")), false);
   const tr = renderTerminal(report, "tr");
@@ -121,8 +126,49 @@ test("a rule overlay replaces the English explanation for that locale only", asy
   const de = localizedFinding(finding, "de");
   assert.equal(de.fallback, false);
   assert.match(de.summary, /Richtlinie 5\.1\.1\(i\)/);
-  const ko = localizedFinding(finding, "ko");
+  const unknown = { ...finding, ruleId: "community.not-translated", title: "Community rule" };
+  const ko = localizedFinding(unknown, "ko");
   assert.equal(ko.fallback, true);
   assert.equal(ko.summary, "English summary text.");
+  assert.equal(ko.title, "Community rule");
+  assert.equal(localizedFinding(unknown, "en").fallback, false);
   assert.equal(localizedFinding(finding, "tr").summary, "Türkçe özet.");
+});
+
+async function shippedRules(): Promise<Array<{ id: string; title: string; next: boolean }>> {
+  const legalDir = join(findCorePackDir(), "..", "legal");
+  const packs = [await loadPack(findCorePackDir())];
+  for (const legal of await readdir(legalDir)) packs.push(await loadPack(join(legalDir, legal)));
+  return packs.flatMap((pack) => pack.rules.filter((rule) => rule.enabled).map((rule) => ({ id: rule.id, title: rule.title, next: Boolean(rule.next?.en) })));
+}
+
+test("every shipped rule is explained in every locale (missing keys fail)", async () => {
+  const rules = await shippedRules();
+  assert.ok(rules.length >= 80, `found ${rules.length} rules`);
+  const placeholders = (text: string) => [...text.matchAll(/\{[^}]+\}/g)].map((match) => match[0]).sort().join(",");
+  for (const locale of LOCALES.filter((item) => item !== "en")) {
+    const raw = await readFile(join(findI18nDir(), "rules", `${locale}.yaml`), "utf8");
+    const overlay = (parse(raw) ?? {}) as Record<string, Record<string, unknown>>;
+    for (const rule of rules) {
+      const entry = overlay[rule.id];
+      assert.ok(entry, `${locale}: ${rule.id} is missing`);
+      const needed = locale === "tr" ? ["title"] : ["title", "summary", ...(rule.next ? ["next"] : [])];
+      for (const key of needed) {
+        assert.equal(typeof entry[key], "string", `${locale}: ${rule.id}.${key} is missing`);
+        assert.ok((entry[key] as string).trim().length > 0, `${locale}: ${rule.id}.${key} is empty`);
+      }
+      if (!rule.next) assert.equal(entry.next, undefined, `${locale}: ${rule.id}.next has no English source`);
+      assert.equal(placeholders(String(entry.title)), placeholders(rule.title), `${locale}: ${rule.id} title placeholders`);
+    }
+  }
+});
+
+test("translated titles reach the terminal and HTML reports", async () => {
+  const report = await runScan(join(repo, "fixtures/revenuecat/flutter-bad"), { offline: true, now, env: {} });
+  const failing = report.findings.find((item) => item.status === "fail");
+  assert.ok(failing);
+  const de = parse(await readFile(join(findI18nDir(), "rules", "de.yaml"), "utf8")) as Record<string, { title: string; summary: string }>;
+  const title = de[failing.ruleId]?.title ?? "missing";
+  assert.ok(renderTerminal(report, "de").includes(title));
+  assert.ok(renderHtml(report, "de").includes(title.replace(/&/g, "&amp;").replace(/</g, "&lt;")));
 });

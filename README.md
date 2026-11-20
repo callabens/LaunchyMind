@@ -4,7 +4,7 @@ LaunchyMind is a local-first, open-source pre-release readiness checker for mobi
 
 Every finding cites evidence (a file and line, or a live URL) and the rule's source link and last-verified date. The verdict is computed by a deterministic rule engine. The model in an agent session does not decide it.
 
-**Status: 1.0.0.** npm has `@callabens/launchymind@1.0.0-rc.1`; the owner publishes 1.0.0 by hand. It is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy, KVKK, GDPR, or accessibility finding.
+**Status: 1.0.1.** npm has `@callabens/launchymind@1.0.0`; the owner publishes 1.0.1 by hand. It is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy, KVKK, GDPR, or accessibility finding.
 
 ## Capability matrix
 

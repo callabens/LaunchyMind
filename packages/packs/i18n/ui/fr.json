@@ -49,9 +49,9 @@
   "html.none": "Aucune.",
   "html.generated": "Généré le {date}. Ce fichier ne charge aucun script ni style distant.",
   "html.quote_note": "Les sources des règles sont citées dans leur langue d'origine.",
-  "labels.draft": "BROUILLON. Ceci n'est pas un formulaire App Privacy ou Data safety terminé, ni une approbation du store, ni un conseil juridique. Chaque ligne reprend seulement ce qu'une page éditeur dit de ce SDK.",
+  "labels.draft": "BROUILLON. Ceci n'est pas un formulaire Confidentialité de l'app ou Sécurité des données terminé, ni une approbation du store, ni un conseil juridique. Chaque ligne reprend seulement ce qu'une page éditeur dit de ce SDK.",
   "labels.apple": "Brouillon App Store",
-  "labels.play": "Brouillon Play Data safety",
+  "labels.play": "Brouillon de la section Sécurité des données de Play",
   "labels.no_row": "Aucune ligne vérifiée.",
   "labels.unknown": "Les SDK inconnus n'ajoutent aucune ligne.",
   "labels.tracking": "suivi",
@@ -85,5 +85,7 @@
   "cstatus.found": "trouvé",
   "cstatus.not-found": "introuvable",
   "cstatus.not-checked": "non vérifié",
-  "cstatus.not-applicable": "non applicable"
+  "cstatus.not-applicable": "non applicable",
+  "why.unchecked": "Impossible de le vérifier à partir du projet.",
+  "why.ready": "Toutes les règles applicables sont réussies. Ce n'est toujours pas une approbation du store."
 }

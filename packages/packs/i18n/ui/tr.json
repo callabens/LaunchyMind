@@ -49,9 +49,9 @@
   "html.none": "Yok.",
   "html.generated": "{date} tarihinde oluşturuldu. Bu dosya uzak betik veya stil yüklemez.",
   "html.quote_note": "Kural kaynakları özgün dillerinde alıntılanır.",
-  "labels.draft": "TASLAK. Bu, bitmiş bir App Privacy veya Data safety formu, mağaza onayı veya hukuk görüşü değildir. Her satır yalnızca bir satıcının sayfasında o SDK için yazılan bilgidir.",
+  "labels.draft": "TASLAK. Bu, bitmiş bir Uygulama Gizliliği veya Veri güvenliği formu, mağaza onayı veya hukuk görüşü değildir. Her satır yalnızca bir satıcının sayfasında o SDK için yazılan bilgidir.",
   "labels.apple": "App Store taslağı",
-  "labels.play": "Play Data safety taslağı",
+  "labels.play": "Play Veri güvenliği taslağı",
   "labels.no_row": "Doğrulanmış bir satır yok.",
   "labels.unknown": "Bilinmeyen SDK'lar taslağa satır eklemez.",
   "labels.tracking": "izleme",
@@ -85,5 +85,7 @@
   "cstatus.found": "bulundu",
   "cstatus.not-found": "bulunamadı",
   "cstatus.not-checked": "kontrol edilmedi",
-  "cstatus.not-applicable": "uygulanmaz"
+  "cstatus.not-applicable": "uygulanmaz",
+  "why.unchecked": "Bu, projeden kontrol edilemedi.",
+  "why.ready": "Uygulanabilir her kural geçti. Bu yine de mağaza onayı değildir."
 }

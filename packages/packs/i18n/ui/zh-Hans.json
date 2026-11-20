@@ -49,9 +49,9 @@
   "html.none": "无。",
   "html.generated": "生成于 {date}。此文件不加载远程脚本或样式。",
   "html.quote_note": "规则来源以原文语言引用。",
-  "labels.draft": "草稿。这不是已完成的 App Privacy 或 Data safety 表单，不是商店审核通过，也不是法律意见。每一行只是供应商页面对该 SDK 的说明。",
+  "labels.draft": "草稿。这不是已完成的 App 隐私或数据安全表单，不是商店审核通过，也不是法律意见。每一行只是供应商页面对该 SDK 的说明。",
   "labels.apple": "App Store 草稿",
-  "labels.play": "Play Data safety 草稿",
+  "labels.play": "Play 数据安全草稿",
   "labels.no_row": "没有已核实的行。",
   "labels.unknown": "未知 SDK 不会添加草稿行。",
   "labels.tracking": "跟踪",
@@ -85,5 +85,7 @@
   "cstatus.found": "已找到",
   "cstatus.not-found": "未找到",
   "cstatus.not-checked": "未检查",
-  "cstatus.not-applicable": "不适用"
+  "cstatus.not-applicable": "不适用",
+  "why.unchecked": "无法从项目中检查这一点。",
+  "why.ready": "所有适用规则均已通过。但这仍然不是商店审核通过。"
 }

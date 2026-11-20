@@ -49,9 +49,9 @@
   "html.none": "Nenhuma.",
   "html.generated": "Gerado em {date}. Este arquivo não carrega scripts nem estilos remotos.",
   "html.quote_note": "As fontes das regras são citadas no idioma original.",
-  "labels.draft": "RASCUNHO. Isto não é um formulário App Privacy ou Data safety concluído, nem aprovação da loja, nem aconselhamento jurídico. Cada linha é apenas o que a página de um fornecedor diz sobre esse SDK.",
+  "labels.draft": "RASCUNHO. Isto não é um formulário de Privacidade do app ou Segurança dos dados concluído, nem aprovação da loja, nem aconselhamento jurídico. Cada linha é apenas o que a página de um fornecedor diz sobre esse SDK.",
   "labels.apple": "Rascunho da App Store",
-  "labels.play": "Rascunho do Play Data safety",
+  "labels.play": "Rascunho da seção Segurança dos dados do Play",
   "labels.no_row": "Nenhuma linha verificada.",
   "labels.unknown": "SDKs desconhecidos não adicionam linhas.",
   "labels.tracking": "rastreamento",
@@ -85,5 +85,7 @@
   "cstatus.found": "encontrado",
   "cstatus.not-found": "não encontrado",
   "cstatus.not-checked": "não verificado",
-  "cstatus.not-applicable": "não aplicável"
+  "cstatus.not-applicable": "não aplicável",
+  "why.unchecked": "Não foi possível verificar isso pelo projeto.",
+  "why.ready": "Todas as regras aplicáveis foram aprovadas. Ainda assim, isto não é uma aprovação da loja."
 }

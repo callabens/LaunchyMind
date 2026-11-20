@@ -168,6 +168,7 @@ test("translated titles reach the terminal and HTML reports", async () => {
   const failing = report.findings.find((item) => item.status === "fail");
   assert.ok(failing);
   const de = parse(await readFile(join(findI18nDir(), "rules", "de.yaml"), "utf8")) as Record<string, { title: string; summary: string }>;
-  assert.ok(renderTerminal(report, "de").includes(de[failing.ruleId].title));
-  assert.ok(renderHtml(report, "de").includes(de[failing.ruleId].title.replace(/&/g, "&amp;").replace(/</g, "&lt;")));
+  const title = de[failing.ruleId]?.title ?? "missing";
+  assert.ok(renderTerminal(report, "de").includes(title));
+  assert.ok(renderHtml(report, "de").includes(title.replace(/&/g, "&amp;").replace(/</g, "&lt;")));
 });

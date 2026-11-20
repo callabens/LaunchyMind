@@ -55,18 +55,23 @@ sdks:
         note: "The same Android page says the SDK collects the Android advertising ID, the app set ID, and, if applicable, other identifiers related to signed-in accounts. It also says ad ID collection is optional."
         source: https://developers.google.com/admob/android/privacy/play-data-disclosure
   - id: revenuecat
-    names: [purchases_flutter, react-native-purchases]
+    names: [purchases_flutter, react-native-purchases, revenuecat]
     vendor: RevenueCat
     disclosure: verified
     verifiedAt: 2026-11-20
     source: https://www.revenuecat.com/docs/platform-resources/apple-platform-resources/apple-app-privacy
     section: Purchase History
+    note: "Both RevenueCat pages were opened 2026-11-20. Identifiers and contact info are only required on those pages when the app uses ad-identifier integrations or customer attributes, so they are not draft rows."
     apple:
       - type: Purchase History
         tracking: false
         purposes: [analytics, app functionality]
         note: "RevenueCat says every integration must disclose Purchase History, with Analytics and App Functionality selected. It says it does not inherently use purchase history to track users."
-    play: []
+    play:
+      - type: Purchase history
+        purposes: [app functionality, analytics]
+        note: "RevenueCat's Play Data safety page says purchase history is collected by RevenueCat, is required and cannot be turned off, is not processed ephemerally, and is collected for App functionality and Analytics. It says data is encrypted in transit."
+        source: https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety
   - id: sentry
     names: [sentry_flutter, "@sentry/react-native"]
     vendor: Sentry
@@ -135,13 +140,13 @@ sdks:
         note: "Meta says app installs, app launches, and in-app purchases can be logged automatically unless automatic event logging is disabled."
     play: []
   - id: applovin
-    names: [applovin_max]
+    names: [applovin_max, react-native-applovin-max]
     vendor: AppLovin
     disclosure: unknown
     verifiedAt: 2026-11-20
-    source: https://support.axon.ai/en/max/ios/overview/privacy
-    section: Privacy
-    note: "AppLovin's MAX privacy page, opened 2026-11-20, explains consent flags. It does not list App Privacy or Play Data safety data types, so this SDK adds no draft row."
+    source: https://artifacts.applovin.com/ios/com/applovin/applovin-sdk/AppLovinSDK-13.7.0.xcframework.zip
+    section: AppLovinSDK.framework/PrivacyInfo.xcprivacy
+    note: "Opened 2026-11-20. The privacy manifest inside AppLovin's official iOS SDK 13.7.0 (zip sha256 4257176c53a3a8acc9db38ace78c366570be701bc0791a93d1e24ac47ef12e30, the checksum in AppLovin's Swift package) has an empty NSPrivacyCollectedDataTypes list and no NSPrivacyTracking key. AppLovin's MAX privacy pages explain consent flags and say ad network SDKs are not on Apple's signed-manifest list. No AppLovin page lists App Privacy or Play Data safety types, so this SDK adds no draft row. An empty manifest is not proof that nothing is collected."
     apple: []
     play: []
   - id: unity-ads
@@ -325,7 +330,7 @@ sdks:
     verifiedAt: 2026-11-20
     source: https://raw.githubusercontent.com/adjust/ios_sdk/master/Adjust/PrivacyInfo.xcprivacy
     section: NSPrivacyCollectedDataTypes
-    note: "The opened file is the privacy manifest in Adjust's iOS SDK repository. It has no separate Play Data safety page in this check, so there is no Play row."
+    note: "The opened file is the privacy manifest in Adjust's iOS SDK repository. Play rows come from Adjust's Google Play Data Safety help page, opened 2026-11-20. Purchase history is optional on that page (purchase verification only), so it is not a row."
     apple:
       - type: Device ID
         tracking: true
@@ -335,7 +340,15 @@ sdks:
         tracking: false
         purposes: [analytics]
         note: "Adjust's manifest marks Product Interaction not linked and not used for tracking, purpose Analytics."
-    play: []
+    play:
+      - type: App interactions
+        purposes: [session tracking]
+        note: "Adjust's Play page says it collects sessions and app launches by default, sends each new session to the Adjust backend over HTTPS, and never transfers data to other apps on the device. Other usage data is optional. The page names the purpose session tracking; map it to a Play purpose yourself."
+        source: https://help.adjust.com/en/article/google-play-data-safety
+      - type: Device or other IDs
+        purposes: [attribution]
+        note: "The same Adjust page says it collects device ID data by default for attribution. On Google Play services devices it reads the Google Advertising ID, and the Android ID as a fallback. The page names the purpose attribution; map it to a Play purpose yourself."
+        source: https://help.adjust.com/en/article/google-play-data-safety
   - id: appsflyer
     names: [appsflyer_sdk, react-native-appsflyer]
     vendor: AppsFlyer
@@ -343,7 +356,7 @@ sdks:
     verifiedAt: 2026-11-20
     source: https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/Resources/PrivacyInfo.xcprivacy
     section: NSPrivacyCollectedDataTypes
-    note: "The opened file is the privacy manifest shipped in AppsFlyer's iOS SDK. The Play help center returned 403 on 2026-11-20, so there is no Play row."
+    note: "The opened file is the privacy manifest shipped in AppsFlyer's iOS SDK. AppsFlyer's support center (support.appsflyer.com) returned HTTP 403 to scripted and fetch-service requests on 2026-11-20, and Google's SDK Index page renders its data-safety link only with JavaScript. No AppsFlyer Play page was read, so there is no Play row."
     apple:
       - type: Device ID
         tracking: true
@@ -355,12 +368,12 @@ sdks:
         note: "AppsFlyer's manifest marks Product Interaction not linked and not used for tracking, purpose Analytics."
     play: []
   - id: store-billing
-    names: [in_app_purchase, react-native-iap]
+    names: [in_app_purchase, react-native-iap, expo-in-app-purchases, flutter_inapp_purchase, com.android.billingclient:billing]
     vendor: Apple and Google
     disclosure: unknown
     verifiedAt: 2026-11-20
     source: https://support.apple.com/en-us/102399
     section: Additional details about data use and privacy practices
-    note: "Apple's privacy page, published 2024-09-16 and opened 2026-11-20, says apps do not need to declare information collected only by Apple, such as payment information used for in-app purchases. It does not list StoreKit data types to copy. Google's Play Billing integration guide describes purchase tokens and order IDs the app can read and says not to store billing-config results or use them for advertising. It does not publish a Data safety type list for the library. No draft row."
+    note: "Apple's privacy page, re-opened 2026-11-20, says apps do not need to declare information that is collected only by Apple, such as App Analytics or payment information used for in-app purchases. It does not list StoreKit data types to copy. Google's Play Billing integration guide (https://developer.android.com/google/play/billing/integrate, opened 2026-11-20) describes purchase tokens the app reads and sends to its own backend, and does not publish a Data safety type list for the library. If your app sends purchase tokens or order IDs to your server, that is your app's collection, not the library's. No draft row."
     apple: []
     play: []

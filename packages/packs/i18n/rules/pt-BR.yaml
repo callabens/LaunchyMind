@@ -1,0 +1,297 @@
+# Rule explanations (pt-BR). Translated from the English rule texts; keep ids, file names, keys, and guideline numbers unchanged.
+product.flutter-project:
+  title: "O projeto é de um tipo que este verificador consegue ler"
+  summary: "O LaunchyMind lê projetos Flutter, React Native, Expo, iOS nativo, Android nativo e Unity. Uma pasta que não é nenhum desses não recebe um veredito para as lojas. Um fato que os arquivos não mostram fica sem verificação."
+product.audience-answers:
+  title: "Perguntas sobre o público que o código não consegue responder"
+  summary: "Crianças, saúde e conteúdo gerado por usuários não podem ser lidos de forma confiável no código. Até que o .launchymind/project.yaml responda a essas perguntas, esses temas ficam sem verificação."
+apple.kids-third-party:
+  title: "Apps voltados para crianças devem evitar anúncios e análises de terceiros"
+  summary: "A Apple diz que apps destinados principalmente a crianças não devem incluir análises nem publicidade de terceiros. A resposta sobre o público é a declaração do desenvolvedor, não a caixa da categoria Crianças."
+apple.privacy-policy-in-app:
+  title: "O app precisa de um link para a política de privacidade dentro do app"
+  summary: "O código-fonte do app ainda não tem um link para a política de privacidade. A diretriz 5.1.1(i) pede um dentro do app. É um único link ausente, não um julgamento de que o resto do app deva ser descartado."
+  next: "Adicione a URL de privacidade em uma tela que as pessoas possam abrir, como os ajustes, e faça a análise de novo."
+apple.privacy-policy-metadata:
+  title: "URL da política de privacidade declarada para os metadados da loja"
+  summary: "A diretriz 5.1.1(i) também pede o link da política de privacidade no App Store Connect. O LaunchyMind não consegue ver o App Store Connect. Uma declaração local ausente fica sem verificação, não é uma falha."
+  next: "Se quiser registrar isso no projeto, defina urls.privacy em .launchymind/project.yaml. Deixe em branco se o link existir só no App Store Connect."
+apple.privacy-link-opens:
+  title: "O link da política de privacidade abre"
+  summary: "O link de privacidade no app e nos metadados precisa levar a uma política real. Esta verificação acessa a URL encontrada no projeto e aponta erros HTTP e páginas provisórias."
+apple.privacy-policy-content:
+  title: "O texto da política cobre coleta, exclusão e consentimento"
+  summary: "A diretriz 5.1.1(i) diz que a política deve identificar quais dados são coletados e como, todos os usos, a proteção por terceiros, a retenção e exclusão, e como o usuário pode revogar o consentimento ou pedir a exclusão. Ocorrências de palavras-chave são uma heurística, não uma revisão da política."
+apple.support-contact:
+  title: "Há uma URL de suporte ou um meio de contato"
+  summary: "A diretriz 1.5 diz que as pessoas precisam de uma forma de falar com você. Se o projeto não tem URL de suporte, o LaunchyMind não consegue ver o campo do App Store Connect, então o resultado fica sem verificação. Uma página declarada que não abre é uma verificação separada."
+  next: "Adicione uma URL de suporte no app ou no project.yaml, ou confirme você mesmo o campo URL de suporte no App Store Connect."
+apple.support-link-quality:
+  title: "A página de suporte mostra uma forma de contato"
+  summary: "A página de suporte deve oferecer uma forma fácil de entrar em contato. Esta verificação procura um endereço de e-mail ou uma frase de contato e rejeita páginas provisórias."
+apple.account-deletion:
+  title: "A criação de conta exige a exclusão da conta dentro do app"
+  summary: "Se o app permite criar uma conta, ele também precisa oferecer a exclusão da conta dentro do app. Esta verificação procura símbolos de exclusão ou um link de exclusão no app. Ela não consegue avaliar se o controle é fácil de encontrar."
+apple.tracking-permission:
+  title: "O rastreamento exige o aviso de App Tracking Transparency"
+  summary: "Você precisa receber permissão explícita pelas APIs de App Tracking Transparency para rastrear usuários. Quando há um SDK de anúncios ou rastreamento, esta verificação exige NSUserTrackingUsageDescription."
+apple.login-equivalent:
+  title: "O login de terceiros precisa de uma opção equivalente"
+  summary: "Apps que usam login de terceiros ou social para a conta principal também precisam oferecer um login equivalente que limite os dados a nome e e-mail, permita ocultar o e-mail e não colete interações com o app para publicidade sem consentimento. A Apple lista exceções que esta verificação não consegue ver."
+apple.permission-camera:
+  title: "O uso da câmera precisa de um texto de finalidade do iOS"
+  summary: "Os textos de finalidade devem descrever de forma clara e completa o uso dos dados. Um recurso de câmera detectado sem NSCameraUsageDescription faz esta verificação falhar."
+apple.permission-photos:
+  title: "O uso da fototeca precisa de um texto de finalidade do iOS"
+  summary: "O acesso à fototeca precisa de um texto de finalidade que descreva o uso. NSPhotoLibraryUsageDescription ou NSPhotoLibraryAddUsageDescription atendem à verificação de presença."
+apple.permission-location:
+  title: "O uso da localização precisa de um texto de finalidade do iOS"
+  summary: "O acesso à localização precisa de um texto de finalidade. As chaves de uso durante o app ou sempre atendem à verificação de presença."
+apple.permission-microphone:
+  title: "O uso do microfone precisa de um texto de finalidade do iOS"
+  summary: "O acesso ao microfone precisa de NSMicrophoneUsageDescription descrevendo o uso."
+apple.permission-contacts:
+  title: "O uso dos contatos precisa de um texto de finalidade do iOS"
+  summary: "O acesso aos contatos precisa de NSContactsUsageDescription descrevendo o uso."
+apple.privacy-manifest-reasons:
+  title: "APIs com motivo obrigatório em um manifesto de privacidade precisam de códigos de motivo"
+  summary: "Desde 1º de maio de 2024, o App Store Connect não aceita apps que usam uma API com motivo obrigatório sem descrever o motivo em um manifesto de privacidade. Esta verificação só falha quando um manifesto do projeto lista uma API sem código de motivo."
+apple.listed-sdk-manifest:
+  title: "SDKs de terceiros listados precisam dos seus manifestos de privacidade"
+  summary: "A Apple exige um manifesto de privacidade para os SDKs listados incluídos em um envio. Os plugins da tabela versionada do LaunchyMind trazem o próprio PrivacyInfo.xcprivacy, então não ficam sem verificação. Um SDK listado que não está nessa tabela ainda precisa de uma declaração."
+  next: "Para um SDK listado que não está na tabela de manifestos incluídos, confira o pod ou o pacote e defina apple.listed-sdk-manifests só depois de ver o arquivo."
+apple.minimum-os:
+  title: "Os envios devem ter como destino o iOS 13 ou posterior"
+  summary: "Desde 9 de setembro de 2026, apps para iOS e iPadOS enviados ao App Store Connect devem ter como destino o iOS 13 ou posterior."
+apple.xcode-sdk:
+  title: "Os envios devem ser compilados com o Xcode 26 e o SDK do iOS 26"
+  summary: "Desde 28 de abril de 2026, apps enviados ao App Store Connect devem ser compilados com o Xcode 26 ou posterior usando um SDK do iOS 26, iPadOS 26, tvOS 26, visionOS 26 ou watchOS 26. O código-fonte do projeto não contém a versão do Xcode, então esta verificação usa uma declaração explícita."
+apple.age-rating:
+  title: "As perguntas atualizadas de classificação etária precisam ser respondidas"
+  summary: "As perguntas de classificação etária da Apple tinham de ser respondidas até 31 de janeiro de 2026 para evitar interrupções no envio de atualizações. O App Store Connect não foi consultado, então esta verificação usa uma declaração explícita."
+apple.subscription-terms:
+  title: "A tela de compra da assinatura deve descrever a oferta"
+  summary: "Antes de pedir que o cliente assine, o app deve descrever com clareza o que ele recebe pelo preço. Esta verificação procura palavras de assinatura e preço, ou uma declaração. Ela não lê o Anexo 2 do contrato de desenvolvedor."
+google.target-api:
+  title: "Apps novos e atualizações devem segmentar o Android 16 (API 36)"
+  summary: "A partir de 31 de agosto de 2026, apps novos e atualizações devem segmentar o Android 16 (nível da API 36) ou mais recente, com exceções por formato de dispositivo que esta análise não detecta. A data de prorrogação na página de ajuda ia até 1º de novembro de 2026."
+google.privacy-policy:
+  title: "O Play exige um link para a política de privacidade"
+  summary: "O Google Play diz que todo desenvolvedor precisa preencher a seção Segurança dos dados, inclusive apps que não coletam dados do usuário, e fornecer um link para a política de privacidade. O Play Console não foi consultado."
+google.data-safety-form:
+  title: "A seção Segurança dos dados precisa ser preenchida"
+  summary: "Todos os desenvolvedores com um app no Google Play precisam preencher a seção Segurança dos dados, e a coleta de dados por SDKs conta. Apps apenas na faixa de teste interno estão isentos. O Play Console não foi consultado, então isso usa uma declaração."
+google.account-deletion:
+  title: "A criação de conta precisa de um caminho no app e de um link web para exclusão"
+  summary: "Se o app permite criar uma conta, o Google Play exige um caminho no app para excluí-la e um link web onde os usuários podem pedir a exclusão. Um link dentro do app para esse recurso web pode servir como o caminho no app."
+google.account-deletion-link:
+  title: "O link web de exclusão de conta deve abrir e citar o app"
+  summary: "O Google diz que o link web precisa carregar, manter o caminho de exclusão fácil de encontrar e mencionar o nome do app ou do desenvolvedor como aparece na página da loja."
+google.closed-testing:
+  title: "Novas contas pessoais do Play precisam de um teste fechado"
+  summary: "Contas pessoais do Play Console criadas depois de 13 de novembro de 2023 precisam fazer um teste fechado com pelo menos 12 testadores inscritos continuamente por 14 dias antes do acesso à produção. Contas de organização estão fora dessa exigência. O tipo de conta é uma declaração."
+iab.app-ads:
+  title: "Apps com anúncios publicam um arquivo app-ads.txt"
+  summary: "O app-ads.txt 1.0 do IAB Tech Lab é o padrão ads.txt para apps. O ads.txt 1.1 adiciona OWNERDOMAIN e MANAGERDOMAIN. Esta verificação busca app-ads.txt na raiz do site do desenvolvedor declarado. Ela não inventa IDs de vendedor."
+policy.ads-disclosure:
+  title: "A página de privacidade de um app com anúncios deve mencionar publicidade"
+  summary: "A política de privacidade precisa descrever os usos dos dados coletados, inclusive o compartilhamento com redes de publicidade quando isso acontece. Se há um SDK de anúncios e a política obtida nunca menciona publicidade, é um risco, não um bloqueio."
+kvkk.disclosure:
+  title: "Temas do aviso do artigo 10 da KVKK na página de privacidade"
+  summary: "Quando dados pessoais são obtidos, o controlador precisa informar à pessoa, no mínimo, a identidade do controlador, a finalidade, quem recebe os dados e por quê, o método de coleta e a base legal, e os direitos do artigo 11. O guia cita apps móveis como um meio eletrônico de fazer isso. Ocorrências de palavras-chave não são um parecer jurídico."
+kvkk.consent-separate:
+  title: "O consentimento explícito e o texto de aviso são etapas separadas"
+  summary: "Quando o tratamento se baseia em consentimento explícito, o dever de informar e a coleta do consentimento explícito são feitos separadamente. Esta verificação não decide se o app precisa de consentimento explícito. Ela usa a resposta do projeto."
+  next: "Em .launchymind/project.yaml defina kvkk.explicitConsent e, quando for true, kvkk.consentSeparate. Veja o exemplo no README."
+apple.privacy-manifest-tracking:
+  title: "Anúncios ou rastreamento devem corresponder aos campos de rastreamento do manifesto de privacidade"
+  summary: "Um app que mostra anúncios ou pede para rastrear deve ter um manifesto de privacidade no nível do app cujo indicador NSPrivacyTracking concorde com os tipos de dados coletados marcados como usados para rastreamento, e com os domínios de rastreamento quando o rastreamento está ativo. Uma divergência é um risco, não uma rejeição comprovada."
+  next: "Abra o PrivacyInfo.xcprivacy do app. Se você rastreia, defina NSPrivacyTracking como true e liste os domínios de rastreamento. Se um tipo de dado coletado estiver marcado como rastreamento, o indicador de rastreamento não deve ser false."
+apple.stub-purchase-ui:
+  title: "Texto de compra provisório ou de restauração sem SDK de compras"
+  summary: "A diretriz 2.1(a) diz que os envios devem ser finais e que o texto provisório deve ser removido. Texto de restaurar compras ou de compra provisória sem SDK de compras é um risco quando esse texto pode ser acessado. Um indicador const false que o protege é só uma observação."
+  next: "Remova o texto provisório ou mantenha-o atrás de um indicador const false até conectar um SDK de compras de verdade."
+google.sample-ad-id:
+  title: "IDs de blocos de anúncios de exemplo do Google não devem ir para produção"
+  summary: "O Google publica blocos de anúncios de exemplo com o ID de editor ca-app-pub-3940256099942544 para testes. Esse ID no Info.plist, no manifesto do Android ou em Dart que não esteja claramente limitado a um ramo de depuração é um risco."
+  next: "Mantenha o ID de exemplo atrás de kDebugMode ou kReleaseMode e publique os seus próprios IDs de blocos de anúncios no plist e no manifesto."
+google.ump-consent-call:
+  title: "Apps com anúncios devem solicitar uma atualização de consentimento da UMP"
+  summary: "O guia de consentimento da UE do AdMob diz para solicitar uma atualização do consentimento de mensagens ao usuário na abertura, porque o consentimento é exigido em algumas regiões. Um SDK de anúncios sem chamada a requestConsentInfoUpdate, ConsentInformation ou UserMessagingPlatform em lib/ é um risco."
+  next: "Chame ConsentInformation.instance.requestConsentInfoUpdate antes de carregar anúncios e mantenha um ponto de acesso às opções de privacidade onde o Google exige."
+product.kids-policy-consistency:
+  title: "Uma política de não voltado para crianças deve corresponder à resposta sobre crianças"
+  summary: "Quando a página de privacidade obtida diz que o app não é voltado para crianças, audience.kids não deve ser sim. Uma resposta ausente fica sem verificação para que a página e o arquivo do projeto possam ser alinhados."
+  next: "Se a página estiver certa, defina audience.kids: false em .launchymind/project.yaml. Se o app for para crianças, altere a página e responda às perguntas de classificação etária da loja."
+google.ad-id-permission:
+  title: "Anúncios no Android precisam da permissão do ID de publicidade"
+  summary: "O Android 13 exige a permissão AD_ID para apps que usam um ID de publicidade. Uma permissão declarada pelo manifesto de uma biblioteca SDK é mesclada. O google_mobile_ads depende do play-services-ads, então essa dependência conta, a menos que o manifesto do app remova a permissão."
+  next: "Declare com.google.android.gms.permission.AD_ID, ou mantenha o google_mobile_ads sem remover a permissão. Um manifesto mesclado em android/app/build também é lido quando existe."
+google.data-safety-ad-id:
+  title: "A Segurança dos dados deve incluir o ID de publicidade quando há anúncios"
+  summary: "A seção Segurança dos dados do Play diz que um ID de publicidade do Android deve ser declarado como Dispositivo ou outros identificadores. O Play Console não foi consultado, então isso usa a resposta do projeto google.data-safety-ad-id."
+  next: "Defina attestations.google.data-safety-ad-id: true em .launchymind/project.yaml depois que a seção Segurança dos dados incluir o ID de publicidade."
+store.ios.name-length:
+  title: "O nome na App Store tem de 2 a 30 caracteres"
+  summary: "O App Store Connect diz que o nome localizado do app precisa ter pelo menos 2 e no máximo 30 caracteres. Isso lê apenas um name.txt local."
+store.ios.subtitle-length:
+  title: "O subtítulo na App Store tem no máximo 30 caracteres"
+  summary: "O subtítulo abaixo do nome do app não pode ter mais de 30 caracteres. Um projeto sem arquivo de subtítulo não falha."
+store.ios.description-length:
+  title: "A descrição na App Store tem no máximo 4000 caracteres"
+  summary: "A descrição na App Store é limitada a 4000 caracteres e precisa ser texto simples. Isso conta um arquivo de descrição local."
+store.ios.keywords-length:
+  title: "As palavras-chave da App Store cabem em 100 bytes"
+  summary: "As palavras-chave podem ter até 100 bytes. A referência do App Store Connect conta bytes, e esta verificação também."
+store.ios.promo-length:
+  title: "O texto promocional tem no máximo 170 caracteres"
+  summary: "O texto promocional não pode ter mais de 170 caracteres. Ele é opcional, então um arquivo ausente não é uma falha."
+store.ios.release-notes-length:
+  title: "O texto de Novidades tem no máximo 4000 caracteres"
+  summary: "As novidades desta versão são limitadas a 4000 caracteres. Sem um arquivo local de notas da versão, esta verificação não é executada."
+store.play.title-length:
+  title: "O título no Play tem no máximo 30 caracteres"
+  summary: "O Play Console limita o nome do app a 30 caracteres, contando caracteres de largura total e de meia largura como um cada."
+store.play.short-description-length:
+  title: "A descrição curta no Play tem no máximo 80 caracteres"
+  summary: "A descrição curta no Play tem limite de 80 caracteres. Isso mede o arquivo local de descrição curta."
+store.play.full-description-length:
+  title: "A descrição completa no Play tem no máximo 4000 caracteres"
+  summary: "A descrição completa no Play permite 4000 caracteres. Isso conta o arquivo local de descrição completa."
+store.placeholder-text:
+  title: "O texto da página da loja não é um texto provisório"
+  summary: "A diretriz 2.1(a) diz que texto provisório e outros conteúdos temporários devem ser removidos antes do envio. Lorem ipsum, TODO e TBD em uma página local são uma falha."
+store.ios.other-platform:
+  title: "A página do iOS não cita outra plataforma móvel"
+  summary: "A diretriz 2.3.10 diz para não incluir nomes de outras plataformas móveis ou lojas alternativas no app ou nos metadados."
+store.play.other-platform:
+  title: "A página do Play não destaca outra plataforma móvel"
+  summary: "O Play diz que a descrição deve descrever o app com precisão. Citar iPhone, iPad, iOS ou a App Store na página do Play é um risco, não uma rejeição automática."
+store.future-promise:
+  title: "O texto da página não promete um recurso que não existe"
+  summary: "A diretriz 2.3.7 diz que os subtítulos não devem fazer afirmações não verificáveis sobre o produto. Frases como em breve e será adicionado são sinalizadas fora do texto promocional, onde a Apple permite mencionar recursos futuros."
+store.copyright-year:
+  title: "O ano do copyright não está no futuro"
+  summary: "A Apple diz que o campo de copyright começa com o ano em que os direitos foram obtidos. Um ano posterior ao da análise não pode ser esse ano. Um ano mais antigo não é tratado como errado."
+store.price-claims:
+  title: "O texto da página não acrescenta um preço que a página já mostra"
+  summary: "A diretriz 2.3.7 diz para não encher os metadados com informações de preço. O Play também diz que o título não deve promover uma oferta como Grátis ou um percentual de desconto."
+store.keyword-stuffing:
+  title: "As palavras-chave não se repetem nem são preenchidas com outras marcas"
+  summary: "A diretriz 2.3.7 diz para não encher as palavras-chave com termos registrados, nomes de apps populares ou frases irrelevantes. Uma palavra-chave repetida ou alguns nomes de outros produtos são um risco, não uma rejeição por si só."
+store.locale-consistency:
+  title: "As páginas em inglês e em turco citam os mesmos recursos"
+  summary: "A Apple localiza os metadados por idioma. Quando existem uma descrição em inglês e uma em turco, uma palavra de recurso presente em só uma delas é um risco. Quando só um idioma está no disco, o outro fica sem verificação."
+store.urls-reachable:
+  title: "As URLs escritas na página da loja abrem"
+  summary: "A diretriz 2.1(a) diz que os envios devem incluir URLs totalmente funcionais. As URLs da página só são acessadas quando a análise é on-line. No modo off-line, elas ficam sem verificação."
+store.ios.icon:
+  title: "O ícone da App Store tem 1024 x 1024 e não tem canal alfa"
+  summary: "O espaço do ícone da App Store no Xcode para iOS é uma imagem de 1024 x 1024. O App Store Connect rejeita um ícone transparente ou com canal alfa. Um arquivo que não pode ser medido fica sem verificação."
+store.ios.screenshots:
+  title: "As capturas de tela têm o tamanho exigido para o dispositivo de destino"
+  summary: "O App Store Connect exige uma captura de tela de iPhone com Dynamic Island, a menos que o projeto seja só para iPad; nesse caso, é exigido o tamanho de iPad de 13 polegadas. As capturas de tela não podem ter canal alfa. São permitidas até 10 por tamanho. Um tamanho fora da lista de especificações, ou um conjunto cuja família de dispositivos não foi lida, fica sem verificação."
+store.play.icon:
+  title: "O ícone do Play é um PNG de 512 x 512"
+  summary: "O Play exige um ícone PNG de 32 bits de 512 x 512 com canal alfa, e o arquivo deve ter no máximo 1024 KB. Um arquivo que não pode ser lido fica sem verificação."
+store.play.feature-graphic:
+  title: "O recurso gráfico do Play tem 1024 x 500 sem canal alfa"
+  summary: "O Play exige um recurso gráfico de 1024 x 500 em JPEG ou PNG de 24 bits sem canal alfa. Um arquivo ilegível fica sem verificação."
+store.play.screenshots:
+  title: "As capturas de tela de smartphone do Play atendem ao tamanho e à quantidade publicados"
+  summary: "O Play pede no mínimo duas e no máximo oito capturas de tela. Cada lado deve ter de 320 a 3840 pixels, o lado maior no máximo o dobro do menor, sem canal alfa. Um arquivo que não pode ser medido fica sem verificação."
+artifact.drift:
+  title: "O artefato compilado corresponde aos valores lidos no código-fonte"
+  summary: "Quando um IPA, APK ou AAB é analisado junto com o projeto, são comparados o targetSdk, a permissão AD_ID, o indicador de rastreamento do manifesto de privacidade do app e o texto de uso da câmera. Uma diferença é um risco. Um valor que o artefato não continha fica sem verificação."
+sdk.manifest-label-mismatch:
+  title: "Uma declaração verificada de SDK diverge do manifesto de privacidade"
+  summary: "A Apple diz que as respostas de privacidade devem incluir parceiros terceiros cujo código está no app. Se uma página do fornecedor aberta para esta base de conhecimento diz que um SDK pode usar dados para publicidade de terceiros e o manifesto de privacidade do app define NSPrivacyTracking como false, essa divergência é um risco. SDKs desconhecidos não adicionam linha."
+sdk.answer-label-mismatch:
+  title: "Uma declaração verificada de SDK diverge de uma resposta do projeto"
+  summary: "O Play diz que os dados de SDKs contam na seção Segurança dos dados. Se o projeto responde que o ID de publicidade não foi declarado e uma linha verificada de SDK lista um identificador de dispositivo ou de publicidade, essa divergência é um risco. Uma resposta em branco fica sem verificação."
+apple.restore-purchases:
+  title: "Compras no app restauráveis precisam de um controle de restauração"
+  summary: "A diretriz 3.1.1 diz que você deve garantir um mecanismo de restauração para todas as compras no app restauráveis, e a página de assinaturas da Apple diz que a tela de assinatura precisa incluir uma forma de os assinantes atuais entrarem ou restaurarem compras. Esta verificação procura uma chamada a restorePurchases ou um rótulo de restaurar compras no código-fonte, ou uma declaração."
+  next: "Adicione um botão Restaurar compras que chame o método de restauração do SDK (RevenueCat: Purchases.restorePurchases()), ou defina attestations.payments.restore-control em .launchymind/project.yaml."
+apple.subscription-paywall-links:
+  title: "A assinatura precisa de links para os Termos de Uso e a Política de Privacidade"
+  summary: "A página da Apple sobre assinaturas com renovação automática lista o que a tela de assinatura precisa incluir: o nome e a duração da assinatura, o preço total da renovação e uma forma de restaurar compras. Ela também diz que o app e os metadados da App Store precisam incluir links para os seus Termos de Uso e a sua Política de Privacidade. Esta verificação procura texto de Termos de Uso ou EULA e uma URL de privacidade no app no código-fonte, ou uma declaração."
+  next: "Coloque links para os Termos de Uso (ou para o EULA padrão da Apple) e para a Política de Privacidade no paywall, ou defina attestations.payments.paywall-links depois de conferir manualmente."
+google.subscription-offer-terms:
+  title: "As assinaturas do Play precisam informar o preço, o período de cobrança e a renovação automática"
+  summary: "A política de assinaturas do Google Play diz que você precisa informar de forma clara e explícita os termos da oferta, o custo da assinatura, a frequência do ciclo de cobrança, os termos de renovação automática e se uma assinatura é necessária para usar o app. Esta verificação procura texto de preço, período de cobrança e renovação automática no código-fonte, ou a declaração de termos da assinatura."
+  next: "Mostre o preço, o período de cobrança e que a assinatura é renovada automaticamente ao lado do botão de assinar, ou defina attestations.apple.subscription-terms depois de revisar o paywall manualmente."
+revenuecat.secret-key-in-app:
+  title: "Uma chave de API secreta do RevenueCat não pode ir no app"
+  summary: "O RevenueCat diz que as chaves de API secretas têm o prefixo sk_, devem ser mantidas em sigilo e só devem ser guardadas nos seus próprios servidores, enquanto o SDK é configurado com as chaves públicas do SDK. O código-fonte do app foi pesquisado em busca de uma string literal começando com sk_. Chaves públicas do SDK não são problema."
+  next: "Remova a chave sk_ do app, revogue-a no painel do RevenueCat e configure o SDK com a chave pública específica do app."
+revenuecat.products-configured:
+  title: "Os produtos e as ofertas do RevenueCat correspondem ao código"
+  summary: "Com REVENUECAT_API_KEY definida, o LaunchyMind lê produtos, entitlements e offerings da API REST v2 do RevenueCat (somente leitura) e compara os identificadores de produto da loja com os IDs de produto escritos no código. Sem a chave, esta regra não é executada."
+  next: "Adicione os produtos ausentes no RevenueCat, associe-os a um entitlement e a uma offering, ou corrija os IDs de produto no código."
+google.data-safety-declaration-sdks:
+  title: "A declaração local de Segurança dos dados cobre o que os SDKs coletam"
+  summary: "O Google diz que a seção Segurança dos dados precisa incluir os dados do usuário transmitidos para fora do dispositivo por bibliotecas e SDKs usados no app. A API do Play para Segurança dos dados é somente de gravação, então o LaunchyMind compara o launchymind.datasafety.json do projeto com os tipos de dados do Play citados nas linhas verificadas de SDKs. Linhas sem um tipo do Play inequívoco são listadas para mapeamento manual e não falham."
+  next: "Adicione os tipos de dados ausentes ao launchymind.datasafety.json e à seção Segurança dos dados do Play Console, ou confirme com o fornecedor do SDK que a sua configuração não os coleta."
+build.native-build:
+  title: "A compilação nativa solicitada foi executada e o artefato foi lido"
+  summary: "Com scan --build, o LaunchyMind compila um APK de depuração e um app para o simulador do iOS em uma cópia temporária do projeto e depois os lê como um artefato analisado. Uma compilação que falhou é um risco. Uma compilação que não foi executada por falta de ferramentas fica sem verificação, nunca como aprovada."
+  next: "Leia as linhas do log de compilação no relatório, corrija a compilação e execute scan --build de novo. Instale o Flutter, um JDK ou o Xcode onde uma compilação não foi executada."
+apple.launch-crash:
+  title: "A versão do iOS abre em um simulador sem travar"
+  summary: "A diretriz 2.1 diz que a Apple rejeitará binários que travam ou mostram problemas técnicos óbvios. Com launchymind run ou scan --live, o IPA é instalado em um simulador iniciado e aberto; o app ainda precisa estar em execução alguns segundos depois. Sem o Xcode ou sem um simulador iniciado, isso fica sem verificação."
+  next: "Abra o relatório de falhas do simulador ou o console do Xcode, corrija a falha e execute a verificação de novo."
+google.launch-crash:
+  title: "A versão do Android abre em um dispositivo sem travar"
+  summary: "A política de Funcionalidade mínima do Google Play diz que não permite apps que travam, forçam o fechamento, congelam ou funcionam de forma anormal. Com launchymind run ou scan --live, o APK é instalado com adb e aberto; o processo ainda precisa estar em execução alguns segundos depois e o log de falhas não pode citar o app. Sem adb ou sem um dispositivo conectado, isso fica sem verificação."
+  next: "Leia a linha da falha nas evidências ou execute adb logcat -b crash, corrija a falha e execute a verificação de novo."
+legal.accessibility.element-labels:
+  title: "Elementos interativos devem ter rótulos de acessibilidade"
+  summary: "O guia de acessibilidade do Android diz para incluir uma descrição da finalidade de cada elemento da interface, geralmente em contentDescription, e os critérios de avaliação do VoiceOver da Apple dizem que um item importante na tela deve ter um rótulo ou uma descrição que o VoiceOver possa falar. Esta verificação só procura APIs de rótulo (Semantics, semanticLabel, accessibilityLabel, aria-label, contentDescription) no código-fonte. Encontrar uma não significa que todos os elementos tenham rótulo."
+  next: "Coloque rótulos em botões de ícone e imagens (Semantics ou semanticLabel no Flutter, accessibilityLabel no React Native, .accessibilityLabel no SwiftUI, contentDescription no Android) e teste com o VoiceOver e o TalkBack."
+legal.accessibility.nutrition-labels-answered:
+  title: "As etiquetas de acessibilidade da App Store foram consideradas"
+  summary: "A Apple diz que as etiquetas de acessibilidade (Accessibility Nutrition Labels) são voluntárias no início e que, com o tempo, será obrigatório compartilhar detalhes de suporte à acessibilidade para enviar novos apps e atualizações. Esta verificação só pergunta se o projeto respondeu attestations.apple.accessibility-labels. Hoje, qualquer resposta é aceita."
+legal.accessibility.eaa-scope-answered:
+  title: "Foi respondido se o Ato Europeu de Acessibilidade cobre o app"
+  summary: "O artigo 2º, item 2, lista os serviços prestados a consumidores depois de 28 de junho de 2025 abrangidos pela Diretiva, entre eles comunicações eletrônicas, acesso a mídia audiovisual, apps móveis de transporte de passageiros, serviços bancários ao consumidor, livros eletrônicos e comércio eletrônico. O artigo 4º, item 5, isenta as microempresas que prestam serviços. Muitos jogos estão fora dessa lista. Esta verificação só pergunta se o projeto respondeu attestations.eaa.applies. Ela não decide o âmbito e não é aconselhamento jurídico."
+legal.accessibility.eaa-information:
+  title: "Um serviço abrangido publica as suas informações de acessibilidade"
+  summary: "O artigo 13 diz que os prestadores de serviços concebem e prestam os serviços de acordo com os requisitos de acessibilidade, preparam as informações do anexo V, explicam como o serviço cumpre os requisitos e tornam essas informações públicas de forma acessível. Isso só é executado quando o projeto disse que o Ato se aplica, e pergunta se essas informações estão publicadas (attestations.eaa.information). Não é aconselhamento jurídico."
+legal.apple.kids-parental-gate:
+  title: "Compras e links externos da categoria Crianças ficam atrás de um controle parental"
+  summary: "A diretriz 1.3 diz que apps da categoria Crianças não devem incluir links para fora do app, oportunidades de compra ou outras distrações para crianças, a menos que fiquem em uma área designada atrás de um controle parental. O app tem compras. Esta verificação pergunta se o projeto declara que o fluxo de compra fica atrás de um controle parental (attestations.apple.kids-parental-gate)."
+legal.apple.kids-third-party-analytics:
+  title: "Apps da categoria Crianças não devem incluir análises de terceiros"
+  summary: "As diretrizes 1.3 e 5.1.4 dizem que apps da categoria Crianças não devem incluir análises de terceiros. Em casos limitados, isso pode ser permitido se o serviço não coletar nem transmitir o IDFA ou qualquer informação identificável sobre as crianças, a localização ou os dispositivos delas. Há um SDK de análise entre as dependências. A verificação falha, a menos que o projeto declare que a exceção se aplica (attestations.apple.kids-analytics-exception)."
+legal.coppa.notice-answered:
+  title: "A pergunta sobre o aviso da COPPA tem resposta"
+  summary: "O 16 CFR 312.3 diz que o operador de um serviço voltado para crianças geralmente precisa fornecer um aviso e obter consentimento parental verificável antes de coletar informações pessoais de uma criança. Esta verificação só registra se o projeto respondeu que a etapa do aviso foi feita. Ela não decide que o app é voltado para crianças e não é aconselhamento jurídico."
+legal.dsa.trader-answered:
+  title: "A condição de comerciante na UE foi respondida"
+  summary: "A Apple diz que os artigos 30 e 31 da DSA a obrigam a coletar as informações de contato dos comerciantes, e que a Apple não consegue determinar se você é comerciante. Esta verificação só exige que o projeto responda sim ou não. Ela não decide a condição de comerciante e não é aconselhamento jurídico."
+legal.gdpr.notice-contents:
+  title: "A política de privacidade deve conter as informações do artigo 13"
+  summary: "O artigo 13 lista o que o responsável pelo tratamento deve fornecer quando dados pessoais são coletados: a identidade e os contatos do responsável, as finalidades e a base legal, os destinatários, as transferências para um país terceiro, o prazo de conservação, os direitos do titular e o direito de apresentar reclamação a uma autoridade de controle. Esta verificação procura texto para cada item na página de privacidade publicada. É uma correspondência de frases, não uma revisão jurídica, e não é aconselhamento jurídico."
+  next: "Adicione à política de privacidade os itens do artigo 13 que faltam: responsável e contato, finalidades e base legal, destinatários, transferências para países terceiros, conservação, direitos e o direito de reclamar."
+legal.gdpr.lawful-basis-answered:
+  title: "Foi registrada uma base legal para cada finalidade de tratamento"
+  summary: "O artigo 6º, item 1, diz que o tratamento só é lícito se pelo menos uma das bases listadas se aplicar, e o artigo 13º, item 1, alínea c), exige que a base legal seja informada ao titular. Esta verificação só pergunta se o projeto registrou que escolheu uma base para cada finalidade (attestations.gdpr.lawful-basis). Ela não escolhe a base e não é aconselhamento jurídico."
+legal.gdpr.consent-withdrawal:
+  title: "Quando o consentimento é uma base, a política explica como retirá-lo"
+  summary: "O artigo 7º, item 3, dá ao titular o direito de retirar o consentimento a qualquer momento, diz que ele deve ser informado disso antes de consentir e que retirar deve ser tão fácil quanto dar o consentimento. Isso é executado quando o projeto diz que algum tratamento se baseia em consentimento, ou quando o app solicita um formulário de consentimento (UMP). Procura texto sobre a retirada na página de privacidade publicada. Não é aconselhamento jurídico."
+legal.gdpr.erasure-path:
+  title: "Usuários com conta têm uma forma de pedir o apagamento"
+  summary: "O artigo 17 dá ao titular o direito de obter o apagamento dos seus dados pessoais sem demora injustificada quando se aplica um dos seus motivos, e o artigo 13º, item 2, alínea b), exige informar as pessoas de que esse direito existe. Quando o app tem contas, esta verificação procura um caminho de exclusão no app ou uma URL de exclusão de conta declarada. Ela não decide qual motivo se aplica e não é aconselhamento jurídico."
+legal.gdpr.processors-answered:
+  title: "Os termos de subcontratante dos SDKs de terceiros foram registrados"
+  summary: "O artigo 28 diz que um responsável pelo tratamento só pode recorrer a subcontratantes que apresentem garantias suficientes, e que o tratamento por um subcontratante é regido por contrato ou outro ato jurídico. O app tem SDKs de anúncios, análise, rastreamento, notificações ou pagamentos. Esta verificação pergunta se o projeto registrou que revisou o papel e os termos de cada fornecedor (attestations.gdpr.processors). Alguns fornecedores de SDK atuam como responsáveis independentes, não como subcontratantes; cabe ao desenvolvedor decidir. Não é aconselhamento jurídico."
+legal.gdpr.transfers-disclosed:
+  title: "As transferências para fora da UE ou do EEE são informadas"
+  summary: "O artigo 44 só permite transferências para um país terceiro nas condições do capítulo V, e o artigo 13º, item 1, alínea f), exige informar o titular sobre uma transferência prevista e sobre a decisão de adequação ou as garantias. O app inclui SDKs de terceiros. Esta verificação procura texto sobre transferências na página de privacidade publicada, ou a declaração do projeto de que não há transferência (attestations.gdpr.transfers). Não é aconselhamento jurídico."
+legal.google.families-ad-id:
+  title: "Um app do Play voltado para crianças não deve manter o ID de publicidade"
+  summary: "A política Famílias diz que apps voltados exclusivamente para crianças não devem solicitar a permissão AD_ID no Android API 33 ou mais recente e não podem transmitir o ID de publicidade de crianças. A resposta do projeto não prova que o app é voltado exclusivamente para crianças, então isso é um risco, não uma rejeição, e não é aconselhamento jurídico."
+legal.kvkk.consent-answered:
+  title: "A pergunta sobre o consentimento explícito da KVKK deve ter resposta"
+  summary: "A fonte é o comunicado da KVKK sobre o dever de informar. Esta verificação só pergunta se o projeto respondeu kvkk.explicitConsent. Ela não decide que o tratamento precisa de consentimento e não é aconselhamento jurídico."

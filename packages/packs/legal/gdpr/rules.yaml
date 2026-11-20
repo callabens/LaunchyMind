@@ -1,1 +1,230 @@
-rules: []
+rules:
+  - id: legal.gdpr.notice-contents
+    title: The privacy policy should carry the Article 13 information
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 13(1) and 13(2)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 13 lists what the controller must provide when personal data are collected: the controller's identity and contact details, the purposes and legal basis, the recipients, transfers to a third country, the storage period, the data subject's rights, and the right to lodge a complaint with a supervisory authority. This check looks for wording for each item on the live privacy page. It is a phrase match, not a legal review, and it is not legal advice."
+      tr: "Madde 13, kişisel veri toplanırken veri sorumlusunun kimliği ve iletişim bilgileri, amaçlar ve hukuki dayanak, alıcılar, üçüncü ülkeye aktarım, saklama süresi, ilgili kişinin hakları ve denetim makamına şikâyet hakkı bilgilerinin verilmesini ister. Bu kontrol canlı gizlilik sayfasında her madde için ifade arar. Kelime eşleşmesidir, hukuki inceleme ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.controller, eq: "yes" }
+          - { fact: live.privacy.purpose, eq: "yes" }
+          - { fact: live.privacy.legal_basis, eq: "yes" }
+          - { fact: live.privacy.transfer, eq: "yes" }
+          - { fact: live.privacy.rights, eq: "yes" }
+          - { fact: live.privacy.retention, eq: "yes" }
+          - { fact: live.privacy.complaint, eq: "yes" }
+      fail:
+        any:
+          - { fact: live.privacy.status, eq: "placeholder" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - any:
+                  - { fact: live.privacy.controller, eq: "no" }
+                  - { fact: live.privacy.purpose, eq: "no" }
+                  - { fact: live.privacy.legal_basis, eq: "no" }
+                  - { fact: live.privacy.transfer, eq: "no" }
+                  - { fact: live.privacy.rights, eq: "no" }
+                  - { fact: live.privacy.retention, eq: "no" }
+                  - { fact: live.privacy.complaint, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "English and Turkish phrases only. Offline scans and pages that do not load stay unchecked. A matched phrase does not prove the content is correct."
+    next:
+      en: "Add the missing Article 13 items to the privacy policy: controller and contact, purposes and legal basis, recipients, third-country transfers, retention, rights, and the right to complain."
+      tr: "Eksik Madde 13 bilgilerini gizlilik politikasına ekleyin: veri sorumlusu ve iletişim, amaçlar ve hukuki dayanak, alıcılar, üçüncü ülke aktarımı, saklama süresi, haklar ve şikâyet hakkı."
+
+  - id: legal.gdpr.lawful-basis-answered
+    title: A lawful basis for each processing purpose has been recorded
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 6(1) and Article 13(1)(c)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 6(1) says processing is lawful only if at least one listed basis applies, and Article 13(1)(c) requires the legal basis to be given to the data subject. This check only asks whether the project recorded that it has chosen a basis for each purpose (attestations.gdpr.lawful-basis). It does not pick the basis and it is not legal advice."
+      tr: "Madde 6(1), işlemenin yalnızca sayılan dayanaklardan en az biri varsa hukuka uygun olduğunu söyler; Madde 13(1)(c) hukuki dayanağın ilgili kişiye bildirilmesini ister. Bu kontrol yalnızca projede her amaç için bir dayanak seçildiğinin kaydedilip kaydedilmediğine bakar (attestations.gdpr.lawful-basis). Dayanağı seçmez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.gdpr.lawful_basis, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.gdpr.lawful_basis, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked and blocks ready."
+
+  - id: legal.gdpr.consent-withdrawal
+    title: When consent is a basis, the policy explains how to withdraw it
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 7(3) and Article 13(2)(c)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 7(3) gives the data subject the right to withdraw consent at any time, says they must be told so before consenting, and that withdrawing must be as easy as giving consent. This runs when the project says some processing relies on consent, or when the app requests a consent form (UMP). It looks for withdrawal wording on the live privacy page. It is not legal advice."
+      tr: "Madde 7(3), ilgili kişiye rızasını her zaman geri alma hakkı verir, bunun rızadan önce bildirilmesini ve geri almanın rıza vermek kadar kolay olmasını ister. Proje bazı işlemelerin rızaya dayandığını söylediğinde veya uygulama rıza formu (UMP) istediğinde çalışır ve canlı gizlilik sayfasında geri alma ifadesi arar. Hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+        - any:
+            - { fact: attestation.gdpr.consent_basis, eq: "yes" }
+            - { fact: ads.ump_requested, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.consent, eq: "yes" }
+      fail:
+        all:
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.consent, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "The in-app withdrawal control itself is not tested."
+
+  - id: legal.gdpr.erasure-path
+    title: Users with an account have a way to ask for erasure
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 17 and Article 13(2)(b)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 17 gives the data subject the right to obtain erasure of personal data without undue delay where one of its grounds applies, and Article 13(2)(b) requires telling people that the right exists. When the app has accounts, this check looks for an in-app deletion path or a declared account-deletion URL. It does not decide which ground applies and it is not legal advice."
+      tr: "Madde 17, sayılan sebeplerden biri varsa ilgili kişiye verilerinin gecikmeden silinmesini isteme hakkı verir; Madde 13(2)(b) bu hakkın bildirilmesini ister. Uygulamada hesap varsa bu kontrol uygulama içi silme yolu veya tanımlı hesap silme adresi arar. Hangi sebebin geçerli olduğuna karar vermez ve hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+        - { fact: capability.accounts, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: account.deletion.in_app, eq: true }
+          - { fact: urls.account_deletion.present, eq: true }
+      fail:
+        all:
+          - { fact: account.deletion.in_app, eq: false }
+          - { fact: urls.account_deletion.present, eq: false }
+    check:
+      confidence: heuristic
+      note: "Deletion text or a URL is evidence of a path, not proof that data is erased."
+
+  - id: legal.gdpr.processors-answered
+    title: Processor terms for third-party SDKs have been recorded
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 28(1) and 28(3)"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 28 says a controller may use only processors that give sufficient guarantees, and that processing by a processor is governed by a contract or other legal act. The app has ads, analytics, tracking, notifications, or payments SDKs. This check asks whether the project recorded that it reviewed each vendor's role and terms (attestations.gdpr.processors). Some SDK vendors act as independent controllers, not processors; that is for the developer to decide. It is not legal advice."
+      tr: "Madde 28, veri sorumlusunun yalnızca yeterli güvence veren veri işleyenleri kullanmasını ve işlemenin bir sözleşme veya hukuki işlemle düzenlenmesini ister. Uygulamada reklam, analiz, takip, bildirim veya ödeme SDK'sı var. Bu kontrol projede her sağlayıcının rolünün ve sözleşmesinin incelendiğinin kaydedilip kaydedilmediğini sorar (attestations.gdpr.processors). Bazı sağlayıcılar veri işleyen değil bağımsız veri sorumlusudur; buna geliştirici karar verir. Hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+        - any:
+            - { fact: capability.ads, eq: true }
+            - { fact: capability.analytics, eq: true }
+            - { fact: capability.tracking, eq: true }
+            - { fact: capability.notifications, eq: true }
+            - { fact: capability.payments, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: attestation.gdpr.processors, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.gdpr.processors, eq: "no" }
+    check:
+      confidence: attestation
+      note: "A blank answer stays unchecked."
+
+  - id: legal.gdpr.transfers-disclosed
+    title: Transfers outside the EU or EEA are disclosed
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: legal
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: primary-source
+    source:
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679
+      section: "Article 13(1)(f) and Article 44"
+      publisher: EUR-Lex
+    summary:
+      en: "Article 44 allows transfers to a third country only under the conditions of Chapter V, and Article 13(1)(f) requires telling the data subject about an intended transfer and the adequacy decision or safeguards. The app ships third-party SDKs. This check looks for transfer wording on the live privacy page, or the project's statement that no transfer happens (attestations.gdpr.transfers). It is not legal advice."
+      tr: "Madde 44, üçüncü ülkeye aktarıma yalnızca V. Bölüm koşullarıyla izin verir; Madde 13(1)(f) planlanan aktarımın ve yeterlilik kararı veya güvencelerin bildirilmesini ister. Uygulamada üçüncü taraf SDK var. Bu kontrol canlı gizlilik sayfasında aktarım ifadesi veya projede aktarım olmadığı beyanı (attestations.gdpr.transfers) arar. Hukuk görüşü değildir."
+    appliesWhen:
+      all:
+        - { fact: legal.pack.gdpr, eq: true }
+        - any:
+            - { fact: capability.ads, eq: true }
+            - { fact: capability.analytics, eq: true }
+            - { fact: capability.tracking, eq: true }
+            - { fact: capability.notifications, eq: true }
+    evaluate:
+      pass:
+        any:
+          - { fact: attestation.gdpr.transfers, eq: "yes" }
+          - all:
+              - { fact: live.privacy.status, eq: "ok" }
+              - { fact: live.privacy.third_country, eq: "yes" }
+      fail:
+        all:
+          - { fact: attestation.gdpr.transfers, neq: "yes" }
+          - { fact: live.privacy.status, eq: "ok" }
+          - { fact: live.privacy.third_country, eq: "no" }
+    check:
+      confidence: heuristic
+      note: "attestations.gdpr.transfers: true means the developer states no third-country transfer happens or that it is disclosed elsewhere. Vendor server locations are not checked."

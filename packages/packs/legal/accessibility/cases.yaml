@@ -1,1 +1,33 @@
-cases: []
+cases:
+  - id: a11y-labels-found
+    rule: legal.accessibility.element-labels
+    expect: pass
+    facts: { legal.pack.accessibility: true, a11y.labels: "found", attestation.accessibility.reviewed: "unknown" }
+  - id: a11y-labels-none
+    rule: legal.accessibility.element-labels
+    expect: fail
+    facts: { legal.pack.accessibility: true, a11y.labels: "none", attestation.accessibility.reviewed: "unknown" }
+  - id: a11y-labels-unity
+    rule: legal.accessibility.element-labels
+    expect: unchecked
+    facts: { legal.pack.accessibility: true, a11y.labels: "unknown", attestation.accessibility.reviewed: "unknown" }
+  - id: a11y-anl-answered
+    rule: legal.accessibility.nutrition-labels-answered
+    expect: pass
+    facts: { legal.pack.accessibility: true, platform.ios: true, attestation.apple.accessibility_labels: "no" }
+  - id: eaa-scope-blank
+    rule: legal.accessibility.eaa-scope-answered
+    expect: unchecked
+    facts: { legal.pack.accessibility: true, region.eu: "yes", attestation.eaa.applies: "unknown" }
+  - id: eaa-scope-no
+    rule: legal.accessibility.eaa-scope-answered
+    expect: pass
+    facts: { legal.pack.accessibility: true, region.eu: "yes", attestation.eaa.applies: "no" }
+  - id: eaa-info-missing
+    rule: legal.accessibility.eaa-information
+    expect: fail
+    facts: { legal.pack.accessibility: true, attestation.eaa.applies: "yes", attestation.eaa.information: "no" }
+  - id: eaa-info-yes
+    rule: legal.accessibility.eaa-information
+    expect: pass
+    facts: { legal.pack.accessibility: true, attestation.eaa.applies: "yes", attestation.eaa.information: "yes" }

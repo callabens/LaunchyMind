@@ -56,7 +56,7 @@ test("labels drafts only verified SDK rows and a tracking mismatch is a risk", a
   }
 });
 
-test("legal packs turn on from regions and kids and withheld rules do not fail the scan", async () => {
+test("legal packs turn on from regions and kids, and GDPR and accessibility rules run when their packs are on", async () => {
   const directory = await mkdtemp(join(tmpdir(), "launchymind-legal-"));
   try {
     await app(directory, "");
@@ -67,9 +67,11 @@ test("legal packs turn on from regions and kids and withheld rules do not fail t
     assert.equal(report.findings.find((item) => item.ruleId === "legal.kvkk.consent-answered")?.status, "unchecked");
     assert.equal(report.findings.find((item) => item.ruleId === "legal.coppa.notice-answered")?.status, "unchecked");
     assert.equal(report.findings.find((item) => item.ruleId === "legal.dsa.trader-answered")?.status, "unchecked");
-    assert.equal(report.findings.some((item) => item.ruleId === "legal.gdpr.notice"), false);
-    assert.equal(report.findings.some((item) => item.ruleId === "legal.accessibility.basics"), false);
-    assert.ok(report.withheld.some((item) => item.ruleId === "legal.gdpr.notice"));
+    assert.equal(report.findings.find((item) => item.ruleId === "legal.gdpr.lawful-basis-answered")?.status, "unchecked");
+    assert.equal(report.findings.find((item) => item.ruleId === "legal.gdpr.notice-contents")?.status, "unchecked");
+    assert.equal(report.findings.find((item) => item.ruleId === "legal.accessibility.eaa-scope-answered")?.status, "unchecked");
+    assert.ok(report.findings.some((item) => item.ruleId === "legal.accessibility.element-labels"));
+    assert.equal(report.withheld.some((item) => item.ruleId === "legal.gdpr.notice"), false);
     const plain = await mkdtemp(join(tmpdir(), "launchymind-nolegal-"));
     await app(plain, "");
     const quiet = await runScan(plain, { offline: true, now, env: {} });

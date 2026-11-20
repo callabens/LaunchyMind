@@ -7,5 +7,6 @@ engine: ">=0.4.0"
 authors: [callabens]
 verifiedAt: 2026-11-20
 description: >
-  Extra Kids Category notes. The core pack already checks third-party ads
-  when audience.kids is yes. This pack is not legal advice.
+  Extra Kids Category checks from App Review Guidelines 1.3 and 5.1.4, re-read
+  on 2026-11-20. The core pack already checks third-party ads when
+  audience.kids is yes. This pack is not legal advice.

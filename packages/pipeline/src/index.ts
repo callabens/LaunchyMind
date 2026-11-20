@@ -199,6 +199,9 @@ async function applyLive(scanned: ScanResult, checker: LiveChecker | null, offli
     transfer: "live.privacy.transfer",
     legalBasis: "live.privacy.legal_basis",
     rights: "live.privacy.rights",
+    retention: "live.privacy.retention",
+    complaint: "live.privacy.complaint",
+    thirdCountry: "live.privacy.third_country",
     notForChildren: "live.privacy.not_for_children",
   }, names, () => {
     next += 1;

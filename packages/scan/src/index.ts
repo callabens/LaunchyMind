@@ -80,6 +80,16 @@ export const projectSchema = z.object({
     "coppa.notice": z.boolean().optional(),
     "eu.dsa-trader": z.boolean().optional(),
     "payments.restore-control": z.boolean().optional(),
+    "gdpr.lawful-basis": z.boolean().optional(),
+    "gdpr.consent-basis": z.boolean().optional(),
+    "gdpr.processors": z.boolean().optional(),
+    "gdpr.transfers": z.boolean().optional(),
+    "accessibility.reviewed": z.boolean().optional(),
+    "apple.accessibility-labels": z.boolean().optional(),
+    "eaa.applies": z.boolean().optional(),
+    "eaa.information": z.boolean().optional(),
+    "apple.kids-parental-gate": z.boolean().optional(),
+    "apple.kids-analytics-exception": z.boolean().optional(),
     "payments.paywall-links": z.boolean().optional(),
   }).strict().optional(),
   google: z.object({
@@ -479,6 +489,17 @@ export async function scanProject(projectPath: string, packDir: string, now = ne
   else facts["payments.subscription_terms_found"] = subscription && price;
 
   const payments = paymentSignals(sourceTexts);
+  const labelPattern = /Semantics\s*\(|semanticLabel|semanticsLabel|accessibilityLabel|accessibilityHint|aria-label|contentDescription|\.accessibilityLabel\(|setContentDescription|AccessibilityNodeInfo/;
+  const labelFile = sourceTexts.find((item) => labelPattern.test(item.text));
+  const uiFrameworks = flutter || reactNative || nativeIos || nativeAndroid;
+  if (!codeScanned || !uiFrameworks) facts["a11y.labels"] = "unknown";
+  else facts["a11y.labels"] = labelFile ? "found" : "none";
+  if (labelFile) {
+    const index = labelFile.text.search(labelPattern);
+    bag.add(fileEv(["a11y.labels"], "An accessibility label API is used in the source.", labelFile.path, lineAt(labelFile.text, index), lineText(labelFile.text, index)));
+  } else if (facts["a11y.labels"] === "none") {
+    bag.add({ facts: ["a11y.labels"], kind: "absence", detail: "Source files were scanned and no Semantics, semanticLabel, accessibilityLabel, aria-label, or contentDescription use was found.", path: "source" });
+  }
   applyPaymentSignals(facts, bag, payments, {
     codeScanned,
     payments: facts["capability.payments"],
@@ -1209,6 +1230,18 @@ function applyConfig(facts: Record<string, FactValue>, bag: EvidenceBag, config:
   facts["attestation.eu.dsa_trader"] = yesNo(config?.attestations?.["eu.dsa-trader"]);
   facts["attestation.payments.restore_control"] = yesNo(config?.attestations?.["payments.restore-control"]);
   facts["attestation.payments.paywall_links"] = yesNo(config?.attestations?.["payments.paywall-links"]);
+  for (const [fact, key] of [
+    ["attestation.gdpr.lawful_basis", "gdpr.lawful-basis"],
+    ["attestation.gdpr.consent_basis", "gdpr.consent-basis"],
+    ["attestation.gdpr.processors", "gdpr.processors"],
+    ["attestation.gdpr.transfers", "gdpr.transfers"],
+    ["attestation.accessibility.reviewed", "accessibility.reviewed"],
+    ["attestation.apple.accessibility_labels", "apple.accessibility-labels"],
+    ["attestation.eaa.applies", "eaa.applies"],
+    ["attestation.eaa.information", "eaa.information"],
+    ["attestation.apple.kids_parental_gate", "apple.kids-parental-gate"],
+    ["attestation.apple.kids_analytics_exception", "apple.kids-analytics-exception"],
+  ] as const) facts[fact] = yesNo(config?.attestations?.[key]);
   const regions = new Set(config?.regions ?? []);
   facts["region.tr"] = regions.has("TR") ? "yes" : "no";
   facts["region.eu"] = regions.has("EU") || regions.has("EEA") ? "yes" : "no";

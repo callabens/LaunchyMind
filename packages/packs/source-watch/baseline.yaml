@@ -2205,3 +2205,267 @@ sources:
         excerpt: o target parameters that are based on this data. OS version and SDK
           version are also collected and aggregated to understand usage trends
           and inform product dire
+  - url: https://developer.apple.com/app-store/subscriptions/
+    contentHash: sha256:b7a2eac4a1b8f5b1cf7fa2c684ee7122f3c8395b56290e53cd71de76ca5da7d9
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:76cec620d6f5761e105b3394e6066a46a0b33ef53f0a05dc256ab41341ea7268
+        excerpt: Auto-renewable Subscriptions - App Store - Apple Developer View in
+          English Apple Developer Get Started Explore Get Started Overview Learn
+          Apple Developer Progra
+      - at: 0.12
+        hash: sha256:7f13453ef0a846803e50d13d611df3025b80b4922f1af61f58f7036edb41c0eb
+        excerpt: cluded from days of paid service. Days of paid service are specific to
+          each subscription group. Upgrades, downgrades, or crossgrades between
+          subscriptions in th
+      - at: 0.25
+        hash: sha256:114293d0efdde5a063e88ed608504a98ac951adb511014e8f863b91e27300862
+        excerpt: example, if you decide to lower the subscription price for users in
+          Germany, the revenue you’ll receive will be the purchase price minus
+          the European Union’s va
+      - at: 0.37
+        hash: sha256:01352e74af821fdc89c4c78081e7ee2464d24165a3b9ec0fc728a2937f1a1b05
+        excerpt: enjoy the app. Offer a metered paywall. A metered paywall allows access
+          to a finite amount of content for a specified duration before needing
+          to make a purchase
+      - at: 0.5
+        hash: sha256:dc7ea63632dc35b986c70dce7d3eda966cceb100e83a3976f9bc87632530d7a6
+        excerpt: hin your app using StoreKit , and promote the offer’s Apple In-App
+          Purchase to display it on the App Store. When promoted, your offer
+          appears on your product pa
+      - at: 0.62
+        hash: sha256:10df9a608940c2ef7eec5bf6b37197399890b80ea6f1245f940a47466f8a1d97
+        excerpt: " on your configuration, Apple displays these offers to eligible
+          customers in various places, such as on the App Store or in your app
+          or game. For example, you c"
+      - at: 0.75
+        hash: sha256:572f93a502f7888322910abf3446b64010d8ab37b94af63dd9d006516573b44a
+        excerpt: "er a subscription is active, expired, in billing retry, or in grace
+          period. Use this information to inform your retention strategy and
+          provide subscribers with "
+      - at: 0.87
+        hash: sha256:34e526bd41ca42f7767442056682a02e12576bd2d41ce960e5915ee2624ca889
+        excerpt: ting someone during a critical moment. You can keep an unlimited number
+          of active subscribers at their existing price while increasing the
+          price for new subscri
+  - url: https://support.google.com/googleplay/android-developer/answer/9900533
+    contentHash: sha256:9855ed1c5ecb981749e2b5cc9abf39577b3845dca2ba679ee006ea967378a352
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:e0c82f7b91754072d68d9706a81522db9a31d3288f30647c229aba392d1db39f
+        excerpt: "Subscriptions - Play Console Help Skip to main content Play Console
+          Help Sign in Google Help Help Center Play Console Help Policy Center
+          Community Play Console "
+      - at: 0.12
+        hash: sha256:bae0266cfd49003986733389c5280fac8160d98e6c7ca8b83932ddcce8b311e8
+        excerpt: "this article This article will be updated with recently announced
+          changes. Subscriptions with ongoing eligibility-based discounts :
+          Subscriptions with ongoing e"
+      - at: 0.25
+        hash: sha256:43eb7d01bc7dd7dca75298a66e9e271fb50ee8e6af3bde257b6f303f2e15eaa2
+        excerpt: o review the information. Subscriptions must provide sustained or
+          recurring value to users throughout the life of the subscription, and
+          may not be used to offer
+      - at: 0.37
+        hash: sha256:8e54a814739e42a635b36da01bf39c456d01c6f07000f06fbe62495cfc63e1e4
+        excerpt: y demonstrate that a user can access content without a subscription
+          (when available). SKU names that do not accurately convey the nature
+          of the subscription, su
+      - at: 0.5
+        hash: sha256:6bb036f96418683d6c7b4356ed006109dd2f91e2303b47423cd4fa20866627d8
+        excerpt: because its language and currency are not localized to the user's
+          country, unlike the terms and conditions. This prevents the user from
+          being able to understand
+      - at: 0.62
+        hash: sha256:1c6d21c50662c95ae1e5efd2e35d601125e839cf407aac1c743591b5d2e241e5
+        excerpt: ate that a user can access content without a trial (when available).
+          Offer pricing and terms that are incompletely localized. ① Dismiss
+          button is missing or not
+      - at: 0.75
+        hash: sha256:616d205d15a97da8bb279c8b5ee307148c6d60704deb0647b32d0dcd8d20231f
+        excerpt: " Google Play's Subscription Center (for subscriptions that use Google
+          Play's billing system); and/or direct access to your cancellation
+          process. If a user cance"
+      - at: 0.87
+        hash: sha256:b82499f80b75a50eed6098d3b91e1ec155d219070a2c22a9abd4ffc9d60a7081
+        excerpt: ommunity Get answers from community members Contact us Tell us more and
+          we’ll help you get there true Monetization and Ads 1 of 5 Payments 2
+          of 5 Ads 3 of 5 Sub
+  - url: https://www.revenuecat.com/docs/projects/authentication
+    contentHash: sha256:59b1b6b0c28a0884e3ac58f967fb9f57e875d20f010e0166bc34fe79dd5fd428
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:a452000798bfa8eb562e0d7c90a10a44891139600b86adfe2791d6091c64be32
+        excerpt: "API Keys | In-App Subscriptions Made Easy – RevenueCat Skip to main
+          content Skip to navigation On this page AI agents: the complete
+          RevenueCat documentation ind"
+      - at: 0.12
+        hash: sha256:7f09eea5815141564b1b63cf19dd2af6236e25c410273b537308032d386e601b
+        excerpt: " building one that other developers will connect to, use OAuth instead
+          of sharing API keys. API Keys ​ There are two types of API keys:
+          Public API keys (also kn"
+      - at: 0.25
+        hash: sha256:9b025c1b202583c5fd08927f0faace0f06d0d3ef26458c636158697309cba0c0
+        excerpt: h as deleting subscribers and granting entitlements. Secret API keys
+          are project-wide and can be created and revoked by project Admins .
+          REST API v2 Authenticat
+      - at: 0.37
+        hash: sha256:1ede6fee4c834f0a2a97062779076eb595e80c4aba2a4debac0827243269c7a0
+        excerpt: m-specific API keys are automatically created when adding an App to
+          your Project and cannot be changed. Secret API keys can be created by
+          selecting the + New se
+      - at: 0.5
+        hash: sha256:b7e15e61d6902bf37d8010c038a4326d26e9d47e77240167bbcca305a9e4c86d
+        excerpt: " the Purchases SDK with your public API key Reminder, never embed
+          secret API keys in your app or website. Keeping Secret API Keys Safe ​
+          Secret API keys can be "
+      - at: 0.62
+        hash: sha256:93ad12c9a5e9722a8a994ec16072ec0b7f00dbe6aa929dfcf18cbe258dc6f339
+        excerpt: ⚠️ Only configure the Purchases SDK with your public API key Consider
+          rotating your secret API keys regularly to ensure they are not
+          compromised. Do the same wh
+      - at: 0.75
+        hash: sha256:a5071cac3fefe55606985973a7c0864ff240effbfa1fe4980ba29ae58bab0bbc
+        excerpt: " Settings Next OAuth API Keys REST API v2 Authentication Finding API
+          Keys Keeping Secret API Keys Safe Adding and Revoking Secret API Keys
+          Welcome Start here SD"
+      - at: 0.87
+        hash: sha256:7ce7bcdbdf7961eb7735afca8c323735aaccabefb6a89c31c56dd9ae67b79e66
+        excerpt: og Manage Customers Authentication Build a Paywall Funnels Test Your
+          App Launch Your App Targeting Run an Experiment View Charts & Metrics
+          Configure Integration
+  - url: https://www.revenuecat.com/docs/api-v2
+    contentHash: sha256:7d1b8eb2dd57b08e4a606154aa6036cdd6726629398bb79dcfda5c392ae862cf
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:f4b6599309c1f39f30ee290a2af47885180efc3a971ff9c4ec4c2eed202c0af1
+        excerpt: "REST API v2 Reference | In-App Subscriptions Made Easy – RevenueCat
+          Skip to main content Skip to navigation AI agents: the complete
+          RevenueCat documentation ind"
+      - at: 0.12
+        hash: sha256:0c58a7996cc06f0f0b9d2f177ae8ba95a1e7145a9a7b58326be9ed9d78f0bbd4
+        excerpt: entication Authentication for the RevenueCat REST API is achieved by
+          setting the Authorization header with a valid API key. You'll find two
+          types of API keys in
+      - at: 0.25
+        hash: sha256:439087568f0bec1dc58644d37a2f906ff92a8d74950e4ac8410010e6336cf150
+        excerpt: i.e., if you make a request to this endpoint, you will get the first
+          page), e.g. /v2/projects/{project_id}/products next_page is the URL
+          for the next page, if t
+      - at: 0.37
+        hash: sha256:2cff04e852748db31a664eb39b31f1147264485d52e2ba51ddfbcd975d12cea1
+        excerpt: " Below is an example of the response body that will be sent when the
+          rate limit is reached. The value of the backoff_ms field corresponds
+          to the Retry-After hea"
+      - at: 0.5
+        hash: sha256:2787e1e79102fc3c26392427ed5bb65534dbdc77da3e0eb38dbaf4a3c6354196
+        excerpt: 'urn the modified entity. Errors return the following fields: { "type"
+          : "parameter_error" , "param" : "customer_id" , "message" : "id is too
+          long" , "retryable"'
+      - at: 0.62
+        hash: sha256:c67211f2301b66b943b8248a740c23cd80bc32fbce0ca0a9df8eba9915a64a70
+        excerpt: "s ) parameter_error The parameter provided is invalid. Please refer to
+          the message field for more information. IDs (e.g: entitlement_id ,
+          project_id , etc): 1 t"
+      - at: 0.75
+        hash: sha256:957ab0cd387d042f086a64be6d66e52f0801e5c965305839adeede76fa3f41a4
+        excerpt: "you to access your data without needing to understand the
+          specificities and idiosyncrasies of each individual store.
+          Additionally, the REST API v2 subscription "
+      - at: 0.87
+        hash: sha256:40e6c65791a341d4486c98179537b6a1b5ed6eba888b9f42ce0a0ed3a7f6bf6a
+        excerpt: "psed (e.g: after a billing retry or letting subscription expire after
+          an unsubscribe), if a customer subscribes to the same product it will
+          be considered a new "
+  - url: https://developer.android.com/guide/topics/ui/accessibility/apps
+    contentHash: sha256:02a7d6c9089aae24fb8af98172b511f8e329f287b88135f2e8cf3e1400d01c1d
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:8d579e52d2c16a7e883c300c10886ab091da54704937b188b5888cad095efbee
+        excerpt: Make apps more accessible | App quality | Android Developers Skip to
+          main content Essentials Build AI experiences Build AI-powered Android
+          apps with Gemini APIs
+      - at: 0.12
+        hash: sha256:321105e7238886a469bf28e859f00835ef792c0d04fba106cd1e6318f53d2a2f
+        excerpt: view Privacy Permissions Identity Fraud prevention Develop Build more
+          with agents in Android Turn prompts into real Android experiences
+          using your favorite agen
+      - at: 0.25
+        hash: sha256:07f84dd67c9ce96e462cdbbe1a159516b035a5505b755c468ebee904f767a50a
+        excerpt: nd-the-scenes looks at how we’re evolving. Community Discover stories
+          from our users, spotlight features, and the collaborative projects
+          that bring us all toget
+      - at: 0.37
+        hash: sha256:c4f52b2d6580fd723b9acce0c603582ec583aeecfd56db8d409b0c28ce8f27e6
+        excerpt: eriences Get started Get started Hello, world! Adaptive apps Compose
+          for UI AI-powered IDE Monetization with Play ↗️ Developer Verification
+          Registered App Store
+      - at: 0.5
+        hash: sha256:1a5857fb82130a6531736ed91742ffcc3de3338bcca92fa043db75851b225e38
+        excerpt: "ay libraries ⤵️ Tools & resources Android App Bundles Brand &
+          marketing Play Console APIs ↗️ the Android Developer's Blog Read the
+          latest Explore the authors → "
+      - at: 0.62
+        hash: sha256:8436d1cf7a5f841578949390c186dd339ac7e44e8440f693cd8079b7d877ff24
+        excerpt: "result in a color contrast ratio of at least 4.5:1. For all other
+          text, set the color contrast ratio to at least 3:1. The following
+          image shows two examples of "
+      - at: 0.75
+        hash: sha256:42a708f30503fdf66bda4647a614486ef9e0bb6d9b660c5b2ae0c720b91e3dc6
+        excerpt: mageVector = Icons . Filled . Share , contentDescription =
+          stringResource ( R . string . label_share ) ) } }
+          AccessibilitySnippets . kt Note that you do not nee
+      - at: 0.87
+        hash: sha256:b7a8d7ae95ae794239d539b73ec5ef2674c13698d0b902371b9cfbfe4f1895f5
+        excerpt: "ditional resources To learn more about making your app more
+          accessible, see the following additional resources: Codelabs
+          Accessibility in Jetpack Compose Videos"
+  - url: https://developer.apple.com/help/app-store-connect/manage-app-accessibility/overview-of-accessibility-nutrition-labels
+    contentHash: sha256:1e725622f1801dd2ed869ee9fa6127c52ab6c859f077e5096fd31d0ac10f2d95
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:d010f828905987e96f552beeb7e8b5f5f9168747b073752378221714136f4e7c
+        excerpt: Overview of Accessibility Nutrition Labels - Manage App Accessibility -
+          App Store Connect - Help - Apple Developer ' /> ' /> View in English
+          Apple Developer Get
+      - at: 0.12
+        hash: sha256:3134472c5a5c52a3a5138f6f79107078d1e9e2537f8ffca1ef722376df3f1438
+        excerpt: "ns to App Review Manage a submission with unresolved issues Manage
+          submissions to App Review Upload a geographic coverage file Manage
+          submissions to App Review "
+      - at: 0.25
+        hash: sha256:de1d9f494b9cb587f14b6ddadb9a8ad75f89e665c8c771915119b46b5efbaf47
+        excerpt: ges Manage subscriptions Overview of testing in sandbox Test In-App
+          Purchases Create Sandbox Apple Account Test In-App Purchases Manage
+          Sandbox Apple Account se
+      - at: 0.37
+        hash: sha256:bca40ab1cfe63e0d635afed9446979512d0c741ed8581efc92dbab64077cea16
+        excerpt: ebhooks Set up OS data transfer Create an app record Add a new app Set
+          your developer name View and edit app information Add watchOS app
+          information Add iMessag
+      - at: 0.5
+        hash: sha256:23697bde2e997986957afd971acc0c5f1964759f8d46195fc8f9c434714cd0c7
+        excerpt: ions Set up promotional offers for auto-renewable subscriptions Set up
+          subscription offer codes Set up win-back offers Manage Streamlined
+          Purchasing Enable bill
+      - at: 0.62
+        hash: sha256:e445c5abcc995ac767bc2b00629c9fb44b4eb583ac50c4e3bfd32f17443e5d36
+        excerpt: " video or audio-only content with time-synchronized text. Audio
+          Descriptions Users can hear audio descriptions of video content in a
+          clip, show, or movie with t"
+      - at: 0.75
+        hash: sha256:d99845a0318fb6b11cc29747d0dfb39a6ccee103c64ca5ec1bad2ee1696d1451
+        excerpt: "odifying settings. Ensuring a comprehensive list As you make your
+          list, consider the following to ensure you have a comprehensive list
+          of common tasks: Make sur"
+      - at: 0.87
+        hash: sha256:9d6bcde4eb5b5b898bb6e804fa1bad926e9ec4ef201481524b1e740ec388f155
+        excerpt: essibility features, like site-specific font size settings, which allow
+          users to enlarge the font sizes of web sites to 200% the default size,
+          or sometimes larg

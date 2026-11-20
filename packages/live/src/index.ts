@@ -26,6 +26,9 @@ export interface PageSignals {
   contact: "yes" | "no" | "unknown";
   mentionsName: "yes" | "no" | "unknown";
   notForChildren: "yes" | "no" | "unknown";
+  retention: "yes" | "no" | "unknown";
+  complaint: "yes" | "no" | "unknown";
+  thirdCountry: "yes" | "no" | "unknown";
 }
 
 const PLACEHOLDER = [/lorem ipsum/i, /coming soon/i, /\btodo\b/i, /placeholder/i, /under construction/i, /this is a sample/i];
@@ -48,6 +51,9 @@ const SIGNALS: Record<Exclude<keyof PageSignals, "mentionsName">, RegExp[]> = {
   legalBasis: [/legal basis/i, /hukuki sebep/i],
   rights: [/your rights/i, /haklar/i, /article 11/i, /madde 11/i, /md\.?\s*11/i],
   contact: [/@/, /mailto:/i, /\bcontact\b/i, /destek/i, /iletişim/i],
+  retention: [/retention period/i, /retain\w*/i, /how long we (?:keep|store)/i, /stored for/i, /saklama süres/i, /saklanır/i, /muhafaza/i],
+  complaint: [/supervisory authority/i, /data protection authority/i, /lodge a complaint/i, /right to complain/i, /kişisel verileri koruma kurulu/i, /kurula şikayet/i],
+  thirdCountry: [/third countr/i, /outside (?:of )?the (?:eu|eea|european)/i, /international transfer/i, /standard contractual clauses/i, /adequacy decision/i, /yurt ?dışı/i],
   notForChildren: [
     /not directed to children/i,
     /not for children/i,
@@ -69,6 +75,9 @@ const SIGNAL_LABELS: Record<Exclude<keyof PageSignals, "mentionsName">, string> 
   rights: "the person's rights",
   contact: "a way to make contact",
   notForChildren: "a statement that the app is not directed to children",
+  retention: "how long data is kept",
+  complaint: "the right to complain to a supervisory authority",
+  thirdCountry: "transfers outside the EU or EEA",
 };
 
 export function htmlToText(html: string): string {
@@ -126,6 +135,9 @@ const emptySignals = (): PageSignals => ({
   contact: "unknown",
   mentionsName: "unknown",
   notForChildren: "unknown",
+  retention: "unknown",
+  complaint: "unknown",
+  thirdCountry: "unknown",
 });
 
 export function pageSignals(text: string, names: string[]): PageSignals {
@@ -146,6 +158,9 @@ export function pageSignals(text: string, names: string[]): PageSignals {
     contact: yesNo(cleaned, SIGNALS.contact),
     mentionsName: usefulNames.length === 0 ? "unknown" : usefulNames.some((name) => lower.includes(name)) ? "yes" : "no",
     notForChildren: yesNo(cleaned, SIGNALS.notForChildren),
+    retention: yesNo(cleaned, SIGNALS.retention),
+    complaint: yesNo(cleaned, SIGNALS.complaint),
+    thirdCountry: yesNo(cleaned, SIGNALS.thirdCountry),
   };
 }
 
@@ -156,7 +171,7 @@ export function inspectPage(text: string, names: string[]): PageInspection {
   }
   const notes: string[] = [];
   const snippets: string[] = [];
-  const order: Array<keyof typeof SIGNAL_LABELS> = ["consent", "notForChildren", "collection", "deletion", "controller", "purpose", "transfer", "legalBasis", "rights", "ads", "contact"];
+  const order: Array<keyof typeof SIGNAL_LABELS> = ["consent", "notForChildren", "collection", "deletion", "controller", "purpose", "transfer", "legalBasis", "rights", "retention", "complaint", "thirdCountry", "ads", "contact"];
   for (const key of order) {
     const value = signals[key];
     if (value === "unknown") continue;

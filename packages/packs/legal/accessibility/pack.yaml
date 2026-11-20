@@ -7,5 +7,7 @@ engine: ">=0.4.0"
 authors: [callabens]
 verifiedAt: 2026-11-20
 description: >
-  Design guidance only. No accessibility duty is enabled because a store
-  rejection rule was not re-opened. This pack is not legal advice.
+  Opt-in. Platform guidance from Apple and Android (info severity) and the
+  European Accessibility Act (Directive (EU) 2019/882) scope and service-provider
+  information duty for EU apps. Neither store rejects an app for these checks
+  today. This pack is not legal advice and is not an accessibility audit.

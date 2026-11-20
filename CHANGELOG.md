@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased: languages
+
+- Interface strings come from `packages/packs/i18n/ui/<locale>.json` for en, tr, de, fr, es, pt-BR, it, ja, ko, zh-Hans, ar, and ru. A test fails when a locale misses a key or a placeholder.
+- `--lang <locale>` on `scan`, `labels`, `history`, and `dashboard`. Without it, the first set of LC_ALL, LC_MESSAGES, LANG decides, then the VS Code display language, then English. The editor extension passes its display language.
+- The HTML report and the dashboard set `lang` and `dir`; Arabic is right-to-left. Rule ids, URLs, file paths, and source quotes stay left-to-right and in their original language.
+- Rule explanations exist in English and Turkish. Other locales can add `packages/packs/i18n/rules/<locale>.yaml`; until a rule has one, its explanation is shown in English with a note. German, Spanish, French, and Japanese start with the privacy-policy rule.
+- Getting-started pages in German, Spanish, and Japanese; the English and Turkish pages describe `--lang`.
+
 ## 1.0.0
 
 - RevenueCat support. The SDK is detected in Flutter, React Native, CocoaPods, Swift Package, Gradle, and Unity manifests. New rules check a restore control (Apple 3.1.1), Terms of Use and privacy links on a subscription paywall, Play subscription price, period, and auto-renew wording, and a RevenueCat `sk_` secret key in app source (redacted in reports). `launchymind connect revenuecat` reads products, entitlements, and offerings with `REVENUECAT_API_KEY` (GET only) and compares them with product IDs in code.

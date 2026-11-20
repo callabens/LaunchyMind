@@ -1,3 +1,4 @@
+import { translator, type Locale } from "../../i18n/src/index.ts";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -133,18 +134,19 @@ export function sdkFacts(draft: LabelDraft, facts: Record<string, FactValue>): R
   return { "sdk.coverage": coverage, "sdk.manifest_mismatch": manifest, "sdk.answer_mismatch": answer };
 }
 
-export function renderLabels(draft: LabelDraft, lang: "en" | "tr"): string {
-  const lines = [lang === "tr" ? draft.apple.tr : draft.apple.en, ""];
-  lines.push(lang === "tr" ? "App Store taslağı" : "App Store draft");
-  if (draft.apple.items.length === 0) lines.push(lang === "tr" ? "Doğrulanmış bir satır yok." : "No verified row.");
+export function renderLabels(draft: LabelDraft, lang: Locale): string {
+  const t = translator(lang);
+  const lines = [lang === "tr" ? draft.apple.tr : lang === "en" ? draft.apple.en : t("labels.draft"), ""];
+  lines.push(t("labels.apple"));
+  if (draft.apple.items.length === 0) lines.push(t("labels.no_row"));
   for (const item of draft.apple.items) {
-    lines.push(`- ${item.sdk}: ${item.type}; ${item.purposes.join(", ")}; tracking ${item.tracking ? "yes" : "no"}`);
+    lines.push(`- ${item.sdk}: ${item.type}; ${item.purposes.join(", ")}; ${t("labels.tracking")} ${item.tracking ? t("word.yes") : t("word.no")}`);
     lines.push(`  ${item.evidence}`);
     lines.push(`  ${item.source} (${item.verifiedAt})`);
   }
   lines.push("");
-  lines.push(lang === "tr" ? "Play Data safety taslağı" : "Play Data safety draft");
-  if (draft.play.items.length === 0) lines.push(lang === "tr" ? "Doğrulanmış bir satır yok." : "No verified row.");
+  lines.push(t("labels.play"));
+  if (draft.play.items.length === 0) lines.push(t("labels.no_row"));
   for (const item of draft.play.items) {
     lines.push(`- ${item.sdk}: ${item.type}; ${item.purposes.join(", ")}`);
     lines.push(`  ${item.evidence}`);
@@ -152,7 +154,7 @@ export function renderLabels(draft: LabelDraft, lang: "en" | "tr"): string {
   }
   if (draft.unknownSdks.length) {
     lines.push("");
-    lines.push(lang === "tr" ? "Bilinmeyen SDK'lar taslağa satır eklemez." : "Unknown SDKs add no draft row.");
+    lines.push(t("labels.unknown"));
     for (const sdk of draft.unknownSdks) lines.push(`- ${sdk.id}: ${sdk.reason}`);
   }
   return lines.join("\n");

@@ -16,6 +16,7 @@ import { findCorePackDir } from "../../../packages/core/src/index.ts";
 import { scanProject } from "../../../packages/scan/src/index.ts";
 import { addPack, addPackByName, listInstalledPacks, loadRegistry, packIntegrity, removePack, searchRegistry } from "../../../packages/packs/src/index.ts";
 import { loadPack, validatePack } from "../../../packages/rules/src/index.ts";
+import { detectLocale, LOCALES } from "../../../packages/i18n/src/index.ts";
 import { renderHtml, renderJson, renderTerminal } from "../../../packages/report/src/index.ts";
 import { historyEnabled, readFixes, readHistory, recordFixIfEnabled, renderDashboard, renderHistory } from "../../../packages/history/src/index.ts";
 import { checkSources, defaultBaselinePath, listRuleSources, needsReverify, readBaseline, renderSourceReport, withNewHashes, writeBaseline, writeProjectSourceStatus } from "../../../packages/sources/src/index.ts";
@@ -54,11 +55,11 @@ function help(): string {
     `LaunchyMind by callabens  ${LAUNCHYMIND_VERSION}`,
     "",
     "Commands:",
-    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none] [--build]",
+    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang <locale>] [--pack <dir>] [--fail-on reject|risky|none] [--build]",
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
     "  connect revenuecat [--project <path>] [--json] [--offline]",
-    "  labels <path> [--json] [--lang en|tr] [--offline] [--play-csv <file>]",
+    "  labels <path> [--json] [--lang <locale>] [--offline] [--play-csv <file>]",
     "  sources check [--json] [--offline] [--record] [--record-status] [--project <path>]",
     "  history <path>",
     "  dashboard <path> [--out <file>]",
@@ -77,6 +78,8 @@ function help(): string {
     "  fix propose <rule-id> [--project <path>] [--offline]",
     "  mcp",
     "",
+    `Languages for --lang: ${LOCALES.join(", ")}. Without --lang the first set of LC_ALL, LC_MESSAGES, LANG decides; if none is set, the VS Code display language; otherwise en.`,
+    "",
     "Exit codes: 0 scan finished and is under the --fail-on line (default reject, so risky is 0),",
     "  2 risky when --fail-on risky, 3 reject, 4 not a Flutter, React Native, or Expo project, 1 other usage or runtime error.",
     "The verdict comes from the rule engine. This tool does not claim store approval or legal compliance.",
@@ -85,6 +88,8 @@ function help(): string {
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  const requestedLang = args.options.get("lang");
+  const lang = detectLocale(process.env, requestedLang && requestedLang !== "true" ? requestedLang : null);
   const [command, sub, extra] = args.positionals;
   if (!command || command === "help" || args.options.has("help")) {
     console.log(help());
@@ -279,7 +284,7 @@ async function main(): Promise<void> {
       console.log("History is off. Set history: true in .launchymind/project.yaml. Nothing was written.");
       return;
     }
-    console.log(renderHistory(await readHistory(project)));
+    console.log(renderHistory(await readHistory(project), lang));
     return;
   }
 
@@ -288,7 +293,7 @@ async function main(): Promise<void> {
     const project = resolve(sub);
     const out = args.options.get("out");
     const target = out && out !== "true" ? resolve(out) : join(project, ".launchymind", "dashboard.html");
-    const html = renderDashboard(await readHistory(project), await readFixes(project));
+    const html = renderDashboard(await readHistory(project), await readFixes(project), lang);
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, html, "utf8");
     console.log(target);
@@ -296,8 +301,7 @@ async function main(): Promise<void> {
   }
 
   if (command === "labels") {
-    if (!sub) throw new Error("Usage: launchymind labels <path> [--json] [--lang en|tr] [--offline]");
-    const lang = args.options.get("lang") === "tr" ? "tr" : "en";
+    if (!sub) throw new Error("Usage: launchymind labels <path> [--json] [--lang <locale>] [--offline] [--play-csv <file>]");
     const report = await runScan(resolve(sub), { offline: args.options.has("offline") });
     const draft = await labelsForReport(report);
     const csvOut = args.options.get("play-csv");
@@ -353,15 +357,11 @@ async function main(): Promise<void> {
     const artifactPath = artifact && artifact !== "true" ? resolve(artifact) : undefined;
     if (!sub && artifactPath) {
       const report = await runArtifactOnly(artifactPath, { offline: args.options.has("offline") });
-      console.log(renderTerminal(report, "en"));
+      console.log(renderTerminal(report, lang));
       process.exitCode = exitCodeForVerdict(report.verdict, parseFailOn(args.options.get("fail-on")));
       return;
     }
     if (!sub) throw new Error("Usage: launchymind scan <path>");
-    const lang = args.options.get("lang") === "tr" ? "tr" : "en";
-    if (args.options.has("lang") && lang === "en" && args.options.get("lang") !== "en") {
-      throw new Error("Supported languages: en, tr.");
-    }
     const pack = args.options.get("pack");
     const report = await runScan(resolve(sub), {
       offline: args.options.has("offline"),
@@ -373,7 +373,7 @@ async function main(): Promise<void> {
     const output = args.options.get("output");
     if (html && html !== "true") {
       await mkdir(dirname(resolve(html)), { recursive: true });
-      await writeFile(resolve(html), renderHtml(report), "utf8");
+      await writeFile(resolve(html), renderHtml(report, lang), "utf8");
     }
     const wroteJson = Boolean(output && output !== "true");
     if (wroteJson && output) {

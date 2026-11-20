@@ -34,6 +34,7 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - React Native and Expo projects can be scanned. Say when a check stayed unchecked because the source did not show it.
 - Store listing text and images come from `fastlane/metadata` and `.launchymind/store`. Do not invent a character count or a pixel size. If a screenshot size is not on the cited list, say the check stayed unchecked. An iPad-only target uses the 13-inch iPad sizes.
 - Do not ask the user to paste an App Store Connect `.p8` or a Play service-account JSON into the chat or the repository. `launchymind connect` reads paths from environment variables. Data safety and the Xcode SDK are not returned by those APIs. Compare Data safety with a local `launchymind.datasafety.json` instead. `launchymind connect revenuecat` reads `REVENUECAT_API_KEY` from the environment; never ask for that key in chat and never put an `sk_` key in app code.
+- Run `scan --build`, `scan --live`, or `launchymind run` only when the user asks; `run` installs the app on their device or simulator.
 - Run `scan --build` only when the user asks for a build. A build that did not run is unchecked, not a pass.
 - `launchymind scan <project> --artifact <file>` compares the built IPA, APK, or AAB with the source scan. A difference is drift, not a new verdict you invent.
 - `launchymind labels` prints a draft. Say it is a draft and not legal advice. Do not turn an unknown SDK into a data type. A mismatch finding comes from the rule engine.

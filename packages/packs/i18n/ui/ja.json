@@ -69,5 +69,21 @@
   "history.header": "保存されたスキャン（古い順）。",
   "history.blockers": "ブロッカー",
   "history.trend": "推移",
-  "cli.unsupported_lang": "未対応の言語 {lang}。対応言語: {list}。"
+  "cli.unsupported_lang": "未対応の言語 {lang}。対応言語: {list}。",
+  "device.title": "実機チェック",
+  "device.no_device": "デバイスなし",
+  "device.screenshot": "スクリーンショット",
+  "check.launch.crash": "起動時のクラッシュ",
+  "check.ui.privacy-link": "最初の画面のプライバシーリンク",
+  "check.ui.support-link": "最初の画面のサポートリンク",
+  "check.ui.account-deletion": "最初の画面のアカウント削除",
+  "check.permission.prompts": "起動時の権限リクエスト",
+  "check.permission.purpose-strings": "権限の利用目的の文言",
+  "check.att.prompt": "App Tracking Transparency のプロンプト",
+  "cstatus.pass": "合格",
+  "cstatus.fail": "不合格",
+  "cstatus.found": "あり",
+  "cstatus.not-found": "なし",
+  "cstatus.not-checked": "未確認",
+  "cstatus.not-applicable": "対象外"
 }

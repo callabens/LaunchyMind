@@ -55,7 +55,8 @@ function help(): string {
     `LaunchyMind by callabens  ${LAUNCHYMIND_VERSION}`,
     "",
     "Commands:",
-    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang <locale>] [--pack <dir>] [--fail-on reject|risky|none] [--build]",
+    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang <locale>] [--pack <dir>] [--fail-on reject|risky|none] [--build] [--live]",
+    "  run <apk|ipa> [--project <path>] [--screenshots <dir>] [--settle-ms <n>] [--html <file>] [--json]   install and launch on adb or a booted simulator",
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
     "  connect revenuecat [--project <path>] [--json] [--offline]",
@@ -84,6 +85,15 @@ function help(): string {
     "  2 risky when --fail-on risky, 3 reject, 4 not a Flutter, React Native, or Expo project, 1 other usage or runtime error.",
     "The verdict comes from the rule engine. This tool does not claim store approval or legal compliance.",
   ].join("\n");
+}
+
+function liveOptionsFrom(args: ReturnType<typeof parseArgs>): { screenshotDir?: string; settleMs?: number } {
+  const dir = args.options.get("screenshots");
+  const settle = Number(args.options.get("settle-ms"));
+  return {
+    screenshotDir: dir && dir !== "true" ? resolve(dir) : join(process.cwd(), ".launchymind", "screenshots"),
+    ...(Number.isFinite(settle) && settle > 0 ? { settleMs: settle } : {}),
+  };
 }
 
 async function main(): Promise<void> {
@@ -352,11 +362,30 @@ async function main(): Promise<void> {
     return;
   }
 
+  if (command === "run") {
+    if (!sub) throw new Error("Usage: launchymind run <apk|ipa> [--project <path>] [--screenshots <dir>] [--html <file>] [--json] [--lang <locale>]");
+    const artifactPath = resolve(sub);
+    const projectOption = args.options.get("project");
+    const liveOptions = liveOptionsFrom(args);
+    const report = projectOption && projectOption !== "true"
+      ? await runScan(resolve(projectOption), { offline: args.options.has("offline"), artifactPath, live: true, liveOptions })
+      : await runArtifactOnly(artifactPath, { offline: true, live: true, liveOptions });
+    const html = args.options.get("html");
+    if (html && html !== "true") {
+      await mkdir(dirname(resolve(html)), { recursive: true });
+      await writeFile(resolve(html), renderHtml(report, lang), "utf8");
+    }
+    if (args.options.has("json")) console.log(renderJson(report));
+    else console.log(renderTerminal(report, lang));
+    process.exitCode = exitCodeForVerdict(report.verdict, parseFailOn(args.options.get("fail-on")));
+    return;
+  }
+
   if (command === "scan") {
     const artifact = args.options.get("artifact");
     const artifactPath = artifact && artifact !== "true" ? resolve(artifact) : undefined;
     if (!sub && artifactPath) {
-      const report = await runArtifactOnly(artifactPath, { offline: args.options.has("offline") });
+      const report = await runArtifactOnly(artifactPath, { offline: args.options.has("offline"), ...(args.options.has("live") ? { live: true, liveOptions: liveOptionsFrom(args) } : {}) });
       console.log(renderTerminal(report, lang));
       process.exitCode = exitCodeForVerdict(report.verdict, parseFailOn(args.options.get("fail-on")));
       return;
@@ -367,6 +396,7 @@ async function main(): Promise<void> {
       offline: args.options.has("offline"),
       ...(pack && pack !== "true" ? { packDir: resolve(pack) } : {}),
       ...(args.options.has("build") ? { build: true } : {}),
+      ...(args.options.has("live") ? { live: true, liveOptions: liveOptionsFrom(args) } : {}),
       ...(artifactPath ? { artifactPath } : {}),
     });
     const html = args.options.get("html");

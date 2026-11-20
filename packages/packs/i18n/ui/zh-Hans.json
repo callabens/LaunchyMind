@@ -69,5 +69,21 @@
   "history.header": "已保存的扫描，按时间从旧到新。",
   "history.blockers": "阻断项",
   "history.trend": "趋势",
-  "cli.unsupported_lang": "不支持的语言 {lang}。支持：{list}。"
+  "cli.unsupported_lang": "不支持的语言 {lang}。支持：{list}。",
+  "device.title": "真机检查",
+  "device.no_device": "无设备",
+  "device.screenshot": "截图",
+  "check.launch.crash": "启动时崩溃",
+  "check.ui.privacy-link": "首屏隐私链接",
+  "check.ui.support-link": "首屏支持链接",
+  "check.ui.account-deletion": "首屏账号删除",
+  "check.permission.prompts": "启动时的权限请求",
+  "check.permission.purpose-strings": "权限用途说明",
+  "check.att.prompt": "App Tracking Transparency 提示",
+  "cstatus.pass": "通过",
+  "cstatus.fail": "未通过",
+  "cstatus.found": "已找到",
+  "cstatus.not-found": "未找到",
+  "cstatus.not-checked": "未检查",
+  "cstatus.not-applicable": "不适用"
 }

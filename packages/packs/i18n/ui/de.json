@@ -69,5 +69,21 @@
   "history.header": "Gespeicherte Prüfungen, älteste zuerst.",
   "history.blockers": "Blocker",
   "history.trend": "Trend",
-  "cli.unsupported_lang": "Nicht unterstützte Sprache {lang}. Unterstützt: {list}."
+  "cli.unsupported_lang": "Nicht unterstützte Sprache {lang}. Unterstützt: {list}.",
+  "device.title": "Live-Geräteprüfungen",
+  "device.no_device": "kein Gerät",
+  "device.screenshot": "Bildschirmfoto",
+  "check.launch.crash": "Absturz beim Start",
+  "check.ui.privacy-link": "Datenschutz-Link auf dem ersten Bildschirm",
+  "check.ui.support-link": "Support-Link auf dem ersten Bildschirm",
+  "check.ui.account-deletion": "Kontolöschung auf dem ersten Bildschirm",
+  "check.permission.prompts": "Berechtigungsabfrage beim Start",
+  "check.permission.purpose-strings": "Zweckangaben für Berechtigungen",
+  "check.att.prompt": "App Tracking Transparency-Abfrage",
+  "cstatus.pass": "bestanden",
+  "cstatus.fail": "fehlgeschlagen",
+  "cstatus.found": "gefunden",
+  "cstatus.not-found": "nicht gefunden",
+  "cstatus.not-checked": "nicht geprüft",
+  "cstatus.not-applicable": "nicht anwendbar"
 }

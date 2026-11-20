@@ -10,6 +10,10 @@ export interface ArtifactRead {
   adId: boolean | null;
   tracking: "true" | "false" | null;
   cameraUsage: boolean | null;
+  /** Bundle identifier or Android package name, when the manifest had one. */
+  appId?: string | null;
+  /** iOS NS*UsageDescription keys with text, or Android uses-permission names. */
+  permissions?: string[];
 }
 
 export async function readArtifact(path: string): Promise<ArtifactRead> {
@@ -55,6 +59,8 @@ function readIpa(files: Map<string, Buffer>): ArtifactRead {
     adId: null,
     tracking,
     cameraUsage: usage ? true : privacyPath ? false : null,
+    appId: plistString(info, "CFBundleIdentifier") ?? null,
+    permissions: usageKeys(info),
   };
 }
 
@@ -94,10 +100,17 @@ function androidArtifact(kind: "apk" | "aab", xml: AndroidXml, files: Map<string
     adId: xml.permissions.length || xml.targetSdk !== null ? adId : null,
     tracking: null,
     cameraUsage: null,
+    appId: xml.packageName ?? null,
+    permissions: xml.permissions,
   };
 }
 
-interface AndroidXml { targetSdk: number | null; permissions: string[] }
+interface AndroidXml { targetSdk: number | null; permissions: string[]; packageName?: string | null }
+
+function usageKeys(info: unknown): string[] {
+  if (!info || typeof info !== "object") return [];
+  return Object.entries(info as Record<string, unknown>).filter(([key, value]) => /^NS\w+UsageDescription$/.test(key) && typeof value === "string" && value.trim()).map(([key]) => key).sort();
+}
 
 export function unzip(bytes: Buffer): Map<string, Buffer> {
   const eocd = bytes.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
@@ -367,6 +380,7 @@ function attribute(name: number, raw: number, intValue?: number): Buffer {
 export function readBinaryXml(bytes: Buffer): AndroidXml {
   const permissions: string[] = [];
   let targetSdk: number | null = null;
+  let packageName: string | null = null;
   if (bytes.length < 8 || bytes.readUInt16LE(0) !== 0x0003) return { targetSdk, permissions };
   const strings = readPool(bytes.subarray(8));
   let offset = 8 + (bytes.readUInt32LE(8 + 4));
@@ -385,11 +399,12 @@ export function readBinaryXml(bytes: Buffer): AndroidXml {
         const text = dataType === 0x03 ? (strings[data] ?? "") : String(data);
         if (name === "uses-sdk" && attr === "targetSdkVersion") targetSdk = data;
         if (name === "uses-permission" && attr === "android:name") permissions.push(text);
+        if (name === "manifest" && attr === "package" && text) packageName = text;
       }
     }
     offset += size;
   }
-  return { targetSdk, permissions };
+  return { targetSdk, permissions, packageName };
 }
 
 function readPool(bytes: Buffer): string[] {
@@ -415,6 +430,7 @@ export function readProtoXml(bytes: Buffer): AndroidXml {
   const root = protoElementFields(bytes);
   const permissions: string[] = [];
   let targetSdk: number | null = null;
+  let packageName: string | null = null;
   const walk = (fields: Map<number, Buffer[]>): void => {
     const name = protoString(fields.get(1)?.[0]);
     for (const attribute of fields.get(3) ?? []) {
@@ -423,11 +439,12 @@ export function readProtoXml(bytes: Buffer): AndroidXml {
       const value = protoString(attr.get(3)?.[0]);
       if (name === "uses-sdk" && attrName === "targetSdkVersion") targetSdk = Number(value);
       if (name === "uses-permission" && attrName === "android:name" && value) permissions.push(value);
+      if (name === "manifest" && attrName === "package" && value) packageName = value;
     }
     for (const child of fields.get(5) ?? []) walk(protoElementFields(child));
   };
   walk(root);
-  return { targetSdk: Number.isFinite(targetSdk) ? targetSdk : null, permissions };
+  return { targetSdk: Number.isFinite(targetSdk) ? targetSdk : null, permissions, packageName };
 }
 
 function protoElement(name: string, attributes: Buffer[], children: Buffer[] = []): Buffer {

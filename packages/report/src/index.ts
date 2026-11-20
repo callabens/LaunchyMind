@@ -62,6 +62,7 @@ export function renderTerminal(report: LaunchReport, lang: Locale = DEFAULT_LOCA
     lines.push("", t("report.needs_reverify"));
     for (const item of report.sourceWatch.needsReverify) lines.push(`  - ${item.ruleId} ${item.url}`);
   }
+  if (report.device) lines.push("", ...deviceLines(report, t));
   if (report.limitations.length) {
     lines.push("", t("report.limits"));
     for (const item of report.limitations) lines.push(`  - ${item.detail}`);
@@ -73,7 +74,7 @@ export function renderJson(report: LaunchReport): string {
   return JSON.stringify(report, null, 2);
 }
 
-export function renderHtml(report: LaunchReport, lang: Locale = DEFAULT_LOCALE): string {
+export function renderHtml(report: LaunchReport, lang: Locale = DEFAULT_LOCALE, images: Record<string, string> = screenshotData(report)): string {
   const t = translator(lang);
   const verdictClass = report.verdict === "ready" ? "ready" : report.verdict === "risky" ? "risky" : "reject";
   const findings = report.findings
@@ -129,6 +130,7 @@ export function renderHtml(report: LaunchReport, lang: Locale = DEFAULT_LOCALE):
   <h2>${esc(t("html.findings"))}</h2>
   <p class="meta">${esc(t("html.quote_note"))}</p>
   ${findings || `<p>${esc(t("html.no_findings"))}</p>`}
+  ${deviceHtml(report, t, images)}
   <h2>${esc(t("report.limits").replace(/:$/, ""))}</h2>
   <ul>${limits}</ul>
   ${unknowns ? `<h2>${esc(t("report.could_not_read").replace(/:$/, ""))}</h2><ul>${unknowns}</ul>` : ""}
@@ -178,6 +180,37 @@ function formatFinding(finding: Finding, lang: Locale, t: Translate): string[] {
     lines.push(`  ${t("finding.evidence")}: ${where} — ${item.detail}`);
   }
   return lines;
+}
+
+function deviceLines(report: LaunchReport, t: Translate): string[] {
+  const lines = [`${t("device.title")}:`];
+  for (const session of report.device ?? []) {
+    lines.push(`  ${session.platform} · ${session.device ?? t("device.no_device")} · ${session.appId ?? "?"}`);
+    for (const check of session.checks) lines.push(`    ${t(`check.${check.id}`)}: ${t(`cstatus.${check.status}`)}. ${check.detail}`);
+    for (const shot of session.screenshots) lines.push(`    ${t("device.screenshot")}: ${shot}`);
+  }
+  return lines;
+}
+
+function deviceHtml(report: LaunchReport, t: Translate, images: Record<string, string>): string {
+  if (!report.device) return "";
+  const sessions = report.device.map((session) => `<section>
+  <h3><bdi>${esc(session.platform)} · ${esc(session.device ?? t("device.no_device"))} · ${esc(session.appId ?? "?")}</bdi></h3>
+  <ul>${session.checks.map((check) => `<li><strong>${esc(t(`check.${check.id}`))}</strong>: ${esc(t(`cstatus.${check.status}`))}. <span lang="en" dir="ltr">${esc(check.detail)}</span></li>`).join("")}</ul>
+  ${session.screenshots.map((shot) => images[shot] ? `<figure><img alt="${esc(t("device.screenshot"))}" src="${images[shot]}" style="max-width:280px;border:1px solid var(--line)"><figcaption><bdi>${esc(shot)}</bdi></figcaption></figure>` : `<p>${esc(t("device.screenshot"))}: <bdi>${esc(shot)}</bdi></p>`).join("")}
+</section>`).join("\n");
+  return `<h2>${esc(t("device.title"))}</h2>\n${sessions}`;
+}
+
+/** Screenshots are embedded as data URIs so the report stays one file with no remote requests. */
+export function screenshotData(report: LaunchReport): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const session of report.device ?? []) {
+    for (const shot of session.screenshots) {
+      if (existsSync(shot)) out[shot] = `data:image/png;base64,${readFileSync(shot).toString("base64")}`;
+    }
+  }
+  return out;
 }
 
 function byImportance(left: Finding, right: Finding): number {

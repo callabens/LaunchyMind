@@ -69,5 +69,21 @@
   "history.header": "Kayıtlı taramalar, en eskisi önce.",
   "history.blockers": "engel",
   "history.trend": "Eğilim",
-  "cli.unsupported_lang": "Desteklenmeyen dil {lang}. Desteklenenler: {list}."
+  "cli.unsupported_lang": "Desteklenmeyen dil {lang}. Desteklenenler: {list}.",
+  "device.title": "Canlı cihaz kontrolleri",
+  "device.no_device": "cihaz yok",
+  "device.screenshot": "Ekran görüntüsü",
+  "check.launch.crash": "Açılışta çökme",
+  "check.ui.privacy-link": "İlk ekranda gizlilik bağlantısı",
+  "check.ui.support-link": "İlk ekranda destek bağlantısı",
+  "check.ui.account-deletion": "İlk ekranda hesap silme",
+  "check.permission.prompts": "Açılışta izin istemi",
+  "check.permission.purpose-strings": "İzin amaç metinleri",
+  "check.att.prompt": "App Tracking Transparency istemi",
+  "cstatus.pass": "geçti",
+  "cstatus.fail": "başarısız",
+  "cstatus.found": "bulundu",
+  "cstatus.not-found": "bulunamadı",
+  "cstatus.not-checked": "kontrol edilmedi",
+  "cstatus.not-applicable": "uygulanmaz"
 }

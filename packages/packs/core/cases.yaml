@@ -770,3 +770,27 @@ cases:
     rule: build.native-build
     expect: unchecked
     facts: { build.requested: true, build.status: "unknown" }
+  - id: ios-launch-ok
+    rule: apple.launch-crash
+    expect: pass
+    facts: { live.device.requested: true, platform.ios: true, live.device.ios_launch: "ok" }
+  - id: ios-launch-crashed
+    rule: apple.launch-crash
+    expect: fail
+    facts: { live.device.requested: true, platform.ios: true, live.device.ios_launch: "crashed" }
+  - id: ios-launch-no-simulator
+    rule: apple.launch-crash
+    expect: unchecked
+    facts: { live.device.requested: true, platform.ios: true, live.device.ios_launch: "unknown" }
+  - id: android-launch-ok
+    rule: google.launch-crash
+    expect: pass
+    facts: { live.device.requested: true, platform.android: true, live.device.android_launch: "ok" }
+  - id: android-launch-crashed
+    rule: google.launch-crash
+    expect: fail
+    facts: { live.device.requested: true, platform.android: true, live.device.android_launch: "crashed" }
+  - id: android-launch-no-device
+    rule: google.launch-crash
+    expect: unchecked
+    facts: { live.device.requested: true, platform.android: true, live.device.android_launch: "unknown" }

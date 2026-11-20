@@ -32,6 +32,7 @@ export default defineConfig({
           { text: "Labels and legal packs", link: "/labels" },
           { text: "History and source watch", link: "/history" },
           { text: "Native projects", link: "/native" },
+          { text: "Live device check", link: "/live" },
           { text: "Pack registry", link: "/registry" },
           { text: "API and schema", link: "/stability" },
           { text: "Türkçe", link: "/tr" },

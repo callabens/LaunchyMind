@@ -2469,3 +2469,47 @@ sources:
         excerpt: essibility features, like site-specific font size settings, which allow
           users to enlarge the font sizes of web sites to 200% the default size,
           or sometimes larg
+  - url: https://support.google.com/googleplay/android-developer/answer/9898783
+    contentHash: sha256:1ecc32d0cea226e882d19298c8f8220ba91ad7ab95475bde4e43e82fb3e38ae0
+    verifiedAt: 2026-11-20
+    samples:
+      - at: 0
+        hash: sha256:4ef4c5563abf71b923cf6ee4e30ca5d455fb4d4468f69ee8cc0dcd40d2516b51
+        excerpt: "Functionality, Content, and User Experience - Play Console Help Skip
+          to main content Play Console Help Sign in Google Help Help Center Play
+          Console Help Policy "
+      - at: 0.12
+        hash: sha256:4a494e6e7494267d5e5c9445c3dce63129049c5a6818330a372f2c19b5e5fe05
+        excerpt: "ormance Protect your app Comply with Google Play policies Fix an issue
+          Android developer verification Design for multiple form factors
+          Central Play Help Center "
+      - at: 0.25
+        hash: sha256:e507345d3e6db6a3e621c53f822351bffe7d629014104a26bb97c53e16f9dc99
+        excerpt: "lay Console account. If you don't have access to Play Console, ask
+          your account admin for an invite. Functionality, Content, and User
+          Experience Disclaimer: Pol"
+      - at: 0.37
+        hash: sha256:cb3f74922b23b10b40540315cfd6e998931dc928b9817abd7999a7faf150e0e3
+        excerpt: . Full Policy Apps should provide a stable, responsive, and engaging
+          user experience. Apps that crash, do not have the basic degree of
+          adequate utility as mobil
+      - at: 0.5
+        hash: sha256:55f053af2983fc1cbf401aed4dc96cef7855c5a7abffac1f5c195adb838792c6
+        excerpt: "apps Apps with very little content and that do not provide an engaging
+          user experience, for example, single wallpaper apps Apps that are
+          designed to do nothing "
+      - at: 0.62
+        hash: sha256:d276783ccf9e103f274a4295d75e6623d7a1e75861c860e4e954cbd709181484
+        excerpt: "ery little user functionality. Ensure your app provides unique and
+          meaningful functionality. Don't publish apps that don't install or
+          install but don't load or "
+      - at: 0.75
+        hash: sha256:2e3512e12fdd077e91ae9633d5ed5b42101d5e3c1a9e2eaafb8a163daefa2103
+        excerpt: tionality, Content, and User Experience ©2026 Google Privacy Policy
+          Terms of Service Language Afrikaans&lrm; català&lrm; dansk&lrm;
+          Deutsch&lrm; eesti&lrm; Engl
+      - at: 0.87
+        hash: sha256:6c0cd0533f5af0eb3ecd1a2a73a35e73175bb913ed552309355f769974727bd5
+        excerpt: " slovenščina&lrm; suomi&lrm; svenska&lrm; Tiếng Việt&lrm; Türkçe&lrm;
+          čeština&lrm; Ελληνικά&lrm; български&lrm; русский&lrm; српски&lrm;
+          українська&lrm; &rlm; ע"

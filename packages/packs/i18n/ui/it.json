@@ -69,5 +69,21 @@
   "history.header": "Analisi salvate, dalla più vecchia.",
   "history.blockers": "blocchi",
   "history.trend": "Andamento",
-  "cli.unsupported_lang": "Lingua non supportata {lang}. Supportate: {list}."
+  "cli.unsupported_lang": "Lingua non supportata {lang}. Supportate: {list}.",
+  "device.title": "Controlli sul dispositivo",
+  "device.no_device": "nessun dispositivo",
+  "device.screenshot": "Screenshot",
+  "check.launch.crash": "Crash all'avvio",
+  "check.ui.privacy-link": "Link alla privacy nella prima schermata",
+  "check.ui.support-link": "Link al supporto nella prima schermata",
+  "check.ui.account-deletion": "Eliminazione account nella prima schermata",
+  "check.permission.prompts": "Richiesta di autorizzazione all'avvio",
+  "check.permission.purpose-strings": "Testi di motivazione delle autorizzazioni",
+  "check.att.prompt": "Richiesta App Tracking Transparency",
+  "cstatus.pass": "superato",
+  "cstatus.fail": "non superato",
+  "cstatus.found": "trovato",
+  "cstatus.not-found": "non trovato",
+  "cstatus.not-checked": "non controllato",
+  "cstatus.not-applicable": "non applicabile"
 }

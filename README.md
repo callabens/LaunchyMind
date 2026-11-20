@@ -4,7 +4,7 @@ LaunchyMind is a local-first, open-source pre-release readiness checker for mobi
 
 Every finding cites evidence (a file and line, or a live URL) and the rule's source link and last-verified date. The verdict is computed by a deterministic rule engine. The model in an agent session does not decide it.
 
-**Status: 1.0.0-rc.1.** This is a release candidate, not 1.0.0, until the owner publishes it. It is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy or KVKK finding. The npm release workflow is manual and has not been run.
+**Status: 1.0.0.** npm has `@callabens/launchymind@1.0.0-rc.1`; the owner publishes 1.0.0 by hand. It is not a store-approval guarantee and it is not legal advice. Apple and Google make the final decision. Ask a lawyer before you rely on a privacy, KVKK, GDPR, or accessibility finding.
 
 ## Capability matrix
 
@@ -13,14 +13,16 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 | Verdict from the rule engine | Supported |
 | Flutter source scan | Supported |
 | React Native and Expo | Partial. Config plugins are not executed. Unseen facts stay unchecked. |
-| Native iOS | Partial. Xcode project, Info.plist, entitlements, privacy manifest, Swift Package pins, and Podfile.lock. The project is not built. |
-| Native Android | Partial. Gradle, version catalogs, and source manifests including a release overlay. The Gradle merged manifest is not built. |
+| Native iOS | Partial. Xcode project, Info.plist, entitlements, privacy manifest, Swift Package pins, and Podfile.lock. `scan --build` builds a simulator app when Xcode is installed. |
+| Native Android | Partial. Gradle, version catalogs, and source manifests including a release overlay. `scan --build` builds a debug APK when a JDK and the Gradle wrapper are present. |
 | Unity | Partial. Project settings, package manifest, plugin manifests, and a generated export when it is present. C# is not compiled. |
 | Store listing text and images on disk | Supported for the checks that cite a published size or length. |
-| App Store Connect and Play Console | Partial. Read-only when you set keys. The Data safety form is not read. |
+| App Store Connect and Play Console | Partial. Read-only when you set keys. The Data safety form is not read; compare a local `launchymind.datasafety.json` instead. |
+| RevenueCat | Supported for detection, paywall checks (restore, Terms and privacy links, renewal wording), a secret-key leak check, and an optional read-only `connect revenuecat`. |
+| Native build (`--build`) | Partial. Opt-in. Without Flutter, a JDK, or Xcode the build check stays unchecked. Unity is not built. |
 | IPA, APK, and AAB | Partial. Drift against the source scan. Some binary fields stay unread. |
-| SDK privacy drafts | Partial. A row exists only when a vendor page was opened. Unknown SDKs add no row. |
-| Legal packs | Partial. GDPR and accessibility rules stay disabled. Enabled rules check project answers, not a legal conclusion. |
+| SDK privacy drafts | Partial. A row exists only when a vendor page was opened. Unknown SDKs add no row. AppLovin, StoreKit, and Play Billing stay unknown, and AppsFlyer has no Play row. |
+| Legal packs | Partial. KVKK, GDPR, accessibility (with the European Accessibility Act), and Apple Kids are enabled with hashed sources. Rules check project answers and published pages, not a legal conclusion. |
 | Source watch | Partial. Hashes are stored. A weekly workflow opens an issue. Rules are not edited. |
 | History and local dashboard | Supported when `history: true`. |
 | Editor extension | Partial. Packed in CI. Not published to a marketplace. |
@@ -36,12 +38,15 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 - CLI output for the terminal, a LaunchPack JSON file, and a single HTML file with no remote scripts or styles.
 - An MCP stdio server. `launchymind_apply_fix` and `launchymind_apply_fixes` write only after approval.
 - One agent skill, `skills/launchymind-preflight`, that tells an agent when to run the checker and what it must not claim.
+- RevenueCat: the SDK is found in pub, npm, CocoaPods, Swift Package, Gradle, and Unity manifests. Paywall rules look for a restore control, Terms of Use and privacy links, and renewal wording. A `sk_` secret key in app source fails and is never printed. `launchymind connect revenuecat` reads products with `REVENUECAT_API_KEY` (GET only) and compares them with product IDs in code. See `docs-site/revenuecat.md`.
+- A local Play Data safety declaration, `launchymind.datasafety.json`. `launchymind init <path> --datasafety` writes a draft from verified SDK rows with `reviewed: false`. Once reviewed, a scan compares it with the Play data types the SDK rows name. `launchymind labels <path> --play-csv draft.csv` writes a review sheet (not the Play Console import format).
+- `scan --build` builds in a temporary copy and reads the result like `--artifact`.
 
 ## What this preview does not do
 
-- It is not on npm yet. `.github/workflows/release.yml` publishes only when someone runs it by hand and the `NPM_TOKEN` secret is set.
+- It does not publish itself. `.github/workflows/release.yml` publishes only when the owner runs it by hand.
 - A folder that is not Flutter, React Native, Expo, native iOS, native Android, or Unity exits `4`. The message starts with "Not a Flutter project".
-- It does not read App Store Connect or Play Console. Questions that live only there stay **unchecked** until you answer them with `launchymind init` or `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
+- It does not read the Play Data safety form or answers App Store Connect does not expose. Questions that live only there stay **unchecked** until you answer them with `launchymind init` or `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
 - It does not fully scan required-reason API use or privacy manifests inside the Flutter engine, Pods, or SDK binaries. Those gaps are listed on the report and are not treated as a pass.
 - It does not invent privacy-policy text, account-deletion screens, ad-seller lines, or store-console answers.
 - Source watch opens an issue when a cited page changes. It does not rewrite the rule.

@@ -36,7 +36,7 @@ export function createLaunchyMindServer(defaultRoot: string, allowApply = false)
   }, async (input) => text(overview(await scan(defaultRoot, input.projectPath, input.offline))));
 
   server.registerTool("launchymind_scan", {
-    description: "Scan a project and return findings with file or URL evidence. Does not run the app and does not set the verdict.",
+    description: "Scan a project and return findings with file or URL evidence, including store, RevenueCat paywall, SDK, Data safety declaration, and legal-pack rules. Does not run or build the app and does not set the verdict.",
     inputSchema: { projectPath, offline },
     annotations: readOnly,
   }, async (input) => text(await scan(defaultRoot, input.projectPath, input.offline)));

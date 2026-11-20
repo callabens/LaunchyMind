@@ -2,9 +2,9 @@
 
 The same rule engine runs after the scanner reads the project. A fact the files do not show stays unchecked. Unchecked is not a pass.
 
-**iOS.** The scanner reads `project.pbxproj`, `Info.plist`, entitlements, `PrivacyInfo.xcprivacy`, `Package.resolved`, and `Podfile.lock`. It does not build the Xcode project.
+**iOS.** The scanner reads `project.pbxproj`, `Info.plist`, entitlements, `PrivacyInfo.xcprivacy`, `Package.resolved`, and `Podfile.lock`. Without `--build` it does not build the Xcode project. With `--build` and Xcode installed it runs `xcodebuild` for the simulator without code signing.
 
-**Android.** The scanner reads `build.gradle` or `build.gradle.kts`, `gradle/libs.versions.toml` when a version is referenced, and the main source manifest plus a release overlay when that file exists. It does not run Gradle, so the merged manifest from a build is not opened.
+**Android.** The scanner reads `build.gradle` or `build.gradle.kts`, `gradle/libs.versions.toml` when a version is referenced, and the main source manifest plus a release overlay when that file exists. Without `--build` it does not run Gradle, so the merged manifest from a build is not opened. With `--build` and a JDK it runs `./gradlew assembleDebug` in a temporary copy and reads the APK.
 
 **Unity.** The scanner reads `ProjectSettings/ProjectSettings.asset`, `Packages/manifest.json`, and manifests under `Assets/Plugins`. A generated `ios/` or `android/` export is read with the same readers when those folders are present. C# is scanned for a few phrases and is not compiled.
 

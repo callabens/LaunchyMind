@@ -39,7 +39,7 @@ export interface LabelDraft {
 }
 
 const DRAFT_EN = "DRAFT. This is not a finished App Privacy or Data safety form, not store approval, and not legal advice. Each row is only what a vendor page said about that SDK.";
-const DRAFT_TR = "TASLAK. Bu, bitmiş bir App Privacy veya Data safety formu, mağaza onayı veya hukuk görüşü değildir. Her satır yalnızca bir satıcının sayfasında o SDK için yazılan bilgidir.";
+const DRAFT_TR = "TASLAK. Bu, bitmiş bir Uygulama Gizliliği veya Veri güvenliği formu, mağaza onayı veya hukuk görüşü değildir. Her satır yalnızca bir satıcının sayfasında o SDK için yazılan bilgidir.";
 
 export function findSdkPackPath(start = dirname(fileURLToPath(import.meta.url))): string {
   let dir = start;

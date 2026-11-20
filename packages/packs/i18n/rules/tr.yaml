@@ -1,0 +1,183 @@
+# Rule explanations (tr). Translated from the English rule texts; keep ids, file names, keys, and guideline numbers unchanged.
+product.flutter-project:
+  title: "Proje bu denetleyicinin okuyabildiği bir türde"
+product.audience-answers:
+  title: "Kodun cevaplayamadığı kitle soruları"
+apple.kids-third-party:
+  title: "Çocuklara yönelik uygulamalar üçüncü taraf reklam ve analitikten kaçınmalı"
+apple.privacy-policy-in-app:
+  title: "Uygulamada gizlilik politikası bağlantısı olmalı"
+apple.privacy-policy-metadata:
+  title: "Mağaza meta verisi için gizlilik politikası URL'si bildirilmiş"
+apple.privacy-link-opens:
+  title: "Gizlilik politikası bağlantısı açılıyor"
+apple.privacy-policy-content:
+  title: "Gizlilik politikası toplama, silme ve rızayı anlatıyor"
+apple.support-contact:
+  title: "Destek URL'si veya iletişim yolu var"
+apple.support-link-quality:
+  title: "Destek sayfası bir iletişim yolu gösteriyor"
+apple.account-deletion:
+  title: "Hesap oluşturma, uygulama içinde hesap silmeyi gerektirir"
+apple.tracking-permission:
+  title: "İzleme için App Tracking Transparency bildirimi gerekir"
+apple.login-equivalent:
+  title: "Üçüncü taraf girişin eşdeğer bir seçeneği olmalı"
+apple.permission-camera:
+  title: "Kamera kullanımı için iOS amaç metni gerekir"
+apple.permission-photos:
+  title: "Fotoğraf arşivi kullanımı için iOS amaç metni gerekir"
+apple.permission-location:
+  title: "Konum kullanımı için iOS amaç metni gerekir"
+apple.permission-microphone:
+  title: "Mikrofon kullanımı için iOS amaç metni gerekir"
+apple.permission-contacts:
+  title: "Kişiler kullanımı için iOS amaç metni gerekir"
+apple.privacy-manifest-reasons:
+  title: "Gizlilik bildirimindeki gerekçe isteyen API'lerin gerekçe kodu olmalı"
+apple.listed-sdk-manifest:
+  title: "Listelenen üçüncü taraf SDK'ların gizlilik bildirimi olmalı"
+apple.minimum-os:
+  title: "Yüklemeler iOS 13 veya üstünü hedeflemeli"
+apple.xcode-sdk:
+  title: "Yüklemeler Xcode 26 ve iOS 26 SDK ile derlenmeli"
+apple.age-rating:
+  title: "Güncellenen yaş derecelendirmesi soruları cevaplanmalı"
+apple.subscription-terms:
+  title: "Abonelik satın alma ekranı teklifi anlatmalı"
+google.target-api:
+  title: "Yeni uygulamalar ve güncellemeler Android 16 API 36'yı hedeflemeli"
+google.privacy-policy:
+  title: "Play gizlilik politikası bağlantısı ister"
+google.data-safety-form:
+  title: "Veri güvenliği formu doldurulmalı"
+google.account-deletion:
+  title: "Hesap oluşturma için uygulama içi yol ve web silme bağlantısı gerekir"
+google.account-deletion-link:
+  title: "Web hesap silme bağlantısı açılmalı ve uygulamayı anmalı"
+google.closed-testing:
+  title: "Yeni kişisel Play hesapları kapalı test yapmalı"
+iab.app-ads:
+  title: "Reklamlı uygulamalar app-ads.txt dosyası yayınlar"
+policy.ads-disclosure:
+  title: "Reklamlı bir uygulamanın gizlilik sayfası reklamdan söz etmeli"
+kvkk.disclosure:
+  title: "Gizlilik sayfasında KVKK 10. madde aydınlatma başlıkları"
+kvkk.consent-separate:
+  title: "Açık rıza ve aydınlatma metni ayrı adımlardır"
+apple.privacy-manifest-tracking:
+  title: "Reklam veya izleme, gizlilik bildirimindeki izleme alanlarıyla uyuşmalı"
+apple.stub-purchase-ui:
+  title: "Satın alma SDK'sı olmadan taslak veya geri yükleme metni"
+google.sample-ad-id:
+  title: "Google örnek reklam birimi kimlikleri yayına çıkmamalı"
+google.ump-consent-call:
+  title: "Reklamlı uygulamalar UMP rıza güncellemesi istemeli"
+product.kids-policy-consistency:
+  title: "Çocuklara yönelik değil diyen politika, çocuk cevabıyla uyuşmalı"
+google.ad-id-permission:
+  title: "Android'de reklam için reklam kimliği izni gerekir"
+google.data-safety-ad-id:
+  title: "Reklam varsa Veri güvenliği reklam kimliğini içermeli"
+store.ios.name-length:
+  title: "App Store adı 2 ile 30 karakter arasında"
+store.ios.subtitle-length:
+  title: "App Store alt başlığı en çok 30 karakter"
+store.ios.description-length:
+  title: "App Store açıklaması en çok 4000 karakter"
+store.ios.keywords-length:
+  title: "App Store anahtar kelimeleri 100 baytı geçmez"
+store.ios.promo-length:
+  title: "Tanıtım metni en çok 170 karakter"
+store.ios.release-notes-length:
+  title: "Yenilikler metni en çok 4000 karakter"
+store.play.title-length:
+  title: "Play başlığı en çok 30 karakter"
+store.play.short-description-length:
+  title: "Play kısa açıklaması en çok 80 karakter"
+store.play.full-description-length:
+  title: "Play tam açıklaması en çok 4000 karakter"
+store.placeholder-text:
+  title: "Mağaza metni yer tutucu metin değil"
+store.ios.other-platform:
+  title: "iOS sayfası başka bir mobil platformun adını anmıyor"
+store.play.other-platform:
+  title: "Play sayfası başka bir mobil platformu öne çıkarmıyor"
+store.future-promise:
+  title: "Sayfa metni olmayan bir özelliği vaat etmiyor"
+store.copyright-year:
+  title: "Telif hakkı yılı gelecekte değil"
+store.price-claims:
+  title: "Sayfa metni, sayfanın zaten gösterdiği fiyatı eklemiyor"
+store.keyword-stuffing:
+  title: "Anahtar kelimeler tekrar etmiyor ve başka markalarla doldurulmamış"
+store.locale-consistency:
+  title: "İngilizce ve Türkçe sayfalar aynı özellikleri anlatıyor"
+store.urls-reachable:
+  title: "Mağaza sayfasındaki URL'ler açılıyor"
+store.ios.icon:
+  title: "App Store simgesi 1024x1024 ve alfa kanalı yok"
+store.ios.screenshots:
+  title: "Ekran görüntüleri hedeflenen cihazın boyutuna uyuyor"
+store.play.icon:
+  title: "Play simgesi 512x512 PNG"
+store.play.feature-graphic:
+  title: "Play öne çıkan grafiği 1024x500 ve alfa kanalı yok"
+store.play.screenshots:
+  title: "Play telefon ekran görüntüleri yayımlanan boyut ve sayıya uyuyor"
+artifact.drift:
+  title: "Derlenen dosya kaynaktan okunan değerlerle uyuşuyor"
+sdk.manifest-label-mismatch:
+  title: "Doğrulanmış bir SDK beyanı gizlilik bildirimiyle çelişiyor"
+sdk.answer-label-mismatch:
+  title: "Doğrulanmış bir SDK beyanı proje cevabıyla çelişiyor"
+apple.restore-purchases:
+  title: "Geri yüklenebilir uygulama içi satın almalar için geri yükleme kontrolü gerekir"
+apple.subscription-paywall-links:
+  title: "Abonelik kaydında Kullanım Koşulları ve Gizlilik Politikası bağlantıları olmalı"
+google.subscription-offer-terms:
+  title: "Play abonelikleri fiyatı, faturalama dönemini ve otomatik yenilemeyi açıklamalı"
+revenuecat.secret-key-in-app:
+  title: "RevenueCat gizli API anahtarı uygulamayla birlikte gönderilmemeli"
+revenuecat.products-configured:
+  title: "RevenueCat ürünleri ve teklifleri kodla eşleşiyor"
+google.data-safety-declaration-sdks:
+  title: "Yerel Veri güvenliği beyanı SDK'ların topladıklarını kapsıyor"
+build.native-build:
+  title: "İstenen yerel derleme çalıştı ve çıktısı okundu"
+apple.launch-crash:
+  title: "iOS derlemesi simülatörde çökmeden açılıyor"
+google.launch-crash:
+  title: "Android derlemesi cihazda çökmeden açılıyor"
+legal.accessibility.element-labels:
+  title: "Etkileşimli öğelerin erişilebilirlik etiketi olmalı"
+legal.accessibility.nutrition-labels-answered:
+  title: "App Store için Erişilebilirlik Besin Etiketleri değerlendirilmiş"
+legal.accessibility.eaa-scope-answered:
+  title: "Avrupa Erişilebilirlik Yasası'nın uygulamayı kapsayıp kapsamadığı cevaplanmış"
+legal.accessibility.eaa-information:
+  title: "Kapsamdaki hizmet erişilebilirlik bilgisini yayımlıyor"
+legal.apple.kids-parental-gate:
+  title: "Çocuklar Kategorisi'nde satın almalar ve dış bağlantılar ebeveyn kapısının arkasında"
+legal.apple.kids-third-party-analytics:
+  title: "Çocuklar Kategorisi uygulamaları üçüncü taraf analitik içermemeli"
+legal.coppa.notice-answered:
+  title: "COPPA bildirim sorusu cevaplanmış"
+legal.dsa.trader-answered:
+  title: "AB tacir durumu cevaplanmış"
+legal.gdpr.notice-contents:
+  title: "Gizlilik politikası 13. madde bilgilerini içermeli"
+legal.gdpr.lawful-basis-answered:
+  title: "Her işleme amacı için bir hukuki dayanak kaydedilmiş"
+legal.gdpr.consent-withdrawal:
+  title: "Rıza bir dayanaksa, politika rızanın nasıl geri alınacağını anlatıyor"
+legal.gdpr.erasure-path:
+  title: "Hesabı olan kullanıcıların silme isteme yolu var"
+legal.gdpr.processors-answered:
+  title: "Üçüncü taraf SDK'lar için veri işleyen şartları kaydedilmiş"
+legal.gdpr.transfers-disclosed:
+  title: "AB veya AEA dışına aktarımlar açıklanmış"
+legal.google.families-ad-id:
+  title: "Çocuklara yönelik bir Play uygulaması reklam kimliğini tutmamalı"
+legal.kvkk.consent-answered:
+  title: "KVKK açık rıza sorusu cevaplanmış olmalı"

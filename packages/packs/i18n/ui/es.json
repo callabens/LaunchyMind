@@ -49,9 +49,9 @@
   "html.none": "Ninguna.",
   "html.generated": "Generado el {date}. Este archivo no carga scripts ni estilos remotos.",
   "html.quote_note": "Las fuentes de las reglas se citan en su idioma original.",
-  "labels.draft": "BORRADOR. Esto no es un formulario App Privacy o Data safety terminado, ni una aprobación de la tienda, ni asesoramiento legal. Cada fila es solo lo que la página de un proveedor dice sobre ese SDK.",
+  "labels.draft": "BORRADOR. Esto no es un formulario de Privacidad de la app o Seguridad de los datos terminado, ni una aprobación de la tienda, ni asesoramiento legal. Cada fila es solo lo que la página de un proveedor dice sobre ese SDK.",
   "labels.apple": "Borrador para App Store",
-  "labels.play": "Borrador de Play Data safety",
+  "labels.play": "Borrador de la sección Seguridad de los datos de Play",
   "labels.no_row": "No hay filas verificadas.",
   "labels.unknown": "Los SDK desconocidos no añaden filas.",
   "labels.tracking": "seguimiento",
@@ -85,5 +85,7 @@
   "cstatus.found": "encontrado",
   "cstatus.not-found": "no encontrado",
   "cstatus.not-checked": "sin comprobar",
-  "cstatus.not-applicable": "no aplica"
+  "cstatus.not-applicable": "no aplica",
+  "why.unchecked": "No se pudo comprobar desde el proyecto.",
+  "why.ready": "Se cumplieron todas las reglas aplicables. Aun así, no es una aprobación de la tienda."
 }

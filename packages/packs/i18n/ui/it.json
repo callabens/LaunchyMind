@@ -49,9 +49,9 @@
   "html.none": "Nessuna.",
   "html.generated": "Generato il {date}. Questo file non carica script o stili remoti.",
   "html.quote_note": "Le fonti delle regole sono citate nella lingua originale.",
-  "labels.draft": "BOZZA. Questo non è un modulo App Privacy o Data safety completo, non è un'approvazione dello store e non è una consulenza legale. Ogni riga riporta solo ciò che la pagina di un fornitore dice di quell'SDK.",
+  "labels.draft": "BOZZA. Questo non è un modulo Privacy dell'app o Sicurezza dei dati completo, non è un'approvazione dello store e non è una consulenza legale. Ogni riga riporta solo ciò che la pagina di un fornitore dice di quell'SDK.",
   "labels.apple": "Bozza App Store",
-  "labels.play": "Bozza Play Data safety",
+  "labels.play": "Bozza della sezione Sicurezza dei dati di Play",
   "labels.no_row": "Nessuna riga verificata.",
   "labels.unknown": "Gli SDK sconosciuti non aggiungono righe.",
   "labels.tracking": "tracciamento",
@@ -85,5 +85,7 @@
   "cstatus.found": "trovato",
   "cstatus.not-found": "non trovato",
   "cstatus.not-checked": "non controllato",
-  "cstatus.not-applicable": "non applicabile"
+  "cstatus.not-applicable": "non applicabile",
+  "why.unchecked": "Non è stato possibile verificarlo dal progetto.",
+  "why.ready": "Tutte le regole applicabili sono superate. Non è comunque un'approvazione dello store."
 }

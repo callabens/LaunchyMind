@@ -85,5 +85,7 @@
   "cstatus.found": "found",
   "cstatus.not-found": "not found",
   "cstatus.not-checked": "not checked",
-  "cstatus.not-applicable": "not applicable"
+  "cstatus.not-applicable": "not applicable",
+  "why.unchecked": "Could not check this from the project.",
+  "why.ready": "Every applicable rule passed. This is still not store approval."
 }

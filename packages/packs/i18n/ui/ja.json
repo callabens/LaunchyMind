@@ -49,9 +49,9 @@
   "html.none": "なし。",
   "html.generated": "{date} に生成。このファイルは外部のスクリプトやスタイルを読み込みません。",
   "html.quote_note": "ルールの出典は原文の言語のまま引用しています。",
-  "labels.draft": "下書き。これは完成した App Privacy または Data safety フォームではなく、ストアの承認でも法的助言でもありません。各行はベンダーのページがその SDK について記載している内容のみです。",
+  "labels.draft": "下書き。これは完成した「App のプライバシー」またはデータ セーフティのフォームではなく、ストアの承認でも法的助言でもありません。各行はベンダーのページがその SDK について記載している内容のみです。",
   "labels.apple": "App Store 下書き",
-  "labels.play": "Play Data safety 下書き",
+  "labels.play": "Play のデータ セーフティ下書き",
   "labels.no_row": "確認済みの行はありません。",
   "labels.unknown": "不明な SDK は下書きに行を追加しません。",
   "labels.tracking": "トラッキング",
@@ -85,5 +85,7 @@
   "cstatus.found": "あり",
   "cstatus.not-found": "なし",
   "cstatus.not-checked": "未確認",
-  "cstatus.not-applicable": "対象外"
+  "cstatus.not-applicable": "対象外",
+  "why.unchecked": "プロジェクトからは確認できませんでした。",
+  "why.ready": "適用されるルールはすべて合格しました。それでもストアの承認ではありません。"
 }

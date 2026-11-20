@@ -148,6 +148,10 @@ test("pack search and pack add use the registry hash and refuse a mismatch", asy
   const index = await loadRegistry();
   assert.equal(searchRegistry(index, "example").some((item) => item.name === "example-notes"), true);
   assert.equal(await packIntegrity(join(repo, "registry/packs/example-notes")), index.packs[0]?.integrity);
+  const pinned = index.packs[0];
+  assert.ok(pinned);
+  const listed = spawnSync("git", ["cat-file", "-e", `${pinned.commit}:${pinned.path}/pack.yaml`], { cwd: repo });
+  assert.equal(listed.status, 0);
   const directory = await mkdtemp(join(tmpdir(), "launchymind-registry-"));
   try {
     const pack = join(directory, "registry/packs/sample-notes");

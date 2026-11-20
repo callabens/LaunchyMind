@@ -28,6 +28,7 @@ import { loadProjectPacks } from "../../packs/src/index.ts";
 import { evaluatePack, loadPack, type LoadedPack } from "../../rules/src/index.ts";
 import { join } from "node:path";
 import { readArtifact, type ArtifactRead } from "../../artifact/src/index.ts";
+import { buildProject, buildStatus, type BuildRunner } from "../../build/src/index.ts";
 import { readConnect, readConnectConfig } from "../../connect/src/index.ts";
 import { readRevenueCat, readRevenueCatConfig } from "../../connect/src/revenuecat.ts";
 import { scanProject, type ScanResult } from "../../scan/src/index.ts";
@@ -43,6 +44,8 @@ export interface RunOptions {
   packDir?: string;
   pack?: LoadedPack;
   artifactPath?: string;
+  build?: boolean;
+  buildRunner?: BuildRunner;
   fetchImpl?: typeof fetch;
   env?: Record<string, string | undefined>;
 }
@@ -52,6 +55,9 @@ export async function runScan(projectPath: string, options: RunOptions = {}): Pr
   const scanned = await scanProject(projectPath, pack.directory, options.now ?? new Date());
   if (scanned.profile.framework === "unknown" && !options.artifactPath) throw new NotFlutterProjectError(projectPath);
   if (options.artifactPath) applyArtifact(scanned, await readArtifact(options.artifactPath));
+  scanned.facts["build.requested"] = options.build === true;
+  scanned.facts["build.status"] = options.build === true ? "unknown" : "not-applicable";
+  if (options.build === true) await applyBuild(scanned, projectPath, options.buildRunner);
   const legalPacks = [];
   for (const id of scanned.legalPackIds) {
     try {
@@ -372,6 +378,39 @@ async function assignStoreUrls(
     detail: broken ? "At least one store listing URL did not return a page." : "Every store listing URL returned a page.",
     ...(first ? { path: first } : {}),
   });
+}
+
+async function applyBuild(scanned: ScanResult, projectPath: string, runner: BuildRunner | undefined): Promise<void> {
+  const build = await buildProject(projectPath, runner ? { runner } : {});
+  try {
+    const drifts: string[] = [];
+    if (hasArtifact(scanned)) drifts.push(String(scanned.facts["artifact.drift"]));
+    for (const outcome of build.outcomes) {
+      scanned.observations.push({ id: `build.${outcome.target}`, detail: `${outcome.target} build ${outcome.status}: ${outcome.reason}${outcome.logTail && outcome.status === "failed" ? ` Last log lines: ${outcome.logTail.slice(-600)}` : ""}` });
+      if (outcome.status !== "built" || !outcome.artifactPath) continue;
+      try {
+        applyArtifact(scanned, await readArtifact(outcome.artifactPath));
+        drifts.push(String(scanned.facts["artifact.drift"]));
+      } catch (error) {
+        outcome.status = "failed";
+        outcome.reason = `The built artifact could not be read: ${error instanceof Error ? error.message : String(error)}`;
+      }
+    }
+    if (drifts.length > 1) scanned.facts["artifact.drift"] = drifts.includes("yes") ? "yes" : drifts.includes("no") ? "no" : "unknown";
+    scanned.facts["build.status"] = buildStatus(build.outcomes);
+    scanned.evidence.push({
+      id: "ev_build",
+      facts: ["build.status"],
+      kind: "file",
+      detail: build.outcomes.map((item) => `${item.target}: ${item.status}. ${item.reason}`).join(" "),
+    });
+  } finally {
+    await build.cleanup();
+  }
+}
+
+function hasArtifact(scanned: ScanResult): boolean {
+  return scanned.facts["artifact.present"] === true;
 }
 
 function applyArtifact(scanned: ScanResult, artifact: ArtifactRead): void {

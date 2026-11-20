@@ -54,7 +54,7 @@ function help(): string {
     `LaunchyMind by callabens  ${LAUNCHYMIND_VERSION}`,
     "",
     "Commands:",
-    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
+    "  scan <path> [--artifact <ipa|apk|aab>] [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none] [--build]",
     "  scan --artifact <ipa|apk|aab> [--offline]",
     "  connect [--project <path>]",
     "  connect revenuecat [--project <path>] [--json] [--offline]",
@@ -366,6 +366,7 @@ async function main(): Promise<void> {
     const report = await runScan(resolve(sub), {
       offline: args.options.has("offline"),
       ...(pack && pack !== "true" ? { packDir: resolve(pack) } : {}),
+      ...(args.options.has("build") ? { build: true } : {}),
       ...(artifactPath ? { artifactPath } : {}),
     });
     const html = args.options.get("html");

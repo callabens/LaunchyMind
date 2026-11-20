@@ -758,3 +758,15 @@ cases:
     rule: google.data-safety-declaration-sdks
     expect: unchecked
     facts: { platform.android: true, google.data_safety_declaration: "unknown" }
+  - id: build-built
+    rule: build.native-build
+    expect: pass
+    facts: { build.requested: true, build.status: "built" }
+  - id: build-failed
+    rule: build.native-build
+    expect: fail
+    facts: { build.requested: true, build.status: "failed" }
+  - id: build-no-toolchain
+    rule: build.native-build
+    expect: unchecked
+    facts: { build.requested: true, build.status: "unknown" }

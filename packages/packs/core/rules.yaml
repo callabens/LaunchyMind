@@ -2466,3 +2466,37 @@ rules:
     next:
       en: "Add the missing data types to launchymind.datasafety.json and to the Play Console Data safety form, or confirm with the SDK vendor that your setup does not collect them."
       tr: "Eksik veri türlerini launchymind.datasafety.json dosyasına ve Play Console Data safety formuna ekleyin ya da kurulumunuzun bunları toplamadığını SDK sağlayıcısıyla doğrulayın."
+
+  - id: build.native-build
+    title: The requested native build ran and its artifact was read
+    severity: risk
+    platforms: [any]
+    enabled: true
+    origin: product
+    verification:
+      status: verified
+      verifiedAt: 2026-11-20
+      method: product-rule
+    source:
+      url: https://github.com/callabens/LaunchyMind
+      section: build
+      publisher: LaunchyMind
+    summary:
+      en: "With scan --build, LaunchyMind builds a debug APK and an iOS simulator app in a temporary copy of the project, then reads them like a scanned artifact. A build that failed is a risk. A build that did not run because the toolchain is missing stays unchecked, never a pass."
+      tr: "scan --build ile LaunchyMind projenin geçici bir kopyasında debug APK ve iOS simülatör uygulaması derler, sonra bunları taranan artifakt gibi okur. Başarısız derleme bir risktir. Araç zinciri olmadığı için çalışmayan derleme kontrol edilemedi kalır, asla geçti sayılmaz."
+    appliesWhen:
+      all:
+        - { fact: build.requested, eq: true }
+    evaluate:
+      pass:
+        all:
+          - { fact: build.status, eq: "built" }
+      fail:
+        all:
+          - { fact: build.status, eq: "failed" }
+    check:
+      confidence: direct
+      note: "Debug builds without code signing. Release signing, bitcode, and store upload validation are not run. Unity projects are not built."
+    next:
+      en: "Read the build log lines in the report, fix the build, and run scan --build again. Install Flutter, a JDK, or Xcode where a build did not run."
+      tr: "Rapordaki derleme günlüğü satırlarını okuyun, derlemeyi düzeltin ve scan --build komutunu yeniden çalıştırın. Çalışmayan derleme için Flutter, JDK veya Xcode kurun."

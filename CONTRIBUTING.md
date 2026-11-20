@@ -42,4 +42,4 @@ Node.js 22.18 or newer. Add a fixture or a rule case for any verdict change.
 
 The verdict function is `decideVerdict` in `packages/verdict`. Do not add a tool, flag, or MCP argument that sets it.
 
-`launchymind fix apply` must keep refusing to write files until an approved-write design exists and has a test that proves an unapproved call changes nothing.
+`launchymind fix` must refuse to write without `--yes` or an interactive yes, must refuse a path outside the project, and must refuse a dirty git tree unless `--allow-dirty` is set. A test has to prove an unapproved call changes nothing. Do not add a writer for legal text or seller ids.

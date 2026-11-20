@@ -1,0 +1,32 @@
+name: Action self-test
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  risky-does-not-fail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          path: fixtures/flutter/risky-accounts
+          fail-on: reject
+          offline: "true"
+  reject-fails:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        id: reject
+        continue-on-error: true
+        with:
+          path: fixtures/flutter/reject-camera
+          fail-on: reject
+          offline: "true"
+      - name: Require the reject fixture to fail the action
+        if: steps.reject.outcome != 'failure'
+        run: exit 1

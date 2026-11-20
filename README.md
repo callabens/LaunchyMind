@@ -22,7 +22,7 @@ Every finding cites evidence (a file and line, or a live URL) and the rule's sou
 - It does not scan React Native, Expo, native iOS, native Android, IPA, or AAB files. A non-Flutter folder is reported as risky because the Flutter check fails, not as a verdict for that other stack.
 - It does not read App Store Connect or Play Console. Questions that live only there (Xcode 26, age-rating answers, the Data safety form, closed testing, account type) stay **unchecked** until you answer them in `.launchymind/project.yaml`. Unchecked rules block a ready verdict.
 - It does not fully scan required-reason API use or privacy manifests inside the Flutter engine, Pods, or SDK binaries. Those gaps are listed on the report and are not treated as a pass.
-- It does not write fixes. `launchymind fix propose` prints a draft. `launchymind fix apply` refuses.
+- Approved deterministic edits can be written with `launchymind fix <path> --rule <id> --yes`. Legal text, account-deletion screens, and ad-seller files stay drafts. See below.
 - It does not ship a GitHub Action, a community pack installer, or weekly source monitoring. `launchymind pack validate` can check a pack directory that uses the same format. `scan` reads the core pack unless you pass `--pack`.
 - It does not claim a privacy-page keyword match is a complete policy review.
 
@@ -106,8 +106,8 @@ The server speaks stdio and uses the same scan as the CLI.
 | `launchymind_scan` | Full report |
 | `launchymind_explain_finding` | One rule, its source, and its evidence |
 | `launchymind_get_verdict` | The engine verdict. It has no field that sets a verdict |
-| `launchymind_propose_fix` | A draft. Writes nothing |
-| `launchymind_apply_fix` | Off unless `LAUNCHYMIND_ALLOW_APPLY=1`, and even then this preview writes nothing |
+| `launchymind_propose_fix` | A diff and a `fixId`. Writes nothing |
+| `launchymind_apply_fix` | Writes only when `LAUNCHYMIND_ALLOW_APPLY=1`, `approved` is true, and `fixId` is exactly the id from propose. Refuses a dirty git tree unless `allowDirty` is true |
 
 ```json
 {
@@ -133,6 +133,24 @@ npm run validate
 ```
 
 That runs lint, typecheck, tests, and the build. Tests cover the rule cases and three Flutter fixtures: `fixtures/flutter/reject-camera`, `fixtures/flutter/risky-accounts`, and `fixtures/flutter/ready-notes`. The ready fixture stays risky offline. It is ready when its privacy and support pages answer the live checks.
+
+## Approved fixes
+
+`launchymind fix <path> --rule <id>` prints a unified diff. It writes only with `--yes`, or after you answer `y` in a terminal. `--dry-run` prints the diff and does not write. A git checkout with uncommitted changes is refused unless you pass `--allow-dirty`. Paths outside the project are refused. After a write, LaunchyMind scans again and prints the verdict before and after.
+
+The edits it will write are mechanical:
+
+- set `NSPrivacyTracking` to true when collected data is already marked for tracking, and add missing device-id or advertising-data entries
+- add a placeholder Info.plist usage description when the key is missing
+- add the Android `AD_ID` permission, or drop `tools:node="remove"` from it
+
+Privacy-policy text, account-deletion screens, and `app-ads.txt` seller lines are propose-only.
+
+The MCP tool uses the same edits. Start it with `LAUNCHYMIND_ALLOW_APPLY=1`. `launchymind_apply_fix` then requires `approved: true` and the `fixId` string returned by `launchymind_propose_fix`.
+
+## GitHub Action
+
+`action.yml` scans a Flutter project, uploads the HTML and JSON reports, writes the verdict to the job summary, and fails according to `fail-on`. An example is in [docs/github-action.md](docs/github-action.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/ROADMAP.md](docs/ROADMAP.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 

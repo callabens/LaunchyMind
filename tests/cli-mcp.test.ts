@@ -88,7 +88,7 @@ test("fix apply does not write files", async () => {
   const sentinel = join(fixture("reject-camera"), "SHOULD_NOT_EXIST.txt");
   const result = await run(["fix", "apply", "apple.permission-camera", "--approved"], fixture("reject-camera"));
   assert.equal(result.code, 1);
-  assert.match(result.stderr, /not write|No file was changed|not implemented|off/i);
+  assert.match(result.stderr, /launchymind fix <path> --rule/);
   await assert.rejects(readFile(sentinel, "utf8"));
 });
 

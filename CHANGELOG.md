@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-dev.4
+
+- `launchymind fix <path> --rule <id> --yes` writes a deterministic edit, prints a diff, and scans again. `--dry-run` writes nothing. A dirty git tree and paths outside the project are refused.
+- MCP `launchymind_apply_fix` writes only with `LAUNCHYMIND_ALLOW_APPLY=1`, `approved: true`, and the exact `fixId` from propose.
+- Writable edits: privacy-manifest tracking flag and missing collected-data entries, Info.plist usage-description placeholders, and the Android AD_ID permission.
+- GitHub Action `action.yml` uploads the HTML and JSON reports, writes a job summary, and fails according to `fail-on`.
+
 ## 0.1.0-dev.3
 
 - A Google sample ad id behind `kReleaseMode ? real : sample`, `!kReleaseMode`, or `kDebugMode` (ternary or if/else) is not a failure.

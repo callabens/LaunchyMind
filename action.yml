@@ -1,0 +1,72 @@
+name: LaunchyMind
+description: Scan a Flutter project and publish the readiness report.
+inputs:
+  path:
+    description: Flutter project directory, relative to the workspace or absolute.
+    required: false
+    default: .
+  fail-on:
+    description: Fail the step on this verdict. reject, risky, or none.
+    required: false
+    default: reject
+  offline:
+    description: Skip live link checks when true.
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Scan
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_OFFLINE: ${{ inputs.offline }}
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_ACTION_PATH"
+        npm ci --ignore-scripts
+        if [[ "$INPUT_PATH" = /* ]]; then
+          PROJECT="$INPUT_PATH"
+        else
+          PROJECT="$GITHUB_WORKSPACE/$INPUT_PATH"
+        fi
+        OUT="${RUNNER_TEMP}/launchymind"
+        mkdir -p "$OUT"
+        args=(--experimental-strip-types "$GITHUB_ACTION_PATH/apps/cli/src/index.ts" scan "$PROJECT" --fail-on "$INPUT_FAIL_ON" --html "$OUT/report.html" --output "$OUT/launchpack.json")
+        if [[ "$INPUT_OFFLINE" == "true" ]]; then
+          args+=(--offline)
+        fi
+        set +e
+        node "${args[@]}"
+        code=$?
+        set -e
+        node --input-type=module -e '
+          import { readFileSync, appendFileSync } from "node:fs";
+          const summary = process.env.GITHUB_STEP_SUMMARY;
+          const packPath = process.argv[1];
+          let body = "## LaunchyMind\n\n";
+          try {
+            const report = JSON.parse(readFileSync(packPath, "utf8"));
+            body += `**${report.verdictHeadline}** (${report.verdict})\n\n`;
+            body += (report.verdictBecause || []).map((line) => `- ${line}`).join("\n");
+            body += "\n\nThis is not store approval and not legal advice.\n";
+          } catch {
+            body += "The scan did not write a LaunchPack.\n";
+          }
+          if (summary) appendFileSync(summary, body);
+        ' "$OUT/launchpack.json"
+        exit "$code"
+    - name: Upload LaunchyMind report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: launchymind-report-${{ github.job }}
+        path: |
+          ${{ runner.temp }}/launchymind/report.html
+          ${{ runner.temp }}/launchymind/launchpack.json
+        if-no-files-found: warn

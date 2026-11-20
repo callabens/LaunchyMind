@@ -45,7 +45,7 @@ Those limits are visible so a ready verdict cannot be read as "we looked at ever
 
 ## Agent surface
 
-`packages/mcp` registers the six tools from the product plan. `launchymind_get_verdict` returns the engine result and its input schema has no verdict field. `launchymind_apply_fix` returns `BLOCKED` unless the operator set `LAUNCHYMIND_ALLOW_APPLY=1`, and then returns `NOT_IMPLEMENTED` without writing.
+`packages/mcp` registers the six tools from the product plan. `launchymind_get_verdict` returns the engine result and its input schema has no verdict field. `launchymind_apply_fix` writes a deterministic edit only when the operator set `LAUNCHYMIND_ALLOW_APPLY=1`, `approved` is true, and `fixId` matches `launchymind_propose_fix`. It refuses paths outside the project and a dirty git tree unless `allowDirty` is true.
 
 `packages/fixes` only returns text drafts. Privacy drafts start with a lawyer warning.
 

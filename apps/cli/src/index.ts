@@ -2,7 +2,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { exitCodeForVerdict, LAUNCHYMIND_VERSION, NotFlutterProjectError, parseFailOn } from "../../../packages/core/src/index.ts";
-import { applyFix, proposeFix } from "../../../packages/fixes/src/index.ts";
+import { applyApprovedFix, proposeFix } from "../../../packages/fixes/src/index.ts";
 import { runMcpServer } from "../../../packages/mcp/src/index.ts";
 import { runScan } from "../../../packages/pipeline/src/index.ts";
 import { findCorePackDir } from "../../../packages/core/src/index.ts";
@@ -42,8 +42,8 @@ function help(): string {
     "  scan <path> [--json] [--html <file>] [--output <file>] [--offline] [--lang en|tr] [--pack <dir>] [--fail-on reject|risky|none]",
     "  rules",
     "  pack validate [directory]",
+    "  fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]",
     "  fix propose <rule-id> [--project <path>] [--offline]",
-    "  fix apply <rule-id> [--approved]",
     "  mcp",
     "",
     "Exit codes: 0 scan finished and is under the --fail-on line (default reject, so risky is 0),",
@@ -96,15 +96,39 @@ async function main(): Promise<void> {
     if (!extra) throw new Error("Usage: launchymind fix propose <rule-id> [--project <path>]");
     const project = resolve(args.options.get("project") ?? ".");
     const report = await runScan(project, { offline: args.options.has("offline") });
-    console.log(JSON.stringify(proposeFix(report, extra), null, 2));
+    console.log(JSON.stringify(await proposeFix(report, extra), null, 2));
     return;
   }
 
   if (command === "fix" && sub === "apply") {
-    if (!extra) throw new Error("Usage: launchymind fix apply <rule-id> [--approved]");
-    const result = applyFix(args.options.has("approved"), process.env.LAUNCHYMIND_ALLOW_APPLY === "1");
-    console.error(result.reason);
-    process.exitCode = 1;
+    throw new Error("Use: launchymind fix <path> --rule <id> --yes");
+  }
+
+  if (command === "fix" && sub && sub !== "propose") {
+    const rule = args.options.get("rule");
+    if (!rule || rule === "true") throw new Error("Usage: launchymind fix <path> --rule <id> [--yes] [--dry-run] [--allow-dirty] [--offline]");
+    const dryRun = args.options.has("dry-run");
+    const yes = args.options.has("yes");
+    const result = await applyApprovedFix({
+      projectPath: resolve(sub),
+      ruleId: rule,
+      approved: yes,
+      dryRun,
+      allowDirty: args.options.has("allow-dirty"),
+      offline: args.options.has("offline"),
+      confirm: !yes && !dryRun,
+    });
+    if (result.diff) console.log(result.diff.trimEnd());
+    if (result.status === "BLOCKED" || result.status === "REFUSED") {
+      console.error(result.reason);
+      process.exitCode = 1;
+      return;
+    }
+    console.log(result.reason);
+    if (result.before && result.after) {
+      console.log(`Before: ${result.before.headline} (${result.before.verdict})`);
+      console.log(`After: ${result.after.headline} (${result.after.verdict})`);
+    }
     return;
   }
 

@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { resolve } from "node:path";
 import { z } from "zod";
 import { LAUNCHYMIND_VERSION } from "../../core/src/index.ts";
-import { applyFix, proposeFix } from "../../fixes/src/index.ts";
+import { applyApprovedFix, proposeFix } from "../../fixes/src/index.ts";
 import { runScan } from "../../pipeline/src/index.ts";
 
 const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true } as const;
@@ -22,7 +22,7 @@ export function createLaunchyMindServer(defaultRoot: string, allowApply = false)
       "LaunchyMind checks mobile-app release readiness.",
       "The verdict comes only from the deterministic rule engine. There is no tool that sets the verdict.",
       "Do not say the app is legally compliant or that a store will approve it.",
-      "Do not write project files. apply_fix is off unless the operator enabled it, and this preview still does not write.",
+      "Do not write project files unless the user approves. apply_fix writes only when the operator set LAUNCHYMIND_ALLOW_APPLY=1, approved is true, and fixId is the exact id returned by propose_fix.",
       "After a code change, scan again before saying a finding is fixed.",
       "If a rule is unchecked, say it could not be checked.",
     ].join(" "),
@@ -61,22 +61,37 @@ export function createLaunchyMindServer(defaultRoot: string, allowApply = false)
   });
 
   server.registerTool("launchymind_propose_fix", {
-    description: "Prepare a fix draft and describe the change. Does not write files.",
+    description: "Prepare a fix diff and a fixId. Does not write files. Deterministic edits can be applied later with that exact fixId.",
     inputSchema: { projectPath, offline, ruleId },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-  }, async (input) => text(proposeFix(await scan(defaultRoot, input.projectPath, input.offline), input.ruleId)));
+  }, async (input) => text(await proposeFix(await scan(defaultRoot, input.projectPath, input.offline), input.ruleId)));
 
   server.registerTool("launchymind_apply_fix", {
-    description: "Apply an approved draft. Off by default. This preview does not write files even when enabled.",
+    description: "Write a deterministic fix. Requires LAUNCHYMIND_ALLOW_APPLY=1, approved=true, and the exact fixId from propose_fix. Refuses a dirty git tree unless allowDirty is true. dryRun writes nothing.",
     inputSchema: {
       projectPath,
       ruleId,
+      fixId: z.string().min(1).optional(),
       approved: z.boolean().optional(),
+      allowDirty: z.boolean().optional(),
+      dryRun: z.boolean().optional(),
     },
     annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false },
   }, async (input) => {
-    const result = applyFix(input.approved === true, allowApply);
-    return { ...text(result), isError: true };
+    const root = input.projectPath ? resolve(defaultRoot, input.projectPath) : defaultRoot;
+    const result = await applyApprovedFix({
+      projectPath: root,
+      ruleId: input.ruleId,
+      fixId: input.fixId ?? null,
+      approved: input.approved === true,
+      dryRun: input.dryRun === true,
+      allowDirty: input.allowDirty === true,
+      offline: true,
+      requireOperator: true,
+      operatorEnabled: allowApply,
+      requireFixId: true,
+    });
+    return { ...text(result), isError: result.status === "BLOCKED" || result.status === "REFUSED" };
   });
 
   return server;

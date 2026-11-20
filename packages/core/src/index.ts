@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
-export const LAUNCHYMIND_VERSION = "0.1.0-dev.3";
+export const LAUNCHYMIND_VERSION = "0.1.0-dev.4";
 export const PRODUCT_NAME = "LaunchyMind";
 export const VENDOR = "callabens";
 

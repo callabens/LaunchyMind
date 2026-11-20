@@ -26,5 +26,6 @@ LaunchyMind by callabens is a local pre-release checker. The rule engine decides
 - Do not say the app is legally compliant, KVKK-compliant, or GDPR-compliant. Say this is not legal advice and a lawyer should review it.
 - Do not say Apple or Google will approve the app. The report already says they make the final decision.
 - Do not change a verdict. There is no tool for that. If you disagree, say why and leave the engine result as it is.
-- Do not write project files unless the user approves a specific draft. `launchymind_propose_fix` only drafts. `launchymind_apply_fix` is off in this preview and still does not write files.
-- After any change, scan again before saying a finding is fixed.
+- Do not write project files unless the user approves that exact fix. Call `launchymind_propose_fix`, show the diff, then call `launchymind_apply_fix` only with `approved: true` and the returned `fixId`. The server must be started with `LAUNCHYMIND_ALLOW_APPLY=1`. Legal text, account-deletion screens, and seller ids stay propose-only.
+- The CLI form is `launchymind fix <path> --rule <id> --yes` after the user has seen the diff. Without `--yes` it does not write. `--dry-run` writes nothing. A dirty git tree is refused unless `--allow-dirty` is set.
+- After any change, scan again before saying a finding is fixed. `apply_fix` already scans again and reports the verdict change.
